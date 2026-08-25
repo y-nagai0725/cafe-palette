@@ -1,0 +1,19 @@
+$test-color: #ffb6c1;
+
+body {
+  margin: 0;
+  background-color: #fcfcfc;
+}
+
+.test-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+.test-title {
+  font-size: 3rem;
+  color: $test-color;
+  opacity: 0;
+}
