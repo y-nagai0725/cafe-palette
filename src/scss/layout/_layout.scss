@@ -1,0 +1,76 @@
+@use "../global" as g;
+
+// =========================================
+// スクロール用コンテナ（外箱）
+// =========================================
+.l-scroll-container {
+  width: 100%;
+
+  // PC時に横にはみ出した部分を一旦隠しておく
+  overflow: hidden;
+}
+
+// =========================================
+// 横スクロールするトラック本体
+// =========================================
+.l-main {
+  // SP時（デフォルト）は通常の縦並び
+  display: block;
+
+  // PC時（1024px以上）はflexで横一直線に並べる
+  @include g.mq(lg) {
+    display: flex;
+
+    // 中身の要素の合計サイズまで幅を広げる
+    width: max-content;
+  }
+}
+
+// =========================================
+// 各セクションの仮スタイル（サイズ確保用）
+// =========================================
+.p-fv,
+.p-season-panel,
+.p-message,
+.p-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100vh; // 画面いっぱいの高さ
+  border-bottom: 1px solid #ccc; // SP時の区切り線（仮）
+
+  @include g.mq("lg") {
+    width: 100vw; // PC時は1画面分の横幅を持たせる
+    border-right: 1px dashed #ccc; // PC時の区切り線（仮）
+    border-bottom: none;
+  }
+}
+
+// フッター（仮）
+.l-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 2rem;
+  color: g.$color-bg;
+  background-color: g.$color-text;
+
+  @include g.mq("lg") {
+    width: 50vw;
+    height: 100vh;
+  }
+}
+
+// ヘッダーと前景の仮スタイル（画面に固定）
+.l-header,
+.l-foreground {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  width: 100%;
+  pointer-events: none; // 奥の要素をクリックできるようにする
+}

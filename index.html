@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cafe Palette - Test</title>
+  <title>Cafe Palette</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,6 +14,81 @@
 </head>
 
 <body>
+  <!-- ヘッダー -->
+  <header class="l-header">
+    <div class="l-header__inner">
+      <h1 class="l-header__logo">Cafe Palette</h1>
+      <!-- ナビゲーションなどが入る予定 -->
+    </div>
+  </header>
+
+  <!-- 前景レイヤー (窓枠やテーブルなど) -->
+  <div class="l-foreground js-foreground">
+    <p>※ここに固定表示するSVGの窓枠やテーブルが入る</p>
+  </div>
+
+  <!-- 固定用の外箱（ScrollTriggerでこれをpin留めする） -->
+  <div class="l-scroll-container js-scroll-container">
+    <main class="l-main js-horizontal-track">
+
+      <!-- 1. FV (ファーストビュー) -->
+      <section class="p-fv">
+        <div class="p-fv__inner">
+          <h2 class="p-fv__title">Cafe Palette</h2>
+          <p class="p-fv__subtitle">Scroll to enter...</p>
+        </div>
+      </section>
+
+      <!-- 2. 四季のカフェ空間（景色＋メニュー） -->
+      <!-- 春 -->
+      <article class="p-season-panel p-season-panel--spring">
+        <div class="p-season-panel__bg">🌸 桜の景色（Canvas/SVG）</div>
+        <div class="p-season-panel__menu">苺のタルトと桜ラテ（実写）</div>
+      </article>
+
+      <!-- 夏 -->
+      <article class="p-season-panel p-season-panel--summer">
+        <div class="p-season-panel__bg">🌻 海とひまわりの景色</div>
+        <div class="p-season-panel__menu">クリームソーダとレモンケーキ</div>
+      </article>
+
+      <!-- 秋 -->
+      <article class="p-season-panel p-season-panel--autumn">
+        <div class="p-season-panel__bg">🍁 紅葉の夕暮れ</div>
+        <div class="p-season-panel__menu">モンブランと紅茶</div>
+      </article>
+
+      <!-- 冬 -->
+      <article class="p-season-panel p-season-panel--winter">
+        <div class="p-season-panel__bg">❄️ 雪景色と暖炉の光</div>
+        <div class="p-season-panel__menu">フォンダンショコラとココア</div>
+      </article>
+
+      <!-- 3. メッセージセクション -->
+      <section class="p-message">
+        <div class="p-message__inner">
+          <p class="p-message__text">移りゆく季節の中で、<br>変わらない一杯の温もりを。</p>
+        </div>
+      </section>
+
+      <!-- 4. インフォメーションセクション -->
+      <section class="p-info">
+        <div class="p-info__inner">
+          <h2 class="p-info__title">Information</h2>
+          <p>※ここに住所や営業時間が入る</p>
+        </div>
+      </section>
+
+      <!-- 5. フッター -->
+      <footer class="l-footer">
+        <div class="l-footer__inner">
+          <p class="l-footer__copyright">&copy; 2026 Cafe Palette</p>
+        </div>
+      </footer>
+
+    </main>
+  </div>
+
   <script type="module" src="/src/js/main.js"></script>
 </body>
 
