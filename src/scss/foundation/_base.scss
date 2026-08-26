@@ -1,0 +1,13 @@
+@use '../global' as g;
+
+html {
+  font-size: 100%;
+}
+
+body {
+  font-family: g.$font-base;
+  font-size: 1rem;
+  font-weight: g.$weight-normal;
+  color: g.$color-text;
+  background-color: g.$color-bg;
+}

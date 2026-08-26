@@ -1,0 +1,35 @@
+@use "sass:math";
+@use "sass:map";
+@use "variables" as v;
+
+// =========================================
+// 関数 (Functions)
+// =========================================
+// pxをremに自動変換する関数
+@function rem($px) {
+  @return math.div($px, 16) * 1rem;
+}
+
+// =========================================
+// ミックスイン (Mixins)
+// =========================================
+
+// レスポンシブ用のmixin
+@mixin mq($breakpoint) {
+  @if map.has-key(v.$breakpoints, $breakpoint) {
+    @media #{map.get(v.$breakpoints, $breakpoint)} {
+      @content;
+    }
+  } @else {
+    @error "指定されたブレイクポイント「#{$breakpoint}」は定義されていません。";
+  }
+}
+
+// hover用のmixin
+@mixin hover {
+  @media (any-hover: hover) {
+    &:hover {
+      @content;
+    }
+  }
+}
