@@ -17,8 +17,39 @@
   <!-- ヘッダー -->
   <header class="l-header">
     <div class="l-header__inner">
-      <h1 class="l-header__logo">Cafe Palette</h1>
-      <!-- ナビゲーションなどが入る予定 -->
+      <h1 class="l-header__logo">
+        <a href="/" class="l-header__logo-link js-header-logo">Cafe Palette</a>
+      </h1>
+
+      <!-- ハンバーガーボタン (SPのみ表示) -->
+      <button class="l-header__hamburger js-hamburger" aria-label="メニューを開く">
+        <svg class="l-header__hamburger-svg" viewBox="0 0 50 50">
+          <!-- 現在表示されている線 -->
+          <path class="js-line-top" d="M 10 15 L 40 15" stroke="currentColor" stroke-width="3" stroke-linecap="round" />
+          <path class="js-line-middle" d="M 10 25 L 40 25" stroke="currentColor" stroke-width="3"
+            stroke-linecap="round" />
+          <path class="js-line-bottom" d="M 10 35 L 40 35" stroke="currentColor" stroke-width="3"
+            stroke-linecap="round" />
+
+          <!-- 変形先のパス ※画面には表示しない -->
+          <defs>
+            <path id="cross-top" d="M 15 15 L 35 35" />
+            <path id="cross-bottom" d="M 15 35 L 35 15" />
+          </defs>
+        </svg>
+      </button>
+
+      <!-- ナビゲーションメニュー -->
+      <nav class="l-header__nav js-nav">
+        <ul class="l-header__list">
+          <li><a href="#spring" class="l-header__link js-nav-link">Spring</a></li>
+          <li><a href="#summer" class="l-header__link js-nav-link">Summer</a></li>
+          <li><a href="#autumn" class="l-header__link js-nav-link">Autumn</a></li>
+          <li><a href="#winter" class="l-header__link js-nav-link">Winter</a></li>
+          <li><a href="#message" class="l-header__link js-nav-link">Message</a></li>
+          <li><a href="#info" class="l-header__link js-nav-link">Info</a></li>
+        </ul>
+      </nav>
     </div>
   </header>
 
@@ -41,38 +72,38 @@
 
       <!-- 2. 四季のカフェ空間（景色＋メニュー） -->
       <!-- 春 -->
-      <article class="p-season-panel p-season-panel--spring">
+      <article id="spring" class="p-season-panel p-season-panel--spring">
         <div class="p-season-panel__bg">🌸 桜の景色（Canvas/SVG）</div>
         <div class="p-season-panel__menu">苺のタルトと桜ラテ（実写）</div>
       </article>
 
       <!-- 夏 -->
-      <article class="p-season-panel p-season-panel--summer">
+      <article id="summer" class="p-season-panel p-season-panel--summer">
         <div class="p-season-panel__bg">🌻 海とひまわりの景色</div>
         <div class="p-season-panel__menu">クリームソーダとレモンケーキ</div>
       </article>
 
       <!-- 秋 -->
-      <article class="p-season-panel p-season-panel--autumn">
+      <article id="autumn" class="p-season-panel p-season-panel--autumn">
         <div class="p-season-panel__bg">🍁 紅葉の夕暮れ</div>
         <div class="p-season-panel__menu">モンブランと紅茶</div>
       </article>
 
       <!-- 冬 -->
-      <article class="p-season-panel p-season-panel--winter">
+      <article id="winter" class="p-season-panel p-season-panel--winter">
         <div class="p-season-panel__bg">❄️ 雪景色と暖炉の光</div>
         <div class="p-season-panel__menu">フォンダンショコラとココア</div>
       </article>
 
       <!-- 3. メッセージセクション -->
-      <section class="p-message">
+      <section id="message" class="p-message">
         <div class="p-message__inner">
           <p class="p-message__text">移りゆく季節の中で、<br>変わらない一杯の温もりを。</p>
         </div>
       </section>
 
       <!-- 4. インフォメーションセクション -->
-      <section class="p-info">
+      <section id="info" class="p-info">
         <div class="p-info__inner">
           <h2 class="p-info__title">Information</h2>
           <p>※ここに住所や営業時間が入る</p>

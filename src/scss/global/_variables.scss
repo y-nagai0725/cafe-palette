@@ -31,3 +31,20 @@ $breakpoints: (
   // 1440px以上
   "xl": "(width >= 1440px)"
 );
+
+// =========================================
+// z-index
+// =========================================
+$z-index-header: 1000;
+
+// =========================================
+// Transition関連
+// =========================================
+$transition-duration: 0.3s;
+$transition-easing: ease-out;
+$transition-base: $transition-duration $transition-easing;
+
+// =========================================
+// hover関連
+// =========================================
+$hovered-opacity: 0.6;
