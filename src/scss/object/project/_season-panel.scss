@@ -1,0 +1,80 @@
+@use "../../global" as g;
+
+// =========================================
+// 四季の景色セクション共通
+// =========================================
+.p-season-panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+
+  @include g.mq(lg) {
+    width: 100vw;
+  }
+
+  // =========================================
+  // レイヤー1: 背景（一番奥）
+  // =========================================
+  &__bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    background-color: #fce4ec; // 仮の春色（さくら色）
+  }
+
+  // =========================================
+  // レイヤー2: Canvasパーティクル（真ん中）
+  // =========================================
+  &__canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 2;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+
+  // =========================================
+  // レイヤー3: コンテンツ（一番手前）
+  // =========================================
+  &__content {
+    position: relative;
+    z-index: calc(g.$z-index-foreground + 10); // 前景レイヤーより手前にする
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: g.$color-text;
+    text-align: center;
+  }
+
+  &__title {
+    margin-bottom: g.rem(16);
+    font-size: g.rem(40);
+    font-weight: g.$weight-bold;
+  }
+
+  &__text {
+    margin-bottom: g.rem(32);
+    font-size: g.rem(16);
+  }
+
+  &__dummy-img {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: g.rem(240);
+    height: g.rem(240);
+    background-color: rgba(g.$color-text, 0.1);
+    border-radius: 50%;
+    backdrop-filter: blur(4px);
+  }
+}

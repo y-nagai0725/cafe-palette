@@ -53,28 +53,28 @@
     </div>
   </header>
 
-  <!-- 前景レイヤー (窓枠やテーブルなど) -->
-  <div class="l-foreground js-foreground">
-
-    <!-- 仮の窓枠 SVG (画面全体) -->
-    <svg class="l-foreground__window" viewBox="0 0 1920 1080" preserveAspectRatio="none">
-      <!-- 窓の枠組み（外枠と十字の桟） -->
-      <path d="M0,0 v1080 h1920 v-1080 H0 Z M50,50 h1820 v980 h-1820 Z" fill="#2c231e" />
-      <rect x="940" y="50" width="40" height="980" fill="#2c231e" />
-      <rect x="50" y="520" width="1820" height="40" fill="#2c231e" />
-    </svg>
-
-    <!-- 仮のテーブル SVG (画面下部) -->
-    <svg class="l-foreground__table" viewBox="0 0 1920 300" preserveAspectRatio="none">
-      <!-- カフェの木製テーブル -->
-      <rect x="0" y="0" width="1920" height="300" fill="#8b5a2b" />
-    </svg>
-
-  </div>
-
   <!-- 固定用の外箱（ScrollTriggerでこれをpin留めする） -->
   <div class="l-scroll-container js-scroll-container">
     <main class="l-main js-horizontal-track">
+
+      <!-- 前景レイヤー (窓枠やテーブルなど) -->
+      <div class="l-foreground js-foreground">
+
+        <!-- 仮の窓枠 SVG (画面全体) -->
+        <svg class="l-foreground__window" viewBox="0 0 1920 1080" preserveAspectRatio="none">
+          <!-- 窓の枠組み（外枠と十字の桟） -->
+          <path d="M0,0 v1080 h1920 v-1080 H0 Z M50,50 h1820 v980 h-1820 Z" fill="#2c231e" />
+          <rect x="940" y="50" width="40" height="980" fill="#2c231e" />
+          <rect x="50" y="520" width="1820" height="40" fill="#2c231e" />
+        </svg>
+
+        <!-- 仮のテーブル SVG (画面下部) -->
+        <svg class="l-foreground__table" viewBox="0 0 1920 300" preserveAspectRatio="none">
+          <!-- カフェの木製テーブル -->
+          <rect x="0" y="0" width="1920" height="300" fill="#8b5a2b" />
+        </svg>
+
+      </div>
 
       <!-- 1. FV (ファーストビュー) -->
       <section class="p-fv">
@@ -85,11 +85,27 @@
       </section>
 
       <!-- 2. 四季のカフェ空間（景色＋メニュー） -->
-      <!-- 春 -->
-      <article id="spring" class="p-season-panel p-season-panel--spring">
-        <div class="p-season-panel__bg">🌸 桜の景色（Canvas/SVG）</div>
-        <div class="p-season-panel__menu">苺のタルトと桜ラテ（実写）</div>
-      </article>
+      <!-- 春セクション -->
+      <section id="spring" class="p-season-panel">
+
+        <!-- レイヤー1 (一番奥): 背景（後でMorphSVGを置く） -->
+        <div class="p-season-panel__bg js-morph-bg"></div>
+
+        <!-- レイヤー2 (真ん中): パーティクル（後で桜を降らせるCanvas） -->
+        <canvas class="p-season-panel__canvas js-spring-canvas"></canvas>
+
+        <!-- レイヤー3 (一番手前): メインコンテンツ（メニュー情報など） -->
+        <div class="p-season-panel__content js-season-content">
+          <h2 class="p-season-panel__title">Spring</h2>
+          <p class="p-season-panel__text">桜舞う、春の限定抹茶ラテ。</p>
+
+          <!-- メニュー画像の代わりのダミーボックス -->
+          <div class="p-season-panel__menu">
+            <div class="p-season-panel__dummy-img">Menu Image</div>
+          </div>
+        </div>
+
+      </section>
 
       <!-- 夏 -->
       <article id="summer" class="p-season-panel p-season-panel--summer">
