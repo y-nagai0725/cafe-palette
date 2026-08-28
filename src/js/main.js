@@ -1,6 +1,7 @@
 import '../scss/style.scss';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { initPageTop } from './modules/common';
 import { initHeaderNav } from './modules/header';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -33,5 +34,9 @@ mm.add("(width >= 1024px)", () => {
   });
 });
 
-// ヘッダーナビの処理を実行する
-initHeaderNav();
+const init = () => {
+  initPageTop();
+  initHeaderNav();
+};
+
+init();

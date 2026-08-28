@@ -171,22 +171,30 @@ export const initHeaderNav = () => {
     hamburger.addEventListener('click', toggleMenu);
 
     // =========================================
-    // リンクをクリックした時にメニューを自動で閉じる処理
+    // リンクやロゴをクリックした時にメニューを自動で閉じる処理
     // =========================================
+    const closeMenu = () => {
+      if (!tl.reversed()) {
+        tl.reverse();
+        document.body.classList.remove('is-noscroll');
+      }
+    };
+
     links.forEach(link => {
-      link.addEventListener('click', () => {
-        if (!tl.reversed()) {
-          tl.reverse();
-          document.body.classList.remove('is-noscroll');
-        }
-      });
+      link.addEventListener('click', closeMenu);
     });
+
+    logo.addEventListener('click', closeMenu);
 
     // クリーンアップ処理
     return () => {
       // PCサイズになったらイベントを解除する
       hamburger.removeEventListener('click', toggleMenu);
       window.removeEventListener('resize', debouncedUpdate);
+      links.forEach(link => {
+        link.removeEventListener('click', closeMenu);
+      });
+      logo.removeEventListener('click', closeMenu);
 
       // スクロール禁止設定を解除する
       if (document.body.classList.contains('is-noscroll')) {
