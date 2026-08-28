@@ -1,0 +1,33 @@
+@use "../global" as g;
+
+// =========================================
+// 前景レイヤー (窓枠・テーブル)
+// =========================================
+.l-foreground {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: g.$z-index-foreground;
+  visibility: hidden;
+  width: 100%;
+  height: 100vh;
+  pointer-events: none;
+  opacity: 0;
+
+  &__window {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.95;
+  }
+
+  &__table {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 25vh; // 画面の高さの下1/4くらいをテーブルにする設定
+  }
+}

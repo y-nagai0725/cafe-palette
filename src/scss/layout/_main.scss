@@ -1,0 +1,14 @@
+@use "../global" as g;
+
+.l-main {
+  // SP時（デフォルト）は通常の縦並び
+  display: block;
+
+  // PC時（1024px以上）はflexで横一直線に並べる
+  @include g.mq(lg) {
+    display: flex;
+
+    // 中身の要素の合計サイズまで幅を広げる
+    width: max-content;
+  }
+}

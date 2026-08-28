@@ -55,7 +55,21 @@
 
   <!-- 前景レイヤー (窓枠やテーブルなど) -->
   <div class="l-foreground js-foreground">
-    <p>※ここに固定表示するSVGの窓枠やテーブルが入る</p>
+
+    <!-- 仮の窓枠 SVG (画面全体) -->
+    <svg class="l-foreground__window" viewBox="0 0 1920 1080" preserveAspectRatio="none">
+      <!-- 窓の枠組み（外枠と十字の桟） -->
+      <path d="M0,0 v1080 h1920 v-1080 H0 Z M50,50 h1820 v980 h-1820 Z" fill="#2c231e" />
+      <rect x="940" y="50" width="40" height="980" fill="#2c231e" />
+      <rect x="50" y="520" width="1820" height="40" fill="#2c231e" />
+    </svg>
+
+    <!-- 仮のテーブル SVG (画面下部) -->
+    <svg class="l-foreground__table" viewBox="0 0 1920 300" preserveAspectRatio="none">
+      <!-- カフェの木製テーブル -->
+      <rect x="0" y="0" width="1920" height="300" fill="#8b5a2b" />
+    </svg>
+
   </div>
 
   <!-- 固定用の外箱（ScrollTriggerでこれをpin留めする） -->
