@@ -88,10 +88,23 @@
       <!-- 春セクション -->
       <section id="spring" class="p-season-panel">
 
-        <!-- レイヤー1 (一番奥): 背景（後でMorphSVGを置く） -->
-        <div class="p-season-panel__bg js-morph-bg"></div>
+        <!-- レイヤー1 (一番奥): 背景 -->
+        <div class="p-season-panel__bg p-season-panel__bg--spring js-morph-bg">
+          <!-- 背景用のSVG（波の形） -->
+          <svg viewBox="0 0 1000 500" preserveAspectRatio="none"
+            style="width: 100%; height: 100%; position: absolute; bottom: 0; left: 0;">
+            <!-- 実際に画面に見えるパス -->
+            <path class="js-spring-wave" fill="#f8bbd0" opacity="0.5"
+              d="M0,250 C250,150 750,350 1000,250 L1000,500 L0,500 Z" />
 
-        <!-- レイヤー2 (真ん中): パーティクル（後で桜を降らせるCanvas） -->
+            <!-- 変形先のパス（<defs>の中に入れて画面には表示させない） -->
+            <defs>
+              <path id="spring-wave-target" d="M0,250 C300,350 700,100 1000,250 L1000,500 L0,500 Z" />
+            </defs>
+          </svg>
+        </div>
+
+        <!-- レイヤー2 (真ん中): パーティクル -->
         <canvas class="p-season-panel__canvas js-spring-canvas"></canvas>
 
         <!-- レイヤー3 (一番手前): メインコンテンツ（メニュー情報など） -->
@@ -107,21 +120,35 @@
 
       </section>
 
-      <!-- 夏 -->
-      <article id="summer" class="p-season-panel p-season-panel--summer">
-        <div class="p-season-panel__bg">🌻 海とひまわりの景色</div>
-        <div class="p-season-panel__menu">クリームソーダとレモンケーキ</div>
-      </article>
+      <!-- 夏セクション -->
+      <section id="summer" class="p-season-panel">
+
+        <!-- レイヤー1: 背景 -->
+        <div class="p-season-panel__bg p-season-panel__bg--summer js-morph-bg"></div>
+
+        <!-- レイヤー2: パーティクル（夏はひまわりや光の粒の予定！） -->
+        <canvas class="p-season-panel__canvas js-summer-canvas"></canvas>
+
+        <!-- レイヤー3: メインコンテンツ -->
+        <div class="p-season-panel__content js-season-content">
+          <h2 class="p-season-panel__title">Summer</h2>
+          <p class="p-season-panel__text">ひまわり咲く、夏のレモネード。</p>
+
+          <div class="p-season-panel__menu">
+            <div class="p-season-panel__dummy-img">Summer Menu</div>
+          </div>
+        </div>
+      </section>
 
       <!-- 秋 -->
       <article id="autumn" class="p-season-panel p-season-panel--autumn">
-        <div class="p-season-panel__bg">🍁 紅葉の夕暮れ</div>
+        <div class="p-season-panel__bg p-season-panel__bg--autumn">🍁 紅葉の夕暮れ</div>
         <div class="p-season-panel__menu">モンブランと紅茶</div>
       </article>
 
       <!-- 冬 -->
       <article id="winter" class="p-season-panel p-season-panel--winter">
-        <div class="p-season-panel__bg">❄️ 雪景色と暖炉の光</div>
+        <div class="p-season-panel__bg p-season-panel__bg--winter">❄️ 雪景色と暖炉の光</div>
         <div class="p-season-panel__menu">フォンダンショコラとココア</div>
       </article>
 
