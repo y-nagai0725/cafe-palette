@@ -123,10 +123,27 @@
       <!-- 夏セクション -->
       <section id="summer" class="p-season-panel">
 
-        <!-- レイヤー1: 背景 -->
-        <div class="p-season-panel__bg p-season-panel__bg--summer js-morph-bg"></div>
+        <!-- レイヤー1: 背景（夏色） -->
+        <div class="p-season-panel__bg p-season-panel__bg--summer js-morph-bg">
 
-        <!-- レイヤー2: パーティクル（夏はひまわりや光の粒の予定！） -->
+          <!-- 背景用のSVG（夏の海や雲をイメージした形！） -->
+          <svg viewBox="0 0 1000 500" preserveAspectRatio="none"
+            style="width: 100%; height: 100%; position: absolute; bottom: 0; left: 0;">
+            <!-- 実際に画面に見えるパス -->
+            <!-- 夏のテーマカラーに合わせた爽やかな水色だよ♡ -->
+            <path class="js-summer-wave" fill="#81d4fa" opacity="0.6"
+              d="M0,350 C200,250 400,400 600,300 C800,200 900,350 1000,300 L1000,500 L0,500 Z" />
+
+            <!-- 変形先のパス -->
+            <defs>
+              <path id="summer-wave-target"
+                d="M0,300 C200,400 400,250 600,350 C800,450 900,300 1000,350 L1000,500 L0,500 Z" />
+            </defs>
+          </svg>
+
+        </div>
+
+        <!-- レイヤー2: パーティクル -->
         <canvas class="p-season-panel__canvas js-summer-canvas"></canvas>
 
         <!-- レイヤー3: メインコンテンツ -->

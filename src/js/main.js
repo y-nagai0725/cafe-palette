@@ -7,7 +7,8 @@ import { initHorizontalScroll } from './modules/horizontal';
 import { initForeground } from './modules/foreground';
 import { initSeasonPanels } from './modules/season';
 import { initMorphBg } from './modules/morph';
-import { initSpringCanvas } from './modules/springCanvas';
+import { initParticleCanvas } from './modules/canvasEngine';
+import { Petal, SummerBubble } from './modules/particles';
 
 const init = () => {
   initPageTop();
@@ -16,7 +17,9 @@ const init = () => {
   initForeground();
   initSeasonPanels();
   initMorphBg();
-  initSpringCanvas();
+
+  initParticleCanvas('.js-spring-canvas', Petal, 60);
+  initParticleCanvas('.js-summer-canvas', SummerBubble, 40);
 };
 
 init();
