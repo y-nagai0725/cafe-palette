@@ -2,7 +2,9 @@
 // particles.js (パーティクルの設計図モジュール)
 // =========================================================================
 
-// 春の桜（Petal）クラス
+/**
+ * 春の桜（Petal）クラス
+ */
 export class Petal {
   constructor(w, h) {
     this.x = Math.random() * w;
@@ -38,8 +40,10 @@ export class Petal {
   }
 }
 
-// 夏の泡（Bubble）クラス
-export class SummerBubble {
+/**
+ * 夏の泡（Bubble）クラス
+ */
+export class Bubble {
   constructor(w, h) {
     this.x = Math.random() * w;
     this.y = Math.random() * h;
@@ -71,9 +75,9 @@ export class SummerBubble {
   }
 }
 
-// =========================================
-// 秋の落ち葉（Leaf）クラス
-// =========================================
+/**
+ * 秋の落ち葉（Leaf）クラス
+ */
 export class Leaf {
   constructor(w, h) {
     this.x = Math.random() * w;
@@ -111,6 +115,40 @@ export class Leaf {
     ctx.fillStyle = this.color; // ランダムで決めた色を使う
     ctx.beginPath();
     ctx.ellipse(0, 0, this.size, this.size / 3, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
+}
+
+/**
+ * 冬の粉雪（Snow）クラス
+ */
+export class Snow {
+  constructor(w, h) {
+    this.x = Math.random() * w;
+    this.y = Math.random() * h;
+    this.size = Math.random() * 3 + 1;
+    this.speedY = Math.random() * 0.5 + 0.2;
+    this.speedX = Math.random() * 0.5 - 0.25;
+    this.opacity = Math.random() * 0.5 + 0.3;
+  }
+
+  update(w, h) {
+    this.y += this.speedY;
+    this.x += this.speedX;
+
+    if (this.y > h + this.size) {
+      this.y = -this.size;
+      this.x = Math.random() * w;
+    }
+  }
+
+  draw(ctx) {
+    ctx.save();
+    ctx.translate(this.x, this.y);
+    ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`; // 白の半透明
+    ctx.beginPath();
+    ctx.arc(0, 0, this.size, 0, Math.PI * 2); // 丸の小さな雪の粒
     ctx.fill();
     ctx.restore();
   }

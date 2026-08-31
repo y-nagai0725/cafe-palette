@@ -38,13 +38,27 @@ export const initMorphBg = () => {
   }
 
   // =========================================
-  // 🍁 秋セクションの波
+  // 秋セクションの波
   // =========================================
   const autumnWave = document.querySelector('.js-autumn-wave');
   if (autumnWave) {
     gsap.to(autumnWave, {
       morphSVG: "#autumn-wave-target",
       duration: 4.5,
+      repeat: -1,
+      yoyo: true,
+      ease: "sine.inOut"
+    });
+  }
+
+  // =========================================
+  // 冬セクションの波
+  // =========================================
+  const winterWave = document.querySelector('.js-winter-wave');
+  if (winterWave) {
+    gsap.to(winterWave, {
+      morphSVG: "#winter-wave-target",
+      duration: 6,
       repeat: -1,
       yoyo: true,
       ease: "sine.inOut"

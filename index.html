@@ -191,11 +191,40 @@
         </div>
       </section>
 
-      <!-- 冬 -->
-      <article id="winter" class="p-season-panel p-season-panel--winter">
-        <div class="p-season-panel__bg p-season-panel__bg--winter">❄️ 雪景色と暖炉の光</div>
-        <div class="p-season-panel__menu">フォンダンショコラとココア</div>
-      </article>
+      <!-- 冬セクション -->
+      <section id="winter" class="p-season-panel">
+
+        <!-- レイヤー1: 背景（冬色） -->
+        <div class="p-season-panel__bg p-season-panel__bg--winter js-morph-bg">
+
+          <!-- 背景用のSVG（なだらかな雪山や、静かな冬の風をイメージ） -->
+          <svg viewBox="0 0 1000 500" preserveAspectRatio="none"
+            style="width: 100%; height: 100%; position: absolute; bottom: 0; left: 0;">
+            <!-- 実際に画面に見えるパス -->
+            <path class="js-winter-wave" fill="#e8f0f2" opacity="0.8"
+              d="M0,350 C300,450 500,250 700,350 C900,450 1000,300 1000,500 L0,500 Z" />
+
+            <!-- 変形先のパス -->
+            <defs>
+              <path id="winter-wave-target" d="M0,400 C250,300 450,450 750,300 C950,200 1000,400 1000,500 L0,500 Z" />
+            </defs>
+          </svg>
+
+        </div>
+
+        <!-- レイヤー2: パーティクル（雪を降らせる） -->
+        <canvas class="p-season-panel__canvas js-winter-canvas"></canvas>
+
+        <!-- レイヤー3: メインコンテンツ -->
+        <div class="p-season-panel__content js-season-content">
+          <h2 class="p-season-panel__title">Winter</h2>
+          <p class="p-season-panel__text">雪景色と暖炉の光、フォンダンショコラとココア。</p>
+
+          <div class="p-season-panel__menu">
+            <div class="p-season-panel__dummy-img">Winter Menu</div>
+          </div>
+        </div>
+      </section>
 
       <!-- 3. メッセージセクション -->
       <section id="message" class="p-message">
