@@ -107,7 +107,7 @@
         <!-- レイヤー2 (真ん中): パーティクル -->
         <canvas class="p-season-panel__canvas js-spring-canvas"></canvas>
 
-        <!-- レイヤー3 (一番手前): メインコンテンツ（メニュー情報など） -->
+        <!-- レイヤー3 (一番手前): メインコンテンツ -->
         <div class="p-season-panel__content js-season-content">
           <h2 class="p-season-panel__title">Spring</h2>
           <p class="p-season-panel__text">桜舞う、春の限定抹茶ラテ。</p>
@@ -126,11 +126,10 @@
         <!-- レイヤー1: 背景（夏色） -->
         <div class="p-season-panel__bg p-season-panel__bg--summer js-morph-bg">
 
-          <!-- 背景用のSVG（夏の海や雲をイメージした形！） -->
+          <!-- 背景用のSVG（夏の海や雲をイメージした形） -->
           <svg viewBox="0 0 1000 500" preserveAspectRatio="none"
             style="width: 100%; height: 100%; position: absolute; bottom: 0; left: 0;">
             <!-- 実際に画面に見えるパス -->
-            <!-- 夏のテーマカラーに合わせた爽やかな水色だよ♡ -->
             <path class="js-summer-wave" fill="#81d4fa" opacity="0.6"
               d="M0,350 C200,250 400,400 600,300 C800,200 900,350 1000,300 L1000,500 L0,500 Z" />
 
@@ -157,11 +156,40 @@
         </div>
       </section>
 
-      <!-- 秋 -->
-      <article id="autumn" class="p-season-panel p-season-panel--autumn">
-        <div class="p-season-panel__bg p-season-panel__bg--autumn">🍁 紅葉の夕暮れ</div>
-        <div class="p-season-panel__menu">モンブランと紅茶</div>
-      </article>
+      <!-- 秋セクション -->
+      <section id="autumn" class="p-season-panel">
+
+        <!-- レイヤー1: 背景（秋色） -->
+        <div class="p-season-panel__bg p-season-panel__bg--autumn js-morph-bg">
+
+          <!-- 背景用のSVG（秋の夕暮れの丘や、風をイメージした形） -->
+          <svg viewBox="0 0 1000 500" preserveAspectRatio="none"
+            style="width: 100%; height: 100%; position: absolute; bottom: 0; left: 0;">
+            <!-- 実際に画面に見えるパス -->
+            <path class="js-autumn-wave" fill="#e6a87c" opacity="0.6"
+              d="M0,200 C300,300 500,100 800,250 L1000,200 L1000,500 L0,500 Z" />
+
+            <!-- 変形先のパス -->
+            <defs>
+              <path id="autumn-wave-target" d="M0,250 C200,100 600,350 800,150 L1000,250 L1000,500 L0,500 Z" />
+            </defs>
+          </svg>
+
+        </div>
+
+        <!-- レイヤー2: パーティクル（落ち葉） -->
+        <canvas class="p-season-panel__canvas js-autumn-canvas"></canvas>
+
+        <!-- レイヤー3: メインコンテンツ -->
+        <div class="p-season-panel__content js-season-content">
+          <h2 class="p-season-panel__title">Autumn</h2>
+          <p class="p-season-panel__text">紅葉の夕暮れ、秋のモンブランと紅茶。</p>
+
+          <div class="p-season-panel__menu">
+            <div class="p-season-panel__dummy-img">Autumn Menu</div>
+          </div>
+        </div>
+      </section>
 
       <!-- 冬 -->
       <article id="winter" class="p-season-panel p-season-panel--winter">

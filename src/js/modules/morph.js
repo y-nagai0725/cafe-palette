@@ -37,4 +37,18 @@ export const initMorphBg = () => {
     });
   }
 
+  // =========================================
+  // 🍁 秋セクションの波
+  // =========================================
+  const autumnWave = document.querySelector('.js-autumn-wave');
+  if (autumnWave) {
+    gsap.to(autumnWave, {
+      morphSVG: "#autumn-wave-target",
+      duration: 4.5,
+      repeat: -1,
+      yoyo: true,
+      ease: "sine.inOut"
+    });
+  }
+
 };

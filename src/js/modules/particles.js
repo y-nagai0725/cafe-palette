@@ -70,3 +70,48 @@ export class SummerBubble {
     ctx.restore();
   }
 }
+
+// =========================================
+// 秋の落ち葉（Leaf）クラス
+// =========================================
+export class Leaf {
+  constructor(w, h) {
+    this.x = Math.random() * w;
+    this.y = Math.random() * h;
+    this.size = Math.random() * 8 + 6;
+    this.speedY = Math.random() * 1.5 + 0.5;
+    this.speedX = Math.random() * 2 - 1;
+    this.angle = Math.random() * 360;
+    this.angleSpeed = Math.random() * 0.05 - 0.025;
+
+    // 秋の紅葉カラーを複数用意
+    const colors = [
+      'rgba(217, 138, 89, 0.8)', // ベースの秋色（オレンジ）
+      'rgba(198, 40, 40, 0.7)',  // もみじのような深い赤
+      'rgba(249, 168, 37, 0.7)'  // イチョウのような黄色
+    ];
+    this.color = colors[Math.floor(Math.random() * colors.length)];
+  }
+
+  update(w, h) {
+    this.y += this.speedY;
+    this.x += this.speedX;
+    this.angle += this.angleSpeed;
+
+    if (this.y > h + this.size) {
+      this.y = -this.size;
+      this.x = Math.random() * w;
+    }
+  }
+
+  draw(ctx) {
+    ctx.save();
+    ctx.translate(this.x, this.y);
+    ctx.rotate(this.angle);
+    ctx.fillStyle = this.color; // ランダムで決めた色を使う
+    ctx.beginPath();
+    ctx.ellipse(0, 0, this.size, this.size / 3, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
+}
