@@ -35,7 +35,8 @@ export const initSeasonPanels = () => {
           y: 0,
           duration: 0.8,
           stagger: 0.2,
-          ease: GSAP_EASING.UI
+          ease: GSAP_EASING.UI,
+          overwrite: true,
         }
       );
     };
@@ -43,7 +44,8 @@ export const initSeasonPanels = () => {
     const resetAnimation = () => {
       gsap.set(elementsToAnimate, {
         autoAlpha: 0,
-        y: 30
+        y: 30,
+        overwrite: true,
       });
     };
 
@@ -57,11 +59,15 @@ export const initSeasonPanels = () => {
 
       if (isPc) {
         // PC用
+        // x軸方向に-50%ずらす
+        gsap.set(content, { xPercent: -50, yPercent: 0 });
+
+        // ページ全体の横スクロールTweenを取得する
         const hTween = gsap.getById("hScroll");
         if (!hTween) return;
 
+        // セクションが左に動く分、コンテンツを右に動かして固定する
         const pinTween = gsap.to(content, {
-          // セクションが左に動く分、コンテンツを右に動かして固定する
           x: () => window.innerWidth,
           ease: "none"
         });
@@ -70,8 +76,8 @@ export const initSeasonPanels = () => {
           trigger: section,
           containerAnimation: hTween,
           animation: pinTween, // 作った逆スクロールTweenを紐付ける
-          start: "left left",
-          end: "right left",
+          start: "left center",
+          end: "right center",
           scrub: true,
           invalidateOnRefresh: true,
           onEnter: playAnimation,
@@ -80,12 +86,16 @@ export const initSeasonPanels = () => {
           onLeaveBack: resetAnimation,
         });
       } else {
-        // SP用：コンテンツのピン留め（固定）処理
+        // SP用
+        // y軸方向に-50%ずらす
+        gsap.set(content, { xPercent: 0, yPercent: -50 });
+
+        // コンテンツのピン留め（固定）処理
         ScrollTrigger.create({
           trigger: section,
           pin: content, // コンテンツ（.js-season-content）を固定する
-          start: "top top",
-          end: "bottom top",
+          start: "top center",
+          end: "bottom center",
           onEnter: playAnimation,
           onEnterBack: playAnimation,
           onLeave: resetAnimation,
