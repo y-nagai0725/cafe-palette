@@ -9,6 +9,7 @@ import { initSeasonPanels } from './modules/season';
 import { initMorphBg } from './modules/morph';
 import { initParticleCanvas } from './modules/canvasEngine';
 import { Petal, Bubble, Leaf, Snow } from './modules/particles';
+import { initMessage } from './modules/message';
 
 const init = () => {
   initPageTop();
@@ -29,6 +30,8 @@ const init = () => {
 
   // 冬セクション：Snow（粉雪）を100個
   initParticleCanvas('.js-winter-canvas', Snow, 100);
+
+  initMessage();
 };
 
 init();

@@ -65,4 +65,18 @@ export const initMorphBg = () => {
     });
   }
 
+  // =========================================
+  // Messageセクション:コーヒーの湯気
+  // =========================================
+  const steamWave = document.querySelector('.js-steam-wave');
+  if (steamWave) {
+    gsap.to(steamWave, {
+      morphSVG: "#steam-wave-target",
+      duration: 3,
+      repeat: -1,
+      yoyo: true,
+      ease: "sine.inOut"
+    });
+  }
+
 };
