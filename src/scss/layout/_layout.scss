@@ -18,19 +18,3 @@
     border-bottom: none;
   }
 }
-
-// フッター（仮）
-.l-footer {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  padding: 2rem;
-  color: g.$color-bg;
-  background-color: g.$color-text;
-
-  @include g.mq("lg") {
-    width: 50vw;
-    height: 100vh;
-  }
-}

@@ -1,0 +1,96 @@
+@use "../global" as g;
+
+// =========================================
+// Footer
+// =========================================
+.l-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: g.rem(60) g.rem(20) g.rem(40);
+  color: g.$color-bg;
+  text-align: center;
+  background-color: g.$color-coffee;
+
+  @include g.mq(lg) {
+    width: 50vw;
+    height: 100vh;
+  }
+
+  &__inner {
+    display: flex;
+    flex-direction: column;
+    gap: g.rem(40);
+    align-items: center;
+    margin: 0 auto;
+
+    @include g.mq(lg) {
+      gap: g.rem(64);
+    }
+  }
+
+  // =========================================
+  // ロゴ部分
+  // =========================================
+  &__logo-link {
+    font-family: g.$font-en;
+    font-size: g.rem(24);
+    font-weight: g.$weight-bold;
+    color: g.$color-bg;
+    letter-spacing: 0.05em;
+    transition: opacity g.$transition-base;
+
+    @include g.mq(lg) {
+      font-size: g.rem(32);
+    }
+
+    @include g.hover {
+      opacity: g.$hovered-opacity;
+    }
+  }
+
+  // =========================================
+  // ナビゲーションリンク
+  // =========================================
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: g.rem(24);
+
+    @include g.mq(md) {
+      flex-direction: row;
+      gap: g.rem(40);
+    }
+  }
+
+  &__link {
+    display: block;
+    padding: g.rem(10) 0;
+    font-size: g.rem(14);
+    color: g.$color-bg;
+    letter-spacing: 0.1em;
+    transition: opacity g.$transition-base;
+
+    @include g.mq(lg) {
+      font-size: g.rem(16);
+    }
+
+    @include g.hover {
+      opacity: g.$hovered-opacity;
+    }
+  }
+
+  // =========================================
+  // コピーライト
+  // =========================================
+  &__copyright {
+    font-size: g.rem(12);
+    letter-spacing: 0.05em;
+    opacity: 0.6;
+
+    @include g.mq(lg) {
+      font-size: g.rem(14);
+    }
+  }
+}

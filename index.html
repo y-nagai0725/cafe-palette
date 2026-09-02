@@ -40,14 +40,13 @@
       </button>
 
       <!-- ナビゲーションメニュー -->
-      <nav class="l-header__nav js-nav">
+      <nav class="l-header__nav js-header-nav">
         <ul class="l-header__list">
-          <li><a href="#spring" class="l-header__link js-nav-link">Spring</a></li>
-          <li><a href="#summer" class="l-header__link js-nav-link">Summer</a></li>
-          <li><a href="#autumn" class="l-header__link js-nav-link">Autumn</a></li>
-          <li><a href="#winter" class="l-header__link js-nav-link">Winter</a></li>
-          <li><a href="#message" class="l-header__link js-nav-link">Message</a></li>
-          <li><a href="#info" class="l-header__link js-nav-link">Info</a></li>
+          <li><a href="#spring" class="l-header__link js-header-nav-link js-section-link">Spring</a></li>
+          <li><a href="#summer" class="l-header__link js-header-nav-link js-section-link">Summer</a></li>
+          <li><a href="#autumn" class="l-header__link js-header-nav-link js-section-link">Autumn</a></li>
+          <li><a href="#winter" class="l-header__link js-header-nav-link js-section-link">Winter</a></li>
+          <li><a href="#info" class="l-header__link js-header-nav-link js-section-link">Info</a></li>
         </ul>
       </nav>
     </div>
@@ -76,7 +75,7 @@
 
       </div>
 
-      <!-- 1. FV (ファーストビュー) -->
+      <!-- FV (ファーストビュー) -->
       <section class="p-fv">
         <div class="p-fv__inner">
           <h2 class="p-fv__title">Cafe Palette</h2>
@@ -84,7 +83,6 @@
         </div>
       </section>
 
-      <!-- 2. 四季のカフェ空間（景色＋メニュー） -->
       <!-- 春セクション -->
       <section id="spring" class="p-season-panel">
 
@@ -288,10 +286,27 @@
         </div>
       </section>
 
-      <!-- 5. フッター -->
+      <!-- フッター -->
       <footer class="l-footer">
         <div class="l-footer__inner">
-          <p class="l-footer__copyright">&copy; 2026 Cafe Palette</p>
+          <!-- サイトロゴ -->
+          <a href="/" class="l-footer__logo-link js-page-top">Cafe Palette</a>
+
+          <!-- ナビゲーション -->
+          <nav class="l-footer__nav">
+            <ul class="l-footer__list">
+              <li><a class="l-footer__link js-section-link" href="#spring">Spring</a></li>
+              <li><a class="l-footer__link js-section-link" href="#summer">Summer</a></li>
+              <li><a class="l-footer__link js-section-link" href="#autumn">Autumn</a></li>
+              <li><a class="l-footer__link js-section-link" href="#winter">Winter</a></li>
+              <li><a class="l-footer__link js-section-link" href="#info">Info</a></li>
+            </ul>
+          </nav>
+
+          <!-- コピーライト -->
+          <p class="l-footer__copyright">
+            <small>&copy; 2026 Cafe Palette. All Rights Reserved.</small>
+          </p>
         </div>
       </footer>
 

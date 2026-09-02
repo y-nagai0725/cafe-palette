@@ -12,9 +12,9 @@ gsap.registerPlugin(ScrollToPlugin, MorphSVGPlugin);
 export const initHeaderNav = () => {
   const header = document.querySelector('.l-header');
   const logo = document.querySelector('.js-header-logo');
-  const links = document.querySelectorAll('.js-nav-link');
+  const links = document.querySelectorAll('.js-header-nav-link');
   const hamburger = document.querySelector('.js-hamburger');
-  const nav = document.querySelector('.js-nav');
+  const nav = document.querySelector('.js-header-nav');
   const lineTop = document.querySelector('.js-line-top');
   const lineMiddle = document.querySelector('.js-line-middle');
   const lineBottom = document.querySelector('.js-line-bottom');
@@ -22,47 +22,6 @@ export const initHeaderNav = () => {
   if (!header || !logo || !links.length || !hamburger || !nav || !lineTop || !lineMiddle || !lineBottom) return;
 
   let mm = gsap.matchMedia();
-
-  // =========================================
-  // 内部リンクのスムーススクロールの処理
-  // =========================================
-  links.forEach(link => {
-    link.addEventListener('click', (e) => {
-      e.preventDefault();
-      const targetId = link.getAttribute('href');
-      const targetElement = document.querySelector(targetId);
-
-      if (!targetElement) return;
-
-      mm.add({
-        isPc: `(width >= ${BREAKPOINTS.LG}px)`,
-        isSp: `(width < ${BREAKPOINTS.LG}px)`
-      }, (context) => {
-        let { isPc } = context.conditions;
-
-        if (isPc) {
-          const container = document.querySelector('.js-scroll-container');
-          const targetScroll = container.offsetTop + targetElement.offsetLeft;
-
-          gsap.to(window, {
-            scrollTo: targetScroll,
-            duration: 1,
-            ease: GSAP_EASING.SMOOTH
-          });
-        } else {
-          const headerHeight = header.offsetHeight;
-          gsap.to(window, {
-            scrollTo: {
-              y: targetElement,
-              offsetY: headerHeight
-            },
-            duration: 1,
-            ease: GSAP_EASING.SMOOTH
-          });
-        }
-      });
-    });
-  });
 
   // =========================================
   // ハンバーガーメニューの開閉処理 (SPのみ)
