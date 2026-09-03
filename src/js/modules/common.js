@@ -3,10 +3,11 @@
 // =========================================================================
 
 import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
 import { GSAP_EASING, BREAKPOINTS } from '../utils/constants';
 
-gsap.registerPlugin(ScrollToPlugin);
+gsap.registerPlugin(ScrollToPlugin, ScrollTrigger);
 
 export const initPageTop = () => {
   const pageTopLinks = document.querySelectorAll('.js-page-top');
@@ -51,14 +52,22 @@ export const initSectionLinks = () => {
         let { isPc } = context.conditions;
 
         if (isPc) {
-          const container = document.querySelector('.js-scroll-container');
-          const targetScroll = container.offsetTop + targetElement.offsetLeft;
+          // 横スクロールのScrollTriggerを取得
+          const hScollTrigger = ScrollTrigger.getById("hScrollTrigger");
 
-          gsap.to(window, {
-            scrollTo: targetScroll,
-            duration: 1,
-            ease: GSAP_EASING.SMOOTH
-          });
+          if (hScollTrigger) {
+            // 「横スクロールが開始される縦のスクロール位置」を取得
+            const startScroll = hScollTrigger.start;
+
+            // 開始位置 + 目的のセクションの左からの距離
+            const targetScroll = startScroll + targetElement.offsetLeft;
+
+            gsap.to(window, {
+              scrollTo: targetScroll,
+              duration: 1,
+              ease: GSAP_EASING.SMOOTH
+            });
+          }
         } else {
           const headerHeight = header.offsetHeight;
           gsap.to(window, {

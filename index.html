@@ -52,6 +52,46 @@
     </div>
   </header>
 
+  <!-- FV (ファーストビュー) -->
+  <div class="js-fv-trigger" style="height: 200vh; width: 100%;"></div>
+  <section class="p-fv js-fv">
+
+    <!-- カフェ外観のSVGレイヤー -->
+    <div class="p-fv__exterior js-fv-exterior">
+      <svg viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" class="p-fv__svg">
+
+        <!-- お店の外壁（真ん中にドア用の「透明な穴」が空いているパス） -->
+        <!-- M0,0 から外枠を描き、M760,280 から内側の穴を描いている -->
+        <path class="js-fv-wall" d="M0,0 h1920 v1080 h-1920 Z M760,280 h400 v800 h-400 Z" fill="#fdfbf7" />
+
+        <!-- ひさし -->
+        <path class="js-fv-awning" d="M660,280 l20,-60 h560 l20,60 Z" fill="#d98a59" />
+
+        <!-- 左のドア -->
+        <g class="js-door-left">
+          <rect x="760" y="280" width="200" height="800" fill="#8b5a2b" stroke="#5c3a18" stroke-width="4" />
+          <!-- ドアノブ -->
+          <circle cx="920" cy="680" r="12" fill="#d4af37" />
+        </g>
+
+        <!-- 右のドア -->
+        <g class="js-door-right">
+          <rect x="960" y="280" width="200" height="800" fill="#8b5a2b" stroke="#5c3a18" stroke-width="4" />
+          <!-- ドアノブ -->
+          <circle cx="1000" cy="680" r="12" fill="#d4af37" />
+        </g>
+
+      </svg>
+    </div>
+
+    <!-- タイトルとメッセージ -->
+    <div class="p-fv__inner js-fv-text">
+      <h2 class="p-fv__title">Cafe Palette</h2>
+      <p class="p-fv__subtitle">Scroll to enter...</p>
+    </div>
+
+  </section>
+
   <!-- 固定用の外箱（ScrollTriggerでこれをpin留めする） -->
   <div class="l-scroll-container js-scroll-container">
     <main class="l-main js-horizontal-track">
@@ -74,14 +114,6 @@
         </svg>
 
       </div>
-
-      <!-- FV (ファーストビュー) -->
-      <section class="p-fv">
-        <div class="p-fv__inner">
-          <h2 class="p-fv__title">Cafe Palette</h2>
-          <p class="p-fv__subtitle">Scroll to enter...</p>
-        </div>
-      </section>
 
       <!-- 春セクション -->
       <section id="spring" class="p-season-panel">

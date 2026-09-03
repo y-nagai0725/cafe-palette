@@ -22,6 +22,7 @@ export const initHorizontalScroll = () => {
 
     const tl = gsap.timeline({
       scrollTrigger: {
+        id: "hScrollTrigger",
         trigger: scrollContainer,
         pin: true,
         start: "top top",

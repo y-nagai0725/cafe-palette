@@ -1,0 +1,81 @@
+@use "../../global" as g;
+
+// =========================================
+// FV (ファーストビュー)
+// =========================================
+.p-fv {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: calc(g.$z-index-header + 1000);
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  background-color: transparent;
+
+  // =========================================
+  // カフェ外観（SVGレイヤー）
+  // =========================================
+  &__exterior {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+
+    svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  // =========================================
+  // テキストコンテンツ
+  // =========================================
+  &__inner {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+
+    // タイトルはドアの少し上に配置されるように調整
+    padding-bottom: g.rem(200);
+    color: g.$color-text;
+    text-align: center;
+  }
+
+  &__title {
+    margin-bottom: g.rem(16);
+    font-size: g.rem(48);
+    font-weight: g.$weight-bold;
+    letter-spacing: 0.05em;
+
+    @include g.mq(lg) {
+      font-size: g.rem(80);
+    }
+  }
+
+  &__subtitle {
+    font-size: g.rem(16);
+    letter-spacing: 0.1em;
+    animation: blink 2s infinite ease-in-out;
+  }
+}
+
+// スクロールを促す点滅アニメーション
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.4;
+  }
+}
