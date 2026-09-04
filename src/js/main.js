@@ -13,12 +13,12 @@ import { Petal, Bubble, Leaf, Snow } from './modules/particles';
 import { initMessage } from './modules/message';
 
 const init = () => {
-  initFvAnimation();
+  initHorizontalScroll();
   initPageTop();
   initSectionLinks();
   initHeaderNav();
-  initHorizontalScroll();
   initForeground();
+  initFvAnimation();
   initSeasonPanels();
   initMorphBg();
 

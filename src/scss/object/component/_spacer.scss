@@ -1,0 +1,14 @@
+@use "../../global" as g;
+
+// =========================================
+// ScrollTriggerのアニメーション用スペース要素
+// =========================================
+.c-spacer {
+  width: 100vw;
+  height: 200vh;
+
+  @include g.mq(lg){
+    width: 200vw;
+    height: 100vh;
+  }
+}
