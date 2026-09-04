@@ -11,9 +11,9 @@ gsap.registerPlugin(ScrollTrigger);
 export const initForeground = () => {
   const foreground = document.querySelector('.js-foreground');
   const springSection = document.querySelector('#spring');
-  const messageSection = document.querySelector('#message');
+  const winterSection = document.querySelector('#winter');
 
-  if (!foreground || !springSection || !messageSection) return;
+  if (!foreground || !springSection || !winterSection) return;
 
   // 前景レイヤー表示処理
   const showForeground = () => {
@@ -47,7 +47,7 @@ export const initForeground = () => {
     // PC・SP両方で共通する設定
     const triggerConfig = {
       trigger: springSection,
-      endTrigger: messageSection,
+      endTrigger: winterSection,
       onEnter: showForeground,
       onLeave: hideForeground,
       onEnterBack: showForeground,
@@ -64,10 +64,10 @@ export const initForeground = () => {
 
       triggerConfig.containerAnimation = hTween;
       triggerConfig.start = "left center";
-      triggerConfig.end = "left center";
+      triggerConfig.end = "right center";
     } else {
       triggerConfig.start = "top center";
-      triggerConfig.end = "top center";
+      triggerConfig.end = "bottom center";
     }
 
     // 設定を渡してScrollTrigger作成

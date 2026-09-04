@@ -17,6 +17,9 @@ export const initSeasonPanels = () => {
 
   // 各セクションごとにループしてアニメーションを設定していく
   sections.forEach((section) => {
+    // 冬セクションかどうか
+    const isWinter = section.id === 'winter';
+
     // 固定＆アニメーションさせるコンテンツ
     const content = section.querySelector('.js-season-content');
     if (!content) return;
@@ -51,6 +54,18 @@ export const initSeasonPanels = () => {
 
     resetAnimation();
 
+    let winterLeaveAnimation;
+    if (isWinter) {
+      const targetElements = [...elementsToAnimate].filter(e => !e.classList.contains('p-season-panel__dummy-img'));
+      winterLeaveAnimation = () => {
+        gsap.set(targetElements, {
+          autoAlpha: 0,
+          y: 30,
+          overwrite: true,
+        });
+      };
+    }
+
     mm.add({
       isPc: `(width >= ${BREAKPOINTS.LG}px)`,
       isSp: `(width < ${BREAKPOINTS.LG}px)`
@@ -82,7 +97,7 @@ export const initSeasonPanels = () => {
           invalidateOnRefresh: true,
           onEnter: playAnimation,
           onEnterBack: playAnimation,
-          onLeave: resetAnimation,
+          onLeave: isWinter ? winterLeaveAnimation : resetAnimation,
           onLeaveBack: resetAnimation,
         });
       } else {
@@ -98,7 +113,7 @@ export const initSeasonPanels = () => {
           end: "bottom center",
           onEnter: playAnimation,
           onEnterBack: playAnimation,
-          onLeave: resetAnimation,
+          onLeave: isWinter ? winterLeaveAnimation : resetAnimation,
           onLeaveBack: resetAnimation,
         });
       }
