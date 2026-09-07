@@ -251,12 +251,22 @@
           <p class="p-season-panel__text">雪景色と暖炉の光、フォンダンショコラとココア。</p>
 
           <div class="p-season-panel__menu">
+            <!-- 🌟 装飾用＆ズーム対象のSVG（後ろに配置） -->
+            <svg class="p-season-panel__deco js-zoom-target" viewBox="0 0 300 300">
+              <!-- コーヒーの液面（Messageセクションの背景色と同じ深みのある色！） -->
+              <circle cx="150" cy="150" r="140" fill="#3e2723" />
+              <!-- カップのフチ（白） -->
+              <circle cx="150" cy="150" r="145" fill="none" stroke="#ffffff" stroke-width="10" />
+            </svg>
+
+            <!-- 実写メニュー画像（手前に配置） -->
             <div class="p-season-panel__dummy-img">Winter Menu</div>
           </div>
         </div>
       </section>
 
-      <div class="c-spacer"></div>
+      <!-- 🌟 退店アニメーション用のトリガー空間 -->
+      <div class="c-spacer js-exit-trigger"></div>
 
       <!-- Messageセクション -->
       <section id="message" class="p-message">

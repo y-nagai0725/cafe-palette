@@ -42,7 +42,7 @@
     }
 
     &--winter {
-      background-color: rgba(g.$color-winter, 0.66);
+      background-color: g.$color-winter;
     }
   }
 
@@ -83,7 +83,22 @@
     font-size: g.rem(16);
   }
 
+  &__menu {
+    position: relative;
+  }
+
+  &__deco {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: 1; // 画像の後ろに置く
+    width: 130%; // 写真より少し大きめに設定して、はみ出させる
+    height: 130%;
+  }
+
   &__dummy-img {
+    position: relative;
+    z-index: 2;
     display: flex;
     align-items: center;
     justify-content: center;

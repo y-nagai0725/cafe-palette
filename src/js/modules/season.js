@@ -24,8 +24,14 @@ export const initSeasonPanels = () => {
     const content = section.querySelector('.js-season-content');
     if (!content) return;
 
+    // 装飾SVGの初期位置（-50%, -50%）をセット
+    const deco = section.querySelector('.p-season-panel__deco');
+    if (deco) {
+      gsap.set(deco, { xPercent: -50, yPercent: -50 });
+    }
+
     // フワッと順番に出す要素たち
-    const elementsToAnimate = content.querySelectorAll('.p-season-panel__title, .p-season-panel__text, .p-season-panel__dummy-img');
+    const elementsToAnimate = content.querySelectorAll('.p-season-panel__title, .p-season-panel__text, .p-season-panel__deco, .p-season-panel__dummy-img');
 
     const playAnimation = () => {
       gsap.fromTo(elementsToAnimate,
@@ -39,7 +45,7 @@ export const initSeasonPanels = () => {
           duration: 0.8,
           stagger: 0.2,
           ease: GSAP_EASING.UI,
-          overwrite: true,
+          overwrite: "auto",
         }
       );
     };
@@ -48,23 +54,11 @@ export const initSeasonPanels = () => {
       gsap.set(elementsToAnimate, {
         autoAlpha: 0,
         y: 30,
-        overwrite: true,
+        overwrite: "auto",
       });
     };
 
     resetAnimation();
-
-    let winterLeaveAnimation;
-    if (isWinter) {
-      const targetElements = [...elementsToAnimate].filter(e => !e.classList.contains('p-season-panel__dummy-img'));
-      winterLeaveAnimation = () => {
-        gsap.set(targetElements, {
-          autoAlpha: 0,
-          y: 30,
-          overwrite: true,
-        });
-      };
-    }
 
     mm.add({
       isPc: `(width >= ${BREAKPOINTS.LG}px)`,
@@ -96,8 +90,8 @@ export const initSeasonPanels = () => {
           scrub: true,
           invalidateOnRefresh: true,
           onEnter: playAnimation,
-          onEnterBack: playAnimation,
-          onLeave: isWinter ? winterLeaveAnimation : resetAnimation,
+          onEnterBack: isWinter ? "" : playAnimation,
+          onLeave: isWinter ? "" : resetAnimation,
           onLeaveBack: resetAnimation,
         });
       } else {
@@ -111,9 +105,10 @@ export const initSeasonPanels = () => {
           pin: content, // コンテンツ（.js-season-content）を固定する
           start: "top center",
           end: "bottom center",
+          invalidateOnRefresh: true,
           onEnter: playAnimation,
-          onEnterBack: playAnimation,
-          onLeave: isWinter ? winterLeaveAnimation : resetAnimation,
+          onEnterBack: isWinter ? "" : playAnimation,
+          onLeave: isWinter ? "" : resetAnimation,
           onLeaveBack: resetAnimation,
         });
       }
