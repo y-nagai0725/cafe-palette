@@ -7,8 +7,18 @@
   width: 100vw;
   height: 200vh;
 
-  @include g.mq(lg){
+  @include g.mq(lg) {
     width: 200vw;
     height: 100vh;
+  }
+
+  &--small {
+    width: 100vw;
+    height: 150vh;
+
+    @include g.mq(lg) {
+      width: 100vw;
+      height: 100vh;
+    }
   }
 }
