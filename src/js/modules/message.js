@@ -5,6 +5,7 @@
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { BREAKPOINTS } from '../utils/constants';
+import { getReverseScrollAmount } from '../utils/scroll';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -99,24 +100,13 @@ export const initMessage = () => {
     });
 
     if (isPc) {
-      // 逆スクロール計算
-      const getMessageTriggerScrollAmount = () => {
-        const hScrollTrigger = ScrollTrigger.getById("hScrollTrigger");
-        const totalScrollAmount = hScrollTrigger.end - hScrollTrigger.start;
-        const hTween = gsap.getById("hScroll");
-        const duration = hTween.duration();
-        const messageTrigger = ScrollTrigger.getById("messageTrigger");
-        const ratio = (messageTrigger.end - messageTrigger.start) / duration;
-        return Math.round(totalScrollAmount * ratio);
-      };
-
       // Messageセクションを逆スクロールさせて画面に固定する
       tl.fromTo(messageSection,
         {
           x: () => 0,
         },
         {
-          x: () => getMessageTriggerScrollAmount(),
+          x: () => getReverseScrollAmount("messageTrigger"),
           ease: "none",
           immediateRender: false,
           duration: 1,

@@ -5,6 +5,7 @@
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { BREAKPOINTS, GSAP_EASING } from '../utils/constants';
+import { getReverseScrollAmount } from '../utils/scroll';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -85,27 +86,9 @@ export const initFvAnimation = () => {
     // =========================================
     // pc表示時のみのアニメーション
     if (isPc) {
-      // fvTriggerのスクロール量を取得
-      const getFvTriggerScrollAmount = () => {
-        // 全体の横スクロールの距離を取得
-        const hScrollTrigger = ScrollTrigger.getById("hScrollTrigger");
-        const totalScrollAmount = hScrollTrigger.end - hScrollTrigger.start;
-
-        // 親の横スクロールTweenの「全体の時間（duration）」を取得
-        const hTween = gsap.getById("hScroll");
-        const duration = hTween.duration();
-
-        // fvTriggerのアニメーション時間を取得して、durationで割って「割合」を出す
-        const fvTrigger = ScrollTrigger.getById("fvTrigger");
-        const ratio = (fvTrigger.end - fvTrigger.start) / duration;
-
-        // fvTriggerのスクロール量 = 全体の距離 * 割合
-        return Math.round(totalScrollAmount * ratio);
-      };
-
       // FV自体を逆方向にスクロールさせて固定しているように見せる
       tl.to(fv, {
-        x: getFvTriggerScrollAmount,
+        x: () => getReverseScrollAmount("fvTrigger"),
         ease: "none",
         duration: 4.5,
       }, 0);

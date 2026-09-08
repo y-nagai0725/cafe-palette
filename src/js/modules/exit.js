@@ -5,6 +5,7 @@
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { BREAKPOINTS } from '../utils/constants';
+import { getReverseScrollAmount } from '../utils/scroll';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -65,24 +66,13 @@ export const initExitAnimation = () => {
     });
 
     if (isPc) {
-      // 逆スクロール量計算
-      const getExitTriggerScrollAmount = () => {
-        const hScrollTrigger = ScrollTrigger.getById("hScrollTrigger");
-        const totalScrollAmount = hScrollTrigger.end - hScrollTrigger.start;
-        const hTween = gsap.getById("hScroll");
-        const duration = hTween.duration();
-        const exitTrigger = ScrollTrigger.getById("exitTrigger");
-        const ratio = (exitTrigger.end - exitTrigger.start) / duration;
-        return Math.round(totalScrollAmount * ratio);
-      };
-
       // コーヒーカップを画面に留めるために逆スクロールさせる
       tl.fromTo(content,
         {
           x: () => window.innerWidth
         },
         {
-          x: () => window.innerWidth + getExitTriggerScrollAmount(),
+          x: () => window.innerWidth + getReverseScrollAmount("exitTrigger"),
           ease: "none",
           duration: 4,
           immediateRender: false,
