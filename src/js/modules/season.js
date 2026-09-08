@@ -112,6 +112,10 @@ export const initSeasonPanels = () => {
           onLeaveBack: resetAnimation,
         });
       }
+
+      return () => {
+        gsap.set(content, { clearProps: "transform,x,y,xPercent,yPercent" });
+      };
     });
   });
 };

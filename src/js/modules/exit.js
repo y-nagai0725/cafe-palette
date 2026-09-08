@@ -77,11 +77,18 @@ export const initExitAnimation = () => {
       };
 
       // コーヒーカップを画面に留めるために逆スクロールさせる
-      tl.to(content, {
-        x: () => "+=" + getExitTriggerScrollAmount(),
-        ease: "none",
-        duration: 4,
-      }, 0);
+      tl.fromTo(content,
+        {
+          x: () => window.innerWidth
+        },
+        {
+          x: () => window.innerWidth + getExitTriggerScrollAmount(),
+          ease: "none",
+          duration: 4,
+          immediateRender: false,
+        },
+        0
+      );
     }
 
     // コーヒーカップ以外のコンテンツをフワッと消す
@@ -109,5 +116,9 @@ export const initExitAnimation = () => {
     tl.set(zoomTarget, {
       autoAlpha: 0
     }, 4);
+
+    return () => {
+      gsap.set(content, { clearProps: "transform,x,y,xPercent,yPercent" });
+    };
   });
 };
