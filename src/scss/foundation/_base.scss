@@ -14,4 +14,8 @@ body {
   &.is-noscroll {
     overflow: hidden;
   }
+
+  @include g.mq(lg){
+    overflow-x: hidden;
+  }
 }

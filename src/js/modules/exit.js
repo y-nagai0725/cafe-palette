@@ -69,10 +69,10 @@ export const initExitAnimation = () => {
       // コーヒーカップを画面に留めるために逆スクロールさせる
       tl.fromTo(content,
         {
-          x: () => window.innerWidth
+          x: () => getReverseScrollAmount("sectionTrigger-winter")
         },
         {
-          x: () => window.innerWidth + getReverseScrollAmount("exitTrigger"),
+          x: () => getReverseScrollAmount("sectionTrigger-winter") + getReverseScrollAmount("exitTrigger"),
           ease: "none",
           duration: 4,
           immediateRender: false,

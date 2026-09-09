@@ -5,6 +5,7 @@
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { BREAKPOINTS, GSAP_EASING } from '../utils/constants';
+import { getReverseScrollAmount } from '../utils/scroll';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -66,6 +67,20 @@ export const initSeasonPanels = () => {
     }, (context) => {
       let { isPc } = context.conditions;
 
+      // ScrollTrigger用のid作成（例: "sectionTrigger-winter"）
+      const sectionTriggerId = "sectionTrigger-" + section.id;
+
+      const triggerConfig = {
+        id: sectionTriggerId,
+        trigger: section,
+        scrub: true,
+        invalidateOnRefresh: true,
+        onEnter: playAnimation,
+        onEnterBack: isWinter ? "" : playAnimation,
+        onLeave: isWinter ? "" : resetAnimation,
+        onLeaveBack: resetAnimation,
+      };
+
       if (isPc) {
         // PC用
         // x軸方向に-50%ずらす
@@ -75,25 +90,28 @@ export const initSeasonPanels = () => {
         const hTween = gsap.getById("hScroll");
         if (!hTween) return;
 
-        // セクションが左に動く分、コンテンツを右に動かして固定する
-        const pinTween = gsap.to(content, {
-          x: () => window.innerWidth,
-          ease: "none"
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            ...triggerConfig,
+            containerAnimation: hTween,
+            start: "left center",
+            end: "right center",
+          }
         });
 
-        ScrollTrigger.create({
-          trigger: section,
-          containerAnimation: hTween,
-          animation: pinTween, // 作った逆スクロールTweenを紐付ける
-          start: "left center",
-          end: "right center",
-          scrub: true,
-          invalidateOnRefresh: true,
-          onEnter: playAnimation,
-          onEnterBack: isWinter ? "" : playAnimation,
-          onLeave: isWinter ? "" : resetAnimation,
-          onLeaveBack: resetAnimation,
-        });
+        // セクションが左に動く分、コンテンツを右に動かして固定する
+        tl.fromTo(content,
+          {
+            x: () => 0,
+          },
+          {
+            x: () => getReverseScrollAmount(sectionTriggerId),
+            ease: "none",
+            immediateRender: false,
+          },
+          0
+        );
+
       } else {
         // SP用
         // y軸方向に-50%ずらす
@@ -101,15 +119,10 @@ export const initSeasonPanels = () => {
 
         // コンテンツのピン留め（固定）処理
         ScrollTrigger.create({
-          trigger: section,
-          pin: content, // コンテンツ（.js-season-content）を固定する
+          ...triggerConfig,
+          pin: content,
           start: "top center",
           end: "bottom center",
-          invalidateOnRefresh: true,
-          onEnter: playAnimation,
-          onEnterBack: isWinter ? "" : playAnimation,
-          onLeave: isWinter ? "" : resetAnimation,
-          onLeaveBack: resetAnimation,
         });
       }
 
