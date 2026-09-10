@@ -99,15 +99,24 @@
       <!-- 前景レイヤー (窓枠やテーブルなど) -->
       <div class="l-foreground js-foreground">
 
-        <!-- 仮の窓枠 SVG (画面全体) -->
+        <!-- 窓枠SVG -->
         <svg class="l-foreground__window" viewBox="0 0 1920 1080" preserveAspectRatio="none">
-          <!-- 窓の枠組み（外枠と十字の桟） -->
-          <path d="M0,0 v1080 h1920 v-1080 H0 Z M50,50 h1820 v980 h-1820 Z" fill="#2c231e" />
-          <rect x="940" y="50" width="40" height="980" fill="#2c231e" />
-          <rect x="50" y="520" width="1820" height="40" fill="#2c231e" />
+          <!--
+            壁と透明な窓穴を作るパス
+            M0,0 h1920 v1080 h-1920 Z ：外側の壁（右回り）
+            M480,100 v600 h960 v-600 Z ：内側の窓穴（左回り・逆向きに描くことで透明になる！）
+          -->
+          <path d="M0,0 h1920 v1080 h-1920 Z M480,100 v600 h960 v-600 Z" fill="#fdfbf7" />
+
+          <!-- 窓枠のフチ（少し立体感を出すための線） -->
+          <rect x="480" y="100" width="960" height="600" fill="none" stroke="#2c231e" stroke-width="8" />
+
+          <!-- 窓の十字の桟（さん） -->
+          <rect x="956" y="100" width="8" height="600" fill="#2c231e" />
+          <rect x="480" y="396" width="960" height="8" fill="#2c231e" />
         </svg>
 
-        <!-- 仮のテーブル SVG (画面下部) -->
+        <!-- 仮のテーブル SVG -->
         <svg class="l-foreground__table" viewBox="0 0 1920 300" preserveAspectRatio="none">
           <!-- カフェの木製テーブル -->
           <rect x="0" y="0" width="1920" height="300" fill="#8b5a2b" />
@@ -144,7 +153,7 @@
 
           <!-- メニュー画像の代わりのダミーボックス -->
           <div class="p-season-panel__menu">
-            <div class="p-season-panel__dummy-img">Menu Image</div>
+            <div class="p-season-panel__dummy-img">Spring Menu</div>
           </div>
         </div>
 
