@@ -19,7 +19,7 @@ export const initExitAnimation = () => {
   const content = winterSection?.querySelector('.p-season-panel__content');
   const contentTitle = winterSection?.querySelector('.p-season-panel__title');
   const contentText = winterSection?.querySelector('.p-season-panel__text');
-  const contentDummyImg = winterSection?.querySelector('.p-season-panel__dummy-img');
+  const contentImage = winterSection?.querySelector('.p-season-panel__image');
 
   if (!triggerSpace || !winterSection || !messageSection || !zoomTarget) return;
 
@@ -82,7 +82,7 @@ export const initExitAnimation = () => {
     }
 
     // コーヒーカップ以外のコンテンツをフワッと消す
-    tl.to([contentTitle, contentText, contentDummyImg], {
+    tl.to([contentTitle, contentText, contentImage], {
       autoAlpha: 0,
       scale: 0.8,
       duration: 0.5,

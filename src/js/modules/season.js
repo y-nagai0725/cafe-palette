@@ -32,7 +32,7 @@ export const initSeasonPanels = () => {
     }
 
     // フワッと順番に出す要素たち
-    const elementsToAnimate = content.querySelectorAll('.p-season-panel__title, .p-season-panel__text, .p-season-panel__deco, .p-season-panel__dummy-img');
+    const elementsToAnimate = content.querySelectorAll('.p-season-panel__title, .p-season-panel__text, .p-season-panel__deco, .p-season-panel__image');
 
     const playAnimation = () => {
       gsap.fromTo(elementsToAnimate,
@@ -83,8 +83,8 @@ export const initSeasonPanels = () => {
 
       if (isPc) {
         // PC用
-        // x軸方向に-50%ずらす
-        gsap.set(content, { xPercent: -50, yPercent: 0 });
+        // x軸方向に-50%, y軸方向に25%ずらす
+        gsap.set(content, { xPercent: -50, yPercent: 25 });
 
         // ページ全体の横スクロールTweenを取得する
         const hTween = gsap.getById("hScroll");
@@ -114,8 +114,8 @@ export const initSeasonPanels = () => {
 
       } else {
         // SP用
-        // y軸方向に-50%ずらす
-        gsap.set(content, { xPercent: 0, yPercent: -50 });
+        // y軸方向に-25%ずらす
+        gsap.set(content, { xPercent: 0, yPercent: -25 });
 
         // コンテンツのピン留め（固定）処理
         ScrollTrigger.create({
