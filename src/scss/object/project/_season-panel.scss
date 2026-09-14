@@ -93,6 +93,7 @@
     left: 50%;
     z-index: 1; // 画像の後ろに置く
     width: 130%; // 写真より少し大きめに設定して、はみ出させる
+    max-width: none;
     height: 130%;
   }
 
@@ -104,7 +105,7 @@
     object-fit: cover;
     border-radius: 50%;
 
-    @include g.mq(lg){
+    @include g.mq(lg) {
       width: g.rem(360);
     }
   }
