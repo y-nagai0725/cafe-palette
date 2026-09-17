@@ -17,5 +17,21 @@
   &__svg {
     width: 100%;
     height: 100%;
+
+    &--pc {
+      display: none;
+
+      @include g.mq(lg) {
+        display: block;
+      }
+    }
+
+    &--sp {
+      display: block;
+
+      @include g.mq(lg) {
+        display: none;
+      }
+    }
   }
 }
