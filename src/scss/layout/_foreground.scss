@@ -34,4 +34,9 @@
       }
     }
   }
+
+  &__shelf-item {
+    visibility: hidden;
+    opacity: 0;
+  }
 }
