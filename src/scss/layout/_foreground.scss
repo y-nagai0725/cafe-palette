@@ -39,4 +39,18 @@
     visibility: hidden;
     opacity: 0;
   }
+
+  &__board {
+    visibility: hidden;
+    opacity: 0;
+    fill: none;
+
+    &--pc {
+      stroke-width: 1;
+    }
+
+    &--sp {
+      stroke-width: 0.5;
+    }
+  }
 }
