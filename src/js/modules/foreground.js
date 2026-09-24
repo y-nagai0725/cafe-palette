@@ -17,7 +17,7 @@ export const initForeground = () => {
   const cushionTop = document.querySelectorAll('.js-cushion-top');
   const cushionSide = document.querySelectorAll('.js-cushion-side');
 
-  if (!foreground || !springSection || !summerSection || !autumnSection || !winterSection) return;
+  if (!foreground || !springSection || !summerSection || !autumnSection || !winterSection || !cushionTop || !cushionSide) return;
 
   // 前景レイヤー表示処理
   const showForeground = () => {
@@ -94,12 +94,27 @@ export const initForeground = () => {
     });
   };
 
+  // 季節の棚アイテム表示・非表示
+  const toggleShelfItems = (targetItems, isShow) => {
+    if (!targetItems || !targetItems.length) return;
+    gsap.to(targetItems, {
+      autoAlpha: isShow ? 1 : 0,
+      duration: 0.8,
+      ease: GSAP_EASING.UI,
+      overwrite: "auto",
+    });
+  };
+
   // =========================================
   // 季節セクションのアニメーション設定
   // =========================================
   [springSection, summerSection, autumnSection, winterSection].forEach(section => {
-    // セクションのidを大文字で取得
-    const seasonId = section.id.toUpperCase();
+    // セクションのidを取得
+    const seasonId = section.id;
+    const upperCaseSeasonId = seasonId.toUpperCase();
+
+    // 季節に対応する棚アイテムを取得
+    const targetShelfItems = document.querySelectorAll(`.js-shelf-item-${seasonId}`);
 
     mm.add({
       isPc: `(width >= ${BREAKPOINTS.LG}px)`,
@@ -112,16 +127,15 @@ export const initForeground = () => {
         scrub: true,
         invalidateOnRefresh: true,
         onEnter: () => {
-          changeCushionColor(COLORS[`${seasonId}`], COLORS[`${seasonId}_SIDE`]);
+          changeCushionColor(COLORS[`${upperCaseSeasonId}`], COLORS[`${upperCaseSeasonId}_SIDE`]);
         },
         onEnterBack: () => {
-          changeCushionColor(COLORS[`${seasonId}`], COLORS[`${seasonId}_SIDE`]);
+          changeCushionColor(COLORS[`${upperCaseSeasonId}`], COLORS[`${upperCaseSeasonId}_SIDE`]);
         },
       };
 
       if (isPc) {
         // PC用
-        // ページ全体の横スクロールTweenを取得する
         const hTween = gsap.getById("hScroll");
         if (!hTween) return;
 
@@ -131,6 +145,22 @@ export const initForeground = () => {
             containerAnimation: hTween,
             start: "left center",
             end: "right center",
+            onEnter: () => {
+              triggerConfig.onEnter();
+              // 季節の棚アイテムを表示
+              toggleShelfItems(targetShelfItems, true);
+            },
+            onEnterBack: () => {
+              triggerConfig.onEnterBack();
+              toggleShelfItems(targetShelfItems, true);
+            },
+            onLeave: () => {
+              // 季節の棚アイテムを非表示
+              toggleShelfItems(targetShelfItems, false);
+            },
+            onLeaveBack: () => {
+              toggleShelfItems(targetShelfItems, false);
+            },
           }
         });
 
