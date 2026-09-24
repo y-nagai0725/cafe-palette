@@ -16,9 +16,13 @@ export const COLORS = {
   BG: "#fdfbf7",
   TEXT: "#4a3b32",
   SPRING: "#f2b4b8",
+  SPRING_SIDE: "#DB8E93",
   SUMMER: "#6bb6d6",
+  SUMMER_SIDE: "#519bbb",
   AUTUMN: "#d98a59",
+  AUTUMN_SIDE: "#b16d43",
   WINTER: "#e8f0f2",
+  WINTER_SIDE: "#c9e2e9",
 };
 
 /**

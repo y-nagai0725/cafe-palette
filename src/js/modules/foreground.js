@@ -4,16 +4,20 @@
 
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { BREAKPOINTS, GSAP_EASING } from '../utils/constants';
+import { BREAKPOINTS, COLORS, GSAP_EASING } from '../utils/constants';
 
 gsap.registerPlugin(ScrollTrigger);
 
 export const initForeground = () => {
   const foreground = document.querySelector('.js-foreground');
   const springSection = document.querySelector('#spring');
+  const summerSection = document.querySelector('#summer');
+  const autumnSection = document.querySelector('#autumn');
   const winterSection = document.querySelector('#winter');
+  const cushionTop = document.querySelectorAll('.js-cushion-top');
+  const cushionSide = document.querySelectorAll('.js-cushion-side');
 
-  if (!foreground || !springSection || !winterSection) return;
+  if (!foreground || !springSection || !summerSection || !autumnSection || !winterSection) return;
 
   // 前景レイヤー表示処理
   const showForeground = () => {
@@ -72,5 +76,78 @@ export const initForeground = () => {
 
     // 設定を渡してScrollTrigger作成
     ScrollTrigger.create(triggerConfig);
+  });
+
+  // クッションカラー変更処理
+  const changeCushionColor = (cushionColor, cushionSideColor) => {
+    gsap.to(cushionTop, {
+      fill: cushionColor,
+      duration: 0.8,
+      ease: GSAP_EASING.UI,
+      overwrite: "auto",
+    });
+    gsap.to(cushionSide, {
+      fill: cushionSideColor,
+      duration: 0.8,
+      ease: GSAP_EASING.UI,
+      overwrite: "auto",
+    });
+  };
+
+  // =========================================
+  // 季節セクションのアニメーション設定
+  // =========================================
+  [springSection, summerSection, autumnSection, winterSection].forEach(section => {
+    // セクションのidを大文字で取得
+    const seasonId = section.id.toUpperCase();
+
+    mm.add({
+      isPc: `(width >= ${BREAKPOINTS.LG}px)`,
+      isSp: `(width < ${BREAKPOINTS.LG}px)`
+    }, (context) => {
+      let { isPc } = context.conditions;
+
+      const triggerConfig = {
+        trigger: section,
+        scrub: true,
+        invalidateOnRefresh: true,
+        onEnter: () => {
+          changeCushionColor(COLORS[`${seasonId}`], COLORS[`${seasonId}_SIDE`]);
+        },
+        onEnterBack: () => {
+          changeCushionColor(COLORS[`${seasonId}`], COLORS[`${seasonId}_SIDE`]);
+        },
+      };
+
+      if (isPc) {
+        // PC用
+        // ページ全体の横スクロールTweenを取得する
+        const hTween = gsap.getById("hScroll");
+        if (!hTween) return;
+
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            ...triggerConfig,
+            containerAnimation: hTween,
+            start: "left center",
+            end: "right center",
+          }
+        });
+
+      } else {
+        // SP用
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            ...triggerConfig,
+            start: "top center",
+            end: "bottom center",
+          }
+        });
+      }
+
+      return () => {
+        // TODO クリーンアップ処理必要ならば書く
+      };
+    });
   });
 };
