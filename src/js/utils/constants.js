@@ -23,6 +23,7 @@ export const COLORS = {
   AUTUMN_SIDE: "#b16d43",
   WINTER: "#e8f0f2",
   WINTER_SIDE: "#c9e2e9",
+  BOARD_CHALK: "#d9d9d9",
 };
 
 /**

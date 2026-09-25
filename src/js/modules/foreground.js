@@ -4,9 +4,11 @@
 
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { DrawSVGPlugin } from 'gsap/DrawSVGPlugin';
 import { BREAKPOINTS, COLORS, GSAP_EASING } from '../utils/constants';
 
 gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(DrawSVGPlugin);
 
 export const initForeground = () => {
   const foreground = document.querySelector('.js-foreground');
@@ -105,6 +107,53 @@ export const initForeground = () => {
     });
   };
 
+  // 季節の黒板表示・非表示
+  const toggleSeasonBoard = (targetBoard, isShow) => {
+    if (!targetBoard) return;
+    gsap.to(targetBoard, {
+      autoAlpha: isShow ? 1 : 0,
+      duration: 0.8,
+      ease: GSAP_EASING.UI,
+      overwrite: "auto",
+    });
+  }
+
+  // 黒板に文字を描く処理
+  const drawSeasonBoard = (targetBoard) => {
+    if (!targetBoard) return;
+
+    // 文字のpath要素
+    const stringPath = targetBoard.querySelectorAll('.js-board-string');
+
+    // 文字周りの装飾path要素
+    const decorationPath = targetBoard.querySelectorAll('.js-board-decoration');
+
+    const tl = gsap.timeline();
+
+    // 「文字のパスを描く」→「塗りつぶす」、の処理を1文字ずつ順番に実行する
+    stringPath.forEach(path => {
+      tl.fromTo(path, {
+        drawSVG: "0%",
+      }, {
+        drawSVG: "100%",
+      }).fromTo(path, {
+        fill: "none",
+      }, {
+        fill: COLORS.BOARD_CHALK, // 黒板のチョークの色で塗りつぶす
+      });
+    });
+
+    // 装飾要素は全て同時に描く
+    tl.fromTo(decorationPath, {
+      drawSVG: "0%",
+    }, {
+      drawSVG: "100%",
+    });
+
+    // タイムラインを返す
+    return tl;
+  };
+
   // =========================================
   // 季節セクションのアニメーション設定
   // =========================================
@@ -122,16 +171,28 @@ export const initForeground = () => {
     }, (context) => {
       let { isPc } = context.conditions;
 
+      // 季節の黒板要素を取得
+      const targetBoard = document.querySelector(`.js-board-${seasonId}-${isPc ? "pc" : "sp"}`);
+
       const triggerConfig = {
         trigger: section,
         scrub: true,
         invalidateOnRefresh: true,
         onEnter: () => {
           changeCushionColor(COLORS[`${upperCaseSeasonId}`], COLORS[`${upperCaseSeasonId}_SIDE`]);
+          toggleSeasonBoard(targetBoard, true);
         },
         onEnterBack: () => {
           changeCushionColor(COLORS[`${upperCaseSeasonId}`], COLORS[`${upperCaseSeasonId}_SIDE`]);
+          toggleSeasonBoard(targetBoard, true);
         },
+        onLeave: () => {
+          toggleSeasonBoard(targetBoard, false);
+        },
+        onLeaveBack: () => {
+          toggleSeasonBoard(targetBoard, false);
+        },
+
       };
 
       if (isPc) {
@@ -155,15 +216,18 @@ export const initForeground = () => {
               toggleShelfItems(targetShelfItems, true);
             },
             onLeave: () => {
+              triggerConfig.onLeave();
               // 季節の棚アイテムを非表示
               toggleShelfItems(targetShelfItems, false);
             },
             onLeaveBack: () => {
+              triggerConfig.onLeaveBack();
               toggleShelfItems(targetShelfItems, false);
             },
           }
         });
 
+        tl.add(drawSeasonBoard(targetBoard), 0);
       } else {
         // SP用
         const tl = gsap.timeline({
@@ -173,6 +237,8 @@ export const initForeground = () => {
             end: "bottom center",
           }
         });
+
+        tl.add(drawSeasonBoard(targetBoard), 0);
       }
 
       return () => {
