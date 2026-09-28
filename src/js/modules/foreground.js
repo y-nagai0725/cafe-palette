@@ -5,7 +5,7 @@
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { DrawSVGPlugin } from 'gsap/DrawSVGPlugin';
-import { BREAKPOINTS, COLORS, GSAP_EASING } from '../utils/constants';
+import { BREAKPOINTS, COLORS, GSAP_EASING, CAFE_HOURS } from '../utils/constants';
 
 gsap.registerPlugin(ScrollTrigger);
 gsap.registerPlugin(DrawSVGPlugin);
@@ -18,8 +18,10 @@ export const initForeground = () => {
   const winterSection = document.querySelector('#winter');
   const cushionTop = document.querySelectorAll('.js-cushion-top');
   const cushionSide = document.querySelectorAll('.js-cushion-side');
+  const clockLong = document.querySelector('.js-clock-long');
+  const clockShort = document.querySelector('.js-clock-short');
 
-  if (!foreground || !springSection || !summerSection || !autumnSection || !winterSection || !cushionTop || !cushionSide) return;
+  if (!foreground || !springSection || !summerSection || !autumnSection || !winterSection || !cushionTop || !cushionSide || !clockLong || !clockShort) return;
 
   // 前景レイヤー表示処理
   const showForeground = () => {
@@ -39,10 +41,52 @@ export const initForeground = () => {
     });
   };
 
+  // 時間文字列("HH:MM")から、GSAPで回す角度を計算する関数
+  const calcClockAngles = (openTimeStr, closeTimeStr) => {
+    // "10:30" を hours: 10, minutes: 30 の数値に変換する関数
+    const parseTime = (timeStr) => {
+      const [hours, minutes] = timeStr.split(':').map(Number);
+      return { hours, minutes };
+    };
+
+    const open = parseTime(openTimeStr);
+    const close = parseTime(closeTimeStr);
+
+    // 開始時の角度（0時ちょうどを0度とする）
+    // 短針は1時間に30度、1分に0.5度進む
+    const startShort = (open.hours % 12) * 30 + open.minutes * 0.5;
+    // 長針は1分に6度進む
+    const startLong = open.minutes * 6;
+
+    // 開店から閉店までのトータル経過時間を「分」で計算
+    const totalMinutes = (close.hours * 60 + close.minutes) - (open.hours * 60 + open.minutes);
+
+    // 進ませる角度の計算
+    const rotateShort = totalMinutes * 0.5;
+    const rotateLong = totalMinutes * 6;
+
+    return {
+      startShort,
+      endShort: startShort + rotateShort,
+      startLong,
+      endLong: startLong + rotateLong
+    };
+  };
+
+  // 角度計算を実行
+  const angles = calcClockAngles(CAFE_HOURS.OPEN, CAFE_HOURS.CLOSE);
+
+  // transform: translateX(-50%) をGSAP側で設定
+  gsap.set([clockLong, clockShort], { xPercent: -50 });
+
+  // 開店時間の位置に針をセット
+  gsap.set(clockShort, { rotation: angles.startShort });
+  gsap.set(clockLong, { rotation: angles.startLong });
+
   let mm = gsap.matchMedia();
 
   // =========================================
-  // 前景レイヤー表示・非表示設定
+  // 前景レイヤー表示・非表示設定と時計のアニメーション設定
   // =========================================
   mm.add({
     isPc: `(width >= ${BREAKPOINTS.LG}px)`,
@@ -54,6 +98,7 @@ export const initForeground = () => {
     const triggerConfig = {
       trigger: springSection,
       endTrigger: winterSection,
+      scrub: true,
       onEnter: showForeground,
       onLeave: hideForeground,
       onEnterBack: showForeground,
@@ -76,8 +121,19 @@ export const initForeground = () => {
       triggerConfig.end = "bottom center";
     }
 
-    // 設定を渡してScrollTrigger作成
-    ScrollTrigger.create(triggerConfig);
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        ...triggerConfig,
+      }
+    });
+
+    tl.to(clockShort, {
+      rotation: angles.endShort,
+      ease: "none"
+    }, 0).to(clockLong, {
+      rotation: angles.endLong,
+      ease: "none"
+    }, 0);
   });
 
   // クッションカラー変更処理

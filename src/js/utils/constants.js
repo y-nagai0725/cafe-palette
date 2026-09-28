@@ -39,3 +39,11 @@ export const GSAP_EASING = {
   // ちょっとリッチで強めの余韻を残したい時用
   EXPO: "expo.out"
 };
+
+/**
+ * カフェの営業時間
+ */
+export const CAFE_HOURS = {
+  OPEN: "10:00",
+  CLOSE: "19:00"
+};
