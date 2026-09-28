@@ -1,0 +1,65 @@
+@use "../../global" as g;
+
+// =========================================
+// 時計パーツ (p-clock)
+// =========================================
+.p-clock {
+  position: absolute;
+  top: 5%;
+  right: 5%;
+  width: g.rem(100);
+  aspect-ratio: 1;
+
+  @include g.mq(lg) {
+    top: 12%;
+    right: 8%;
+    width: g.rem(150);
+  }
+
+  &__face {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background-color: g.$color-bg; // 盤面の色
+    border: 6px solid g.$color-text; // 時計の枠線
+    border-radius: 50%;
+    box-shadow: 2px 4px 8px rgb(0 0 0 / 10%); // ほんのり立体感
+  }
+
+  &__hand {
+    position: absolute;
+    bottom: 50%;
+    left: 50%;
+    background-color: g.$color-text;
+    border-radius: 4px;
+
+    // 初期状態は真っ直ぐ上向き
+    transform: translateX(-50%);
+
+    // 針の根元を中心に回転させる
+    transform-origin: bottom center;
+
+    // 長針
+    &--long {
+      width: 4px;
+      height: 40%; // 盤面の半径より少し短め
+    }
+
+    // 短針
+    &--short {
+      width: 6px;
+      height: 25%; // 長針より短くて太め
+    }
+  }
+
+  &__center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 16px;
+    height: 16px;
+    background-color: g.$color-text;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+  }
+}
