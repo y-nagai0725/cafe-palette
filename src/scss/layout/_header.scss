@@ -12,6 +12,13 @@
   padding: g.rem(24) g.rem(20);
   background-color: rgba(g.$color-bg, 0.8);
   backdrop-filter: blur(2px);
+  transition: background-color g.$transition-base, backdrop-filter g.$transition-base;
+
+  // 前景レイヤー表示時に付与するクラス
+  &.is-transparent {
+    background-color: transparent;
+    backdrop-filter: none;
+  }
 
   @include g.mq(lg){
     padding: g.rem(24) g.rem(40);

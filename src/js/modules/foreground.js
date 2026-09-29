@@ -11,6 +11,7 @@ gsap.registerPlugin(ScrollTrigger);
 gsap.registerPlugin(DrawSVGPlugin);
 
 export const initForeground = () => {
+  const header = document.querySelector('.l-header');
   const foreground = document.querySelector('.js-foreground');
   const springSection = document.querySelector('#spring');
   const summerSection = document.querySelector('#summer');
@@ -21,7 +22,7 @@ export const initForeground = () => {
   const clockLong = document.querySelector('.js-clock-long');
   const clockShort = document.querySelector('.js-clock-short');
 
-  if (!foreground || !springSection || !summerSection || !autumnSection || !winterSection || !cushionTop || !cushionSide || !clockLong || !clockShort) return;
+  if (!header || !foreground || !springSection || !summerSection || !autumnSection || !winterSection || !cushionTop || !cushionSide || !clockLong || !clockShort) return;
 
   // 前景レイヤー表示処理
   const showForeground = () => {
@@ -30,6 +31,9 @@ export const initForeground = () => {
       duration: 1,
       ease: GSAP_EASING.UI,
     });
+
+    // ヘッダーの背景を透明にする
+    header.classList.add('is-transparent');
   };
 
   // 前景レイヤー非表示処理
@@ -39,6 +43,9 @@ export const initForeground = () => {
       duration: 1,
       ease: GSAP_EASING.UI,
     });
+
+    // ヘッダーの背景を元に戻す
+    header.classList.remove('is-transparent');
   };
 
   // 時間文字列("HH:MM")から、GSAPで回す角度を計算する関数
