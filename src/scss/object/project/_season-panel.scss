@@ -67,21 +67,40 @@
     position: relative;
     z-index: calc(g.$z-index-foreground + 10); // 前景レイヤーより手前にする
     display: flex;
-    flex-direction: column;
+    flex-direction: column-reverse;
+    gap: g.rem(16);
     align-items: center;
     color: g.$color-text;
     text-align: center;
-  }
 
-  &__title {
-    margin-bottom: g.rem(16);
-    font-size: g.rem(40);
-    font-weight: g.$weight-bold;
+    @include g.mq(lg) {
+      flex-direction: column;
+      gap: g.rem(32);
+    }
   }
 
   &__text {
-    margin-bottom: g.rem(32);
-    font-size: g.rem(16);
+    padding: 0.5em 1em;
+    font-size: g.rem(22);
+    font-weight: g.$weight-bold;
+    line-height: 1.6;
+    text-align: center;
+    background-color: rgba(g.$color-bg, 0.7); // ほんのり透ける白
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgb(0 0 0 / 5%);
+    backdrop-filter: blur(4px);
+
+    @include g.mq(lg) {
+      font-size: g.rem(28);
+    }
+  }
+
+  &__br {
+    display: block;
+
+    @include g.mq(lg) {
+      display: none;
+    }
   }
 
   &__menu {
@@ -101,13 +120,21 @@
   &__image {
     position: relative;
     z-index: 2;
-    width: g.rem(240);
+    width: g.rem(200);
     aspect-ratio: 1;
     object-fit: cover;
+    border: 8px solid g.$color-bg;
     border-radius: 50%;
+    box-shadow: 0 10px 24px rgb(0 0 0 / 15%);
+
+    @include g.mq(md) {
+      width: g.rem(260);
+      border-width: 10px;
+    }
 
     @include g.mq(lg) {
-      width: g.rem(360);
+      width: g.rem(380);
+      border-width: 12px;
     }
   }
 }

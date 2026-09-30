@@ -114,8 +114,8 @@ export const initSeasonPanels = () => {
 
       } else {
         // SP用
-        // y軸方向に-25%ずらす
-        gsap.set(content, { xPercent: 0, yPercent: -25 });
+        // y軸方向に-10%ずらす
+        gsap.set(content, { xPercent: 0, yPercent: -10 });
 
         // コンテンツのピン留め（固定）処理
         ScrollTrigger.create({

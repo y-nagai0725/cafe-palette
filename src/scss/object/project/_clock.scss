@@ -4,16 +4,25 @@
 // 時計パーツ (p-clock)
 // =========================================
 .p-clock {
+  --clock-width: #{g.rem(100)};
+
   position: absolute;
-  top: 5%;
-  right: 5%;
-  width: g.rem(100);
+  top: 17%;
+  right: 3.5%;
+  width: var(--clock-width);
   aspect-ratio: 1;
 
+  @include g.mq(md) {
+    --clock-width: #{g.rem(130)};
+
+    right: 6.5%;
+  }
+
   @include g.mq(lg) {
+    --clock-width: #{g.rem(160)};
+
     top: 12%;
     right: 8%;
-    width: g.rem(150);
   }
 
   &__face {
@@ -21,9 +30,13 @@
     width: 100%;
     height: 100%;
     background-color: g.$color-bg; // 盤面の色
-    border: 6px solid g.$color-text; // 時計の枠線
+    border: 4px solid g.$color-text; // 時計の枠線
     border-radius: 50%;
     box-shadow: 2px 4px 8px rgb(0 0 0 / 10%); // ほんのり立体感
+
+    @include g.mq(lg) {
+      border-width: 6px;
+    }
   }
 
   &__numbers {
@@ -47,13 +60,11 @@
     // 中央から角度(30度×番号)だけ回転させる
     // translateYで外側へ移動させる (半径分)
     // 移動先で逆方向に回転させて、数字を真っ直ぐ立たせる
-    transform: translate(-50%, -50%) rotate(calc(30deg * var(--i))) translateY(-34px) rotate(calc(-30deg * var(--i)));
+    transform: translate(-50%, -50%) rotate(calc(30deg * var(--i))) translateY(calc(-1 * var(--clock-width) / 2 + 110%))
+      rotate(calc(-30deg * var(--i)));
 
     @include g.mq(lg) {
       font-size: g.rem(18);
-
-      // PCサイズになったら、外側に移動する距離(translateY)を広げる
-      transform: translate(-50%, -50%) rotate(calc(30deg * var(--i))) translateY(-56px) rotate(calc(-30deg * var(--i)));
     }
   }
 
@@ -92,7 +103,7 @@
     position: absolute;
     top: 50%;
     left: 50%;
-    width: g.rem(12);
+    width: g.rem(11);
     aspect-ratio: 1;
     background-color: g.$color-text;
     border-radius: 50%;
