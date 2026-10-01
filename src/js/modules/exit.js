@@ -4,7 +4,7 @@
 
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { BREAKPOINTS } from '../utils/constants';
+import { BREAKPOINTS, COLORS } from '../utils/constants';
 import { getReverseScrollAmount } from '../utils/scroll';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -12,7 +12,6 @@ gsap.registerPlugin(ScrollTrigger);
 export const initExitAnimation = () => {
   const triggerSpace = document.querySelector('.js-exit-trigger');
   const winterSection = document.querySelector('#winter');
-  const winterSectionBg = winterSection?.querySelector('.p-season-panel__bg');
   const messageSection = document.querySelector('#message');
   const messageSectionBg = messageSection?.querySelector('.p-message__bg');
   const zoomTarget = document.querySelector('.js-zoom-target');
@@ -23,13 +22,7 @@ export const initExitAnimation = () => {
 
   if (!triggerSpace || !winterSection || !messageSection || !zoomTarget) return;
 
-  const winterSectionBgColor = window.getComputedStyle(winterSectionBg).backgroundColor;
   const messageSectionBgColor = window.getComputedStyle(messageSectionBg).backgroundColor;
-
-  // winterセクションの背景色をセット
-  gsap.set(triggerSpace, {
-    backgroundColor: winterSectionBgColor,
-  });
 
   // ズームの中心をカップの真ん中にセット
   gsap.set(zoomTarget, { transformOrigin: "50% 50%" });

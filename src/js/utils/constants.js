@@ -17,12 +17,16 @@ export const COLORS = {
   TEXT: "#4a3b32",
   SPRING: "#f2b4b8",
   SPRING_SIDE: "#DB8E93",
+  SPRING_WAVE: "#f8bbd0",
   SUMMER: "#6bb6d6",
   SUMMER_SIDE: "#519bbb",
+  SUMMER_WAVE: "#81d4fa",
   AUTUMN: "#d98a59",
   AUTUMN_SIDE: "#b16d43",
+  AUTUMN_WAVE: "#e6a87c",
   WINTER: "#e8f0f2",
   WINTER_SIDE: "#c9e2e9",
+  WINTER_WAVE: "#cee5eb",
   BOARD_CHALK: "#d9d9d9",
 };
 

@@ -96,6 +96,23 @@
 
       </section>
 
+      <!-- 背景レイヤー -->
+      <div class="l-background js-background">
+        <!-- SVG（波の形） -->
+        <svg class="l-background__svg" viewBox="0 0 1000 500" preserveAspectRatio="none">
+          <!-- 実際に画面に見えるパス -->
+          <path class="js-wave" opacity="0.5" d="M0,250 C250,150 750,350 1000,250 L1000,500 L0,500 Z" />
+
+          <!-- 変形先のパス -->
+          <defs>
+            <path id="wave-target" d="M0,250 C300,350 700,100 1000,250 L1000,500 L0,500 Z" />
+          </defs>
+        </svg>
+
+        <!-- パーティクルアニメーション用canvas -->
+        <canvas class="l-background__canvas js-canvas"></canvas>
+      </div>
+
       <!-- 前景レイヤー（カフェ内装飾） -->
       <div class="l-foreground js-foreground">
 
@@ -930,27 +947,7 @@
 
       <!-- 春セクション -->
       <section id="spring" class="p-season-panel">
-
-        <!-- レイヤー1 (一番奥): 背景 -->
-        <div class="p-season-panel__bg p-season-panel__bg--spring js-morph-bg">
-          <!-- 背景用のSVG（波の形） -->
-          <svg viewBox="0 0 1000 500" preserveAspectRatio="none"
-            style="width: 100%; height: 100%; position: absolute; bottom: 0; left: 0;">
-            <!-- 実際に画面に見えるパス -->
-            <path class="js-spring-wave" fill="#f8bbd0" opacity="0.5"
-              d="M0,250 C250,150 750,350 1000,250 L1000,500 L0,500 Z" />
-
-            <!-- 変形先のパス（<defs>の中に入れて画面には表示させない） -->
-            <defs>
-              <path id="spring-wave-target" d="M0,250 C300,350 700,100 1000,250 L1000,500 L0,500 Z" />
-            </defs>
-          </svg>
-        </div>
-
-        <!-- レイヤー2 (真ん中): パーティクル -->
-        <canvas class="p-season-panel__canvas js-spring-canvas"></canvas>
-
-        <!-- レイヤー3 (一番手前): メインコンテンツ -->
+        <!-- メインコンテンツ -->
         <div class="p-season-panel__content js-season-content">
           <h2 class="p-season-panel__title u-visually-hidden">Spring</h2>
           <p class="p-season-panel__text">桜舞う、<br class="p-season-panel__br">春の限定抹茶ラテ</p>
@@ -964,30 +961,7 @@
 
       <!-- 夏セクション -->
       <section id="summer" class="p-season-panel">
-
-        <!-- レイヤー1: 背景（夏色） -->
-        <div class="p-season-panel__bg p-season-panel__bg--summer js-morph-bg">
-
-          <!-- 背景用のSVG（夏の海や雲をイメージした形） -->
-          <svg viewBox="0 0 1000 500" preserveAspectRatio="none"
-            style="width: 100%; height: 100%; position: absolute; bottom: 0; left: 0;">
-            <!-- 実際に画面に見えるパス -->
-            <path class="js-summer-wave" fill="#81d4fa" opacity="0.6"
-              d="M0,350 C200,250 400,400 600,300 C800,200 900,350 1000,300 L1000,500 L0,500 Z" />
-
-            <!-- 変形先のパス -->
-            <defs>
-              <path id="summer-wave-target"
-                d="M0,300 C200,400 400,250 600,350 C800,450 900,300 1000,350 L1000,500 L0,500 Z" />
-            </defs>
-          </svg>
-
-        </div>
-
-        <!-- レイヤー2: パーティクル -->
-        <canvas class="p-season-panel__canvas js-summer-canvas"></canvas>
-
-        <!-- レイヤー3: メインコンテンツ -->
+        <!-- メインコンテンツ -->
         <div class="p-season-panel__content js-season-content">
           <h2 class="p-season-panel__title u-visually-hidden">Summer</h2>
           <p class="p-season-panel__text">ひまわり咲く、<br class="p-season-panel__br">夏のレモネード</p>
@@ -1000,29 +974,7 @@
 
       <!-- 秋セクション -->
       <section id="autumn" class="p-season-panel">
-
-        <!-- レイヤー1: 背景（秋色） -->
-        <div class="p-season-panel__bg p-season-panel__bg--autumn js-morph-bg">
-
-          <!-- 背景用のSVG（秋の夕暮れの丘や、風をイメージした形） -->
-          <svg viewBox="0 0 1000 500" preserveAspectRatio="none"
-            style="width: 100%; height: 100%; position: absolute; bottom: 0; left: 0;">
-            <!-- 実際に画面に見えるパス -->
-            <path class="js-autumn-wave" fill="#e6a87c" opacity="0.6"
-              d="M0,200 C300,300 500,100 800,250 L1000,200 L1000,500 L0,500 Z" />
-
-            <!-- 変形先のパス -->
-            <defs>
-              <path id="autumn-wave-target" d="M0,250 C200,100 600,350 800,150 L1000,250 L1000,500 L0,500 Z" />
-            </defs>
-          </svg>
-
-        </div>
-
-        <!-- レイヤー2: パーティクル（落ち葉） -->
-        <canvas class="p-season-panel__canvas js-autumn-canvas"></canvas>
-
-        <!-- レイヤー3: メインコンテンツ -->
+        <!-- メインコンテンツ -->
         <div class="p-season-panel__content js-season-content">
           <h2 class="p-season-panel__title u-visually-hidden">Autumn</h2>
           <p class="p-season-panel__text">紅葉の夕暮れ、<br class="p-season-panel__br">秋のモンブランと紅茶</p>
@@ -1035,29 +987,7 @@
 
       <!-- 冬セクション -->
       <section id="winter" class="p-season-panel">
-
-        <!-- レイヤー1: 背景（冬色） -->
-        <div class="p-season-panel__bg p-season-panel__bg--winter js-morph-bg">
-
-          <!-- 背景用のSVG（なだらかな雪山や、静かな冬の風をイメージ） -->
-          <svg viewBox="0 0 1000 500" preserveAspectRatio="none"
-            style="width: 100%; height: 100%; position: absolute; bottom: 0; left: 0;">
-            <!-- 実際に画面に見えるパス -->
-            <path class="js-winter-wave" fill="#e8f0f2" opacity="0.8"
-              d="M0,350 C300,450 500,250 700,350 C900,450 1000,300 1000,500 L0,500 Z" />
-
-            <!-- 変形先のパス -->
-            <defs>
-              <path id="winter-wave-target" d="M0,400 C250,300 450,450 750,300 C950,200 1000,400 1000,500 L0,500 Z" />
-            </defs>
-          </svg>
-
-        </div>
-
-        <!-- レイヤー2: パーティクル（雪を降らせる） -->
-        <canvas class="p-season-panel__canvas js-winter-canvas"></canvas>
-
-        <!-- レイヤー3: メインコンテンツ -->
+        <!-- メインコンテンツ -->
         <div class="p-season-panel__content js-season-content">
           <h2 class="p-season-panel__title u-visually-hidden">Winter</h2>
           <p class="p-season-panel__text">雪景色、<br class="p-season-panel__br">フォンダンショコラとココア</p>
