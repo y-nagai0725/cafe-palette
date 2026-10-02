@@ -2,7 +2,7 @@
 // canvasEngine.js (Canvasアニメーションの共通エンジンモジュール)
 // =========================================================================
 
-export const initParticleCanvas = (canvasSelector, ParticleClass, particleCount) => {
+export const initParticleCanvas = (canvasSelector) => {
   // canvas要素を取得する
   const canvas = document.querySelector(canvasSelector);
   if (!canvas) return;
@@ -10,9 +10,11 @@ export const initParticleCanvas = (canvasSelector, ParticleClass, particleCount)
   // 2Dコンテキストを取得する
   const ctx = canvas.getContext('2d');
 
-  const particles = [];
-
+  let particles = [];
   let width, height;
+  let currentParticleClass = null;
+  let currentCount = 0;
+  let isAnimating = false;
 
   // =========================================
   // リサイズとデバウンス処理
@@ -50,16 +52,11 @@ export const initParticleCanvas = (canvasSelector, ParticleClass, particleCount)
   window.addEventListener('resize', debouncedResize);
 
   // =========================================
-  // 指定された設計図（ParticleClass）で配列を作る
-  // =========================================
-  for (let i = 0; i < particleCount; i++) {
-    particles.push(new ParticleClass(width, height));
-  }
-
-  // =========================================
   // アニメーションループ処理
   // =========================================
   const loop = () => {
+    if (!isAnimating) return;
+
     ctx.clearRect(0, 0, width, height);
 
     particles.forEach(particle => {
@@ -70,5 +67,28 @@ export const initParticleCanvas = (canvasSelector, ParticleClass, particleCount)
     requestAnimationFrame(loop);
   };
 
-  loop();
+  // 外部から呼ばれる「変更メソッド」
+  const changeParticles = (ParticleClass, count) => {
+    currentParticleClass = ParticleClass;
+    currentCount = count;
+    particles = []; // 今までのパーティクルをリセット
+
+    if (ParticleClass && count > 0) {
+      for (let i = 0; i < count; i++) {
+        particles.push(new ParticleClass(width, height));
+      }
+      if (!isAnimating) {
+        isAnimating = true;
+        loop(); // アニメーション再開
+      }
+    } else {
+      isAnimating = false; // パーティクルが無い時はループを止める
+      ctx.clearRect(0, 0, width, height); // 画面を綺麗にする
+    }
+  };
+
+  // 外部からこのメソッドを使えるようにオブジェクトとして返す
+  return {
+    changeParticles
+  };
 };

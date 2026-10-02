@@ -15,7 +15,7 @@ export const BREAKPOINTS = {
 export const COLORS = {
   BG: "#fdfbf7",
   TEXT: "#4a3b32",
-  SPRING: "#f2b4b8",
+  SPRING: "#f5d5d8",
   SPRING_SIDE: "#DB8E93",
   SPRING_WAVE: "#f8bbd0",
   SUMMER: "#6bb6d6",

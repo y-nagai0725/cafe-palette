@@ -5,6 +5,8 @@
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { BREAKPOINTS, COLORS, GSAP_EASING } from '../utils/constants';
+import { initParticleCanvas } from './canvasEngine';
+import { Petal, Bubble, Leaf, Snow } from './particles';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -17,6 +19,29 @@ export const initBackground = () => {
   const winterSection = document.querySelector('#winter');
 
   if (!background || !wave || !springSection || !summerSection || !autumnSection || !winterSection) return;
+
+  // Canvasを初期化し、操作用のコントローラーを受け取る
+  const canvasController = initParticleCanvas('.js-canvas');
+
+  // 季節ごとのパーティクル設定をまとめたMap
+  const particleConfig = {
+    spring: {
+      class: Petal,
+      count: 60
+    },
+    summer: {
+      class: Bubble,
+      count: 40
+    },
+    autumn: {
+      class: Leaf,
+      count: 40
+    },
+    winter: {
+      class: Snow,
+      count: 100
+    },
+  };
 
   // 背景レイヤー表示処理
   const showBackground = () => {
@@ -73,9 +98,13 @@ export const initBackground = () => {
   });
 
   // 背景色と波の色を変更する
-  const changeColor = (backgroundColor, waveColor) => {
+  const changeColor = (seasonId) => {
+    const upperCaseSeasonId = seasonId.toUpperCase();
+    const bgColor = COLORS[`${upperCaseSeasonId}`];
+    const waveColor = COLORS[`${upperCaseSeasonId}_WAVE`];
+
     gsap.to(background, {
-      backgroundColor: backgroundColor,
+      backgroundColor: bgColor,
       duration: 0.8,
       ease: GSAP_EASING.UI,
       overwrite: "auto",
@@ -88,9 +117,13 @@ export const initBackground = () => {
     });
   };
 
-  // TODO canvasのパーティクルアニメーションを変更する処理
-  const changeCanvasAnimation = () => {
-
+  // canvasのパーティクルアニメーションを変更する処理
+  const changeCanvasAnimation = (seasonId) => {
+    if (canvasController && particleConfig[seasonId]) {
+      const config = particleConfig[seasonId];
+      // パーティクルを切り替える
+      canvasController.changeParticles(config.class, config.count);
+    }
   };
 
   // =========================================
@@ -99,11 +132,6 @@ export const initBackground = () => {
   [springSection, summerSection, autumnSection, winterSection].forEach(section => {
     // セクションのidを取得
     const seasonId = section.id;
-    const upperCaseSeasonId = seasonId.toUpperCase();
-
-    // 季節の背景色と波の色を取得
-    const bgColor = COLORS[`${upperCaseSeasonId}`];
-    const waveColor = COLORS[`${upperCaseSeasonId}_WAVE`];
 
     mm.add({
       isPc: `(width >= ${BREAKPOINTS.LG}px)`,
@@ -115,12 +143,12 @@ export const initBackground = () => {
         trigger: section,
         invalidateOnRefresh: true,
         onEnter: () => {
-          changeColor(bgColor, waveColor);
-          changeCanvasAnimation();
+          changeColor(seasonId);
+          changeCanvasAnimation(seasonId);
         },
         onEnterBack: () => {
-          changeColor(bgColor, waveColor);
-          changeCanvasAnimation();
+          changeColor(seasonId);
+          changeCanvasAnimation(seasonId);
         },
       };
 
