@@ -290,7 +290,8 @@ export const initForeground = () => {
           }
         });
 
-        tl.add(drawSeasonBoard(targetBoard), 0);
+        tl.add(drawSeasonBoard(targetBoard));
+        tl.set({}, {}, "+=0.5"); // 描画終了後に少し余韻を設ける
       } else {
         // SP用
         const tl = gsap.timeline({
@@ -301,7 +302,8 @@ export const initForeground = () => {
           }
         });
 
-        tl.add(drawSeasonBoard(targetBoard), 0);
+        tl.add(drawSeasonBoard(targetBoard));
+        tl.set({}, {}, "+=0.5");
       }
 
       return () => {
