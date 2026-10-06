@@ -237,7 +237,8 @@ export const initForeground = () => {
       // 季節の黒板要素を取得
       const targetBoard = document.querySelector(`.js-board-${seasonId}-${isPc ? "pc" : "sp"}`);
 
-      const triggerConfig = {
+      // PC/SP 共通のトリガー設定
+      const triggerCommonConfig = {
         trigger: section,
         scrub: true,
         invalidateOnRefresh: true,
@@ -255,56 +256,52 @@ export const initForeground = () => {
         onLeaveBack: () => {
           toggleSeasonBoard(targetBoard, false);
         },
-
       };
+
+      // 上書き用トリガー設定
+      const triggerConfig = {};
 
       if (isPc) {
         // PC用
         const hTween = gsap.getById("hScroll");
         if (!hTween) return;
 
-        const tl = gsap.timeline({
-          scrollTrigger: {
-            ...triggerConfig,
-            containerAnimation: hTween,
-            start: "left center",
-            end: "right center",
-            onEnter: () => {
-              triggerConfig.onEnter();
-              // 季節の棚アイテムを表示
-              toggleShelfItems(targetShelfItems, true);
-            },
-            onEnterBack: () => {
-              triggerConfig.onEnterBack();
-              toggleShelfItems(targetShelfItems, true);
-            },
-            onLeave: () => {
-              triggerConfig.onLeave();
-              // 季節の棚アイテムを非表示
-              toggleShelfItems(targetShelfItems, false);
-            },
-            onLeaveBack: () => {
-              triggerConfig.onLeaveBack();
-              toggleShelfItems(targetShelfItems, false);
-            },
-          }
-        });
-
-        tl.add(drawSeasonBoard(targetBoard));
-        tl.set({}, {}, "+=0.5"); // 描画終了後に少し余韻を設ける
+        triggerConfig.containerAnimation = hTween;
+        triggerConfig.start = "left center";
+        triggerConfig.end = "right center";
+        triggerConfig.onEnter = () => {
+          triggerCommonConfig.onEnter();
+          // 季節の棚アイテムを表示
+          toggleShelfItems(targetShelfItems, true);
+        };
+        triggerConfig.onEnterBack = () => {
+          triggerCommonConfig.onEnterBack();
+          toggleShelfItems(targetShelfItems, true);
+        };
+        triggerConfig.onLeave = () => {
+          triggerCommonConfig.onLeave();
+          // 季節の棚アイテムを非表示
+          toggleShelfItems(targetShelfItems, false);
+        };
+        triggerConfig.onLeaveBack = () => {
+          triggerCommonConfig.onLeaveBack();
+          toggleShelfItems(targetShelfItems, false);
+        };
       } else {
         // SP用
-        const tl = gsap.timeline({
-          scrollTrigger: {
-            ...triggerConfig,
-            start: "top center",
-            end: "bottom center",
-          }
-        });
-
-        tl.add(drawSeasonBoard(targetBoard));
-        tl.set({}, {}, "+=0.5");
+        triggerConfig.start = "top center";
+        triggerConfig.end = "bottom center";
       }
+
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          ...triggerCommonConfig,
+          ...triggerConfig,
+        },
+      });
+
+      tl.add(drawSeasonBoard(targetBoard));
+      tl.set({}, {}, "+=0.5"); // 描画終了後に少し余韻を設ける
 
       return () => {
         // TODO クリーンアップ処理必要ならば書く
