@@ -30,9 +30,13 @@
     width: 100%;
     height: 100%;
     background-color: g.$color-bg; // 盤面の色
-    border: 4px solid g.$color-text; // 時計の枠線
+    border: 4px solid g.$color-coffee; // 時計の枠線
     border-radius: 50%;
     box-shadow: 2px 4px 8px rgb(0 0 0 / 10%); // ほんのり立体感
+
+    @include g.mq(md) {
+      border-width: 5px;
+    }
 
     @include g.mq(lg) {
       border-width: 6px;
@@ -54,7 +58,7 @@
     font-size: g.rem(13);
     font-weight: g.$weight-bold;
     line-height: 1;
-    color: g.$color-text;
+    color: g.$color-coffee;
 
     // 計算式：
     // 中央から角度(30度×番号)だけ回転させる
@@ -62,6 +66,10 @@
     // 移動先で逆方向に回転させて、数字を真っ直ぐ立たせる
     transform: translate(-50%, -50%) rotate(calc(30deg * var(--i))) translateY(calc(-1 * var(--clock-width) / 2 + 110%))
       rotate(calc(-30deg * var(--i)));
+
+    @include g.mq(md) {
+      font-size: g.rem(15);
+    }
 
     @include g.mq(lg) {
       font-size: g.rem(18);
@@ -72,7 +80,7 @@
     position: absolute;
     bottom: 50%;
     left: 50%;
-    background-color: g.$color-text;
+    background-color: g.$color-coffee;
     border-radius: 3px;
 
     // 針の根元を中心に回転させる
@@ -103,11 +111,15 @@
     position: absolute;
     top: 50%;
     left: 50%;
-    width: g.rem(11);
+    width: g.rem(9);
     aspect-ratio: 1;
-    background-color: g.$color-text;
+    background-color: g.$color-coffee;
     border-radius: 50%;
     transform: translate(-50%, -50%);
+
+    @include g.mq(md) {
+      width: g.rem(12);
+    }
 
     @include g.mq(lg) {
       width: g.rem(14);
