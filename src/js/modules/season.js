@@ -32,10 +32,12 @@ export const initSeasonPanels = () => {
     }
 
     // フワッと順番に出す要素たち
-    const elementsToAnimate = content.querySelectorAll('.p-season-panel__title, .p-season-panel__text, .p-season-panel__deco, .p-season-panel__image');
+    const elementsToAnimate = content.querySelectorAll('.p-season-panel__text, .p-season-panel__menu');
 
-    const playAnimation = () => {
-      gsap.fromTo(elementsToAnimate,
+    const playAnimation = (isReversed = false) => {
+      const targetElements = isReversed ? [...elementsToAnimate].toReversed() : elementsToAnimate;
+
+      gsap.fromTo(targetElements,
         {
           autoAlpha: 0,
           y: 30
@@ -66,6 +68,7 @@ export const initSeasonPanels = () => {
       isSp: `(width < ${BREAKPOINTS.LG}px)`
     }, (context) => {
       let { isPc } = context.conditions;
+      const isReversedAnimation = !isPc;
 
       // ScrollTrigger用のid作成（例: "sectionTrigger-winter"）
       const sectionTriggerId = "sectionTrigger-" + section.id;
@@ -75,8 +78,12 @@ export const initSeasonPanels = () => {
         trigger: section,
         scrub: true,
         invalidateOnRefresh: true,
-        onEnter: playAnimation,
-        onEnterBack: isWinter ? "" : playAnimation,
+        onEnter: () => {
+          playAnimation(isReversedAnimation);
+        },
+        onEnterBack: isWinter ? "" : () => {
+          playAnimation(isReversedAnimation);
+        },
         onLeave: isWinter ? "" : resetAnimation,
         onLeaveBack: resetAnimation,
       };
