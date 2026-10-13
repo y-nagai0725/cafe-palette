@@ -34,10 +34,12 @@ export const initSeasonPanels = () => {
     // フワッと順番に出す要素たち
     const elementsToAnimate = content.querySelectorAll('.p-season-panel__text, .p-season-panel__menu');
 
+    let animationTween;
+
     const playAnimation = (isReversed = false) => {
       const targetElements = isReversed ? [...elementsToAnimate].toReversed() : elementsToAnimate;
 
-      gsap.fromTo(targetElements,
+      animationTween = gsap.fromTo(targetElements,
         {
           autoAlpha: 0,
           y: 30
@@ -54,6 +56,11 @@ export const initSeasonPanels = () => {
     };
 
     const resetAnimation = () => {
+      // 表示アニメーションが動作中の場合は止める
+      if(animationTween?.isActive()) {
+        animationTween.kill();
+      }
+
       gsap.set(elementsToAnimate, {
         autoAlpha: 0,
         y: 30,
