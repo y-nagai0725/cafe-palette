@@ -4,7 +4,7 @@
 
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { BREAKPOINTS, COLORS } from '../utils/constants';
+import { BREAKPOINTS, COLORS, GSAP_EASING } from '../utils/constants';
 import { getReverseScrollAmount } from '../utils/scroll';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -12,17 +12,12 @@ gsap.registerPlugin(ScrollTrigger);
 export const initExitAnimation = () => {
   const triggerSpace = document.querySelector('.js-exit-trigger');
   const winterSection = document.querySelector('#winter');
-  const messageSection = document.querySelector('#message');
-  const messageSectionBg = messageSection?.querySelector('.p-message__bg');
   const zoomTarget = document.querySelector('.js-zoom-target');
   const content = winterSection?.querySelector('.p-season-panel__content');
-  const contentTitle = winterSection?.querySelector('.p-season-panel__title');
   const contentText = winterSection?.querySelector('.p-season-panel__text');
   const contentImage = winterSection?.querySelector('.p-season-panel__image');
 
-  if (!triggerSpace || !winterSection || !messageSection || !zoomTarget) return;
-
-  const messageSectionBgColor = window.getComputedStyle(messageSectionBg).backgroundColor;
+  if (!triggerSpace || !winterSection || !zoomTarget) return;
 
   // ズームの中心をカップの真ん中にセット
   gsap.set(zoomTarget, { transformOrigin: "50% 50%" });
@@ -55,7 +50,7 @@ export const initExitAnimation = () => {
     }
 
     const tl = gsap.timeline({
-      scrollTrigger: triggerConfig
+      scrollTrigger: triggerConfig,
     });
 
     if (isPc) {
@@ -75,25 +70,25 @@ export const initExitAnimation = () => {
     }
 
     // コーヒーカップ以外のコンテンツをフワッと消す
-    tl.to([contentTitle, contentText, contentImage], {
+    tl.fromTo([contentText, contentImage], {
+      autoAlpha: 1,
+      scale: 1,
+    }, {
       autoAlpha: 0,
       scale: 0.8,
       duration: 0.5,
+      ease: GSAP_EASING.UI,
       overwrite: "auto",
     }, 0);
 
-    // コーヒーカップを画面全体を覆うまで超巨大化させる
-    tl.to(zoomTarget, {
+    // コーヒーカップを画面全体を覆うまで巨大化させる
+    tl.fromTo(zoomTarget, {
+      scale: 1,
+    }, {
       scale: 80,
       duration: 4,
-      ease: "power2.in",
+      ease: GSAP_EASING.SMOOTH,
     }, 0);
-
-    // 画面が完全にSVGのコーヒー色で覆われたタイミング（3秒目）で、
-    // 裏側のトリガー空間の背景色をMessageセクションと同じ色に切り替える
-    tl.set(triggerSpace, {
-      backgroundColor: messageSectionBgColor
-    }, 3);
 
     // アニメーション完了時（4秒目）に、巨大化したSVGを非表示にする
     tl.set(zoomTarget, {
