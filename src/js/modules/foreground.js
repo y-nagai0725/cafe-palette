@@ -144,7 +144,13 @@ export const initForeground = () => {
   });
 
   // クッションカラー変更処理
-  const changeCushionColor = (cushionColor, cushionSideColor) => {
+  const changeCushionColor = (seasonId) => {
+    const upperCaseSeasonId = seasonId.toUpperCase();
+    const cushionColor = COLORS[upperCaseSeasonId];
+    const cushionSideColor = COLORS[upperCaseSeasonId + "_SIDE"];
+
+    if (!cushionColor || !cushionSideColor) return;
+
     gsap.to(cushionTop, {
       fill: cushionColor,
       duration: 0.8,
@@ -160,8 +166,11 @@ export const initForeground = () => {
   };
 
   // 季節の棚アイテム表示・非表示
-  const toggleShelfItems = (targetItems, isShow) => {
-    if (!targetItems || !targetItems.length) return;
+  const toggleShelfItems = (seasonId, isShow) => {
+    const targetItems = document.querySelectorAll(`.js-shelf-item-${seasonId}`);
+
+    if (!targetItems.length) return;
+
     gsap.to(targetItems, {
       autoAlpha: isShow ? 1 : 0,
       duration: 0.8,
@@ -171,18 +180,23 @@ export const initForeground = () => {
   };
 
   // 季節の黒板表示・非表示
-  const toggleSeasonBoard = (targetBoard, isShow) => {
+  const toggleSeasonBoard = (seasonId, isPc, isShow) => {
+    const targetBoard = document.querySelector(`.js-board-${seasonId}-${isPc ? "pc" : "sp"}`);
+
     if (!targetBoard) return;
+
     gsap.to(targetBoard, {
       autoAlpha: isShow ? 1 : 0,
       duration: 0.8,
       ease: GSAP_EASING.UI,
       overwrite: "auto",
     });
-  }
+  };
 
   // 黒板に文字を描く処理
-  const drawSeasonBoard = (targetBoard) => {
+  const drawSeasonBoard = (seasonId, isPc) => {
+    const targetBoard = document.querySelector(`.js-board-${seasonId}-${isPc ? "pc" : "sp"}`);
+
     if (!targetBoard) return;
 
     // 文字のpath要素
@@ -223,10 +237,6 @@ export const initForeground = () => {
   [springSection, summerSection, autumnSection, winterSection].forEach(section => {
     // セクションのidを取得
     const seasonId = section.id;
-    const upperCaseSeasonId = seasonId.toUpperCase();
-
-    // 季節に対応する棚アイテムを取得
-    const targetShelfItems = document.querySelectorAll(`.js-shelf-item-${seasonId}`);
 
     mm.add({
       isPc: `(width >= ${BREAKPOINTS.LG}px)`,
@@ -234,27 +244,24 @@ export const initForeground = () => {
     }, (context) => {
       let { isPc } = context.conditions;
 
-      // 季節の黒板要素を取得
-      const targetBoard = document.querySelector(`.js-board-${seasonId}-${isPc ? "pc" : "sp"}`);
-
       // PC/SP 共通のトリガー設定
       const triggerCommonConfig = {
         trigger: section,
         scrub: true,
         invalidateOnRefresh: true,
         onEnter: () => {
-          changeCushionColor(COLORS[`${upperCaseSeasonId}`], COLORS[`${upperCaseSeasonId}_SIDE`]);
-          toggleSeasonBoard(targetBoard, true);
+          changeCushionColor(seasonId);
+          toggleSeasonBoard(seasonId, isPc, true);
         },
         onEnterBack: () => {
-          changeCushionColor(COLORS[`${upperCaseSeasonId}`], COLORS[`${upperCaseSeasonId}_SIDE`]);
-          toggleSeasonBoard(targetBoard, true);
+          changeCushionColor(seasonId);
+          toggleSeasonBoard(seasonId, isPc, true);
         },
         onLeave: () => {
-          toggleSeasonBoard(targetBoard, false);
+          toggleSeasonBoard(seasonId, isPc, false);
         },
         onLeaveBack: () => {
-          toggleSeasonBoard(targetBoard, false);
+          toggleSeasonBoard(seasonId, isPc, false);
         },
       };
 
@@ -272,20 +279,20 @@ export const initForeground = () => {
         triggerConfig.onEnter = () => {
           triggerCommonConfig.onEnter();
           // 季節の棚アイテムを表示
-          toggleShelfItems(targetShelfItems, true);
+          toggleShelfItems(seasonId, true);
         };
         triggerConfig.onEnterBack = () => {
           triggerCommonConfig.onEnterBack();
-          toggleShelfItems(targetShelfItems, true);
+          toggleShelfItems(seasonId, true);
         };
         triggerConfig.onLeave = () => {
           triggerCommonConfig.onLeave();
           // 季節の棚アイテムを非表示
-          toggleShelfItems(targetShelfItems, false);
+          toggleShelfItems(seasonId, false);
         };
         triggerConfig.onLeaveBack = () => {
           triggerCommonConfig.onLeaveBack();
-          toggleShelfItems(targetShelfItems, false);
+          toggleShelfItems(seasonId, false);
         };
       } else {
         // SP用
@@ -300,7 +307,7 @@ export const initForeground = () => {
         },
       });
 
-      tl.add(drawSeasonBoard(targetBoard));
+      tl.add(drawSeasonBoard(seasonId, isPc));
       tl.set({}, {}, "+=0.5"); // 描画終了後に少し余韻を設ける
 
       return () => {
