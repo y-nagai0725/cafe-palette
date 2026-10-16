@@ -14,13 +14,11 @@ export const initFvAnimation = () => {
   const triggerSpace = document.querySelector('.js-fv-trigger'); // 透明な空間
   const exterior = document.querySelector('.js-fv-exterior');
   const text = document.querySelector('.js-fv-text');
-  const doorLeft = document.querySelector('.js-door-left');
-  const doorRight = document.querySelector('.js-door-right');
 
-  if (!fv || !triggerSpace || !exterior || !text || !doorLeft || !doorRight) return;
+  if (!fv || !triggerSpace || !exterior || !text) return;
 
   // ズームの中心をドアの真ん中にセット
-  gsap.set(exterior, { transformOrigin: "50% 63%" });
+  gsap.set(exterior, { transformOrigin: "35% 66%" });
 
   let mm = gsap.matchMedia();
 
@@ -103,19 +101,9 @@ export const initFvAnimation = () => {
 
     // テキストが消え始めた直後（0.5秒）から、ドアにズームイン
     tl.to(exterior, {
-      scale: 5,
+      scale: 4,
       duration: 4
     }, 0.5);
-
-    // ズームの後半（2.5秒目）、ドアが開く
-    tl.to(doorLeft, {
-      x: -250,
-      duration: 2
-    }, 2.5);
-    tl.to(doorRight, {
-      x: 250,
-      duration: 2
-    }, 2.5);
   });
 
 };
