@@ -102,15 +102,21 @@ export const initFvAnimation = () => {
 
     // テキストが消え始めた直後（0.5秒）から、ドアにズームイン
     tl.to(exterior, {
-      scale: 3.5,
+      scale: isPc ? 3.5 : 2,
       duration: 4
     }, 0.5);
 
-    // TODO ズームと共にドアを開けるアニメーション
+    gsap.set([doorPc, doorSp], {
+      transformOrigin: "right center",
+    });
+
+    // ドアを開く
     tl.to([doorPc, doorSp], {
-      autoAlpha: 0, //仮アニメーション（とりあえずドア部分を非表示に）
-      duration: 4,
-    }, 0.5);
+      scaleX: 0,
+      autoAlpha: 0,
+      duration: 3,
+      ease: "power1.inOut"
+    }, 1); // ズームが少し進んでから開き始める
   });
 
 };
