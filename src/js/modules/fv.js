@@ -14,11 +14,24 @@ export const initFvAnimation = () => {
   const triggerSpace = document.querySelector('.js-fv-trigger'); // 透明な空間
   const exterior = document.querySelector('.js-fv-exterior');
   const text = document.querySelector('.js-fv-text');
+  const doorSp = document.querySelector('.js-door-sp');
+  const doorPc = document.querySelector('.js-door-pc');
 
-  if (!fv || !triggerSpace || !exterior || !text) return;
+  if (!fv || !triggerSpace || !exterior || !text || !doorSp || !doorPc) return;
 
-  // ズームの中心をドアの真ん中にセット
-  gsap.set(exterior, { transformOrigin: "35% 66%" });
+  const hideFv = () => {
+    gsap.set(fv, {
+      autoAlpha: 0,
+      overwrite: "auto",
+    });
+  };
+
+  const showFv = () => {
+    gsap.set(fv, {
+      autoAlpha: 1,
+      overwrite: "auto",
+    });
+  };
 
   let mm = gsap.matchMedia();
 
@@ -27,6 +40,13 @@ export const initFvAnimation = () => {
     isSp: `(width < ${BREAKPOINTS.LG}px)`
   }, (context) => {
     let { isPc } = context.conditions;
+
+    // ズームの中心を入口（右のドア）にセット
+    if (isPc) {
+      gsap.set(exterior, { transformOrigin: "37% 70%" });
+    } else {
+      gsap.set(exterior, { transformOrigin: "70% 66%" });
+    }
 
     const triggerConfig = {
       id: "fvTrigger",
@@ -55,27 +75,8 @@ export const initFvAnimation = () => {
       },
       scrollTrigger: {
         ...triggerConfig,
-        onLeave: () => {
-          gsap.to(fv, {
-            autoAlpha: 0,
-            duration: 0.8,
-            ease: GSAP_EASING.UI,
-            overwrite: "auto",
-            onComplete: () => {
-              gsap.set(fv, {
-                display: "none",
-                overwrite: "auto",
-              });
-            },
-          });
-        },
-        onEnterBack: () => {
-          gsap.set(fv, {
-            display: "block",
-            autoAlpha: 1,
-            overwrite: "auto",
-          });
-        },
+        onLeave: hideFv,
+        onEnterBack: showFv,
       }
     });
 
@@ -101,8 +102,14 @@ export const initFvAnimation = () => {
 
     // テキストが消え始めた直後（0.5秒）から、ドアにズームイン
     tl.to(exterior, {
-      scale: 4,
+      scale: 3.5,
       duration: 4
+    }, 0.5);
+
+    // TODO ズームと共にドアを開けるアニメーション
+    tl.to([doorPc, doorSp], {
+      autoAlpha: 0, //仮アニメーション（とりあえずドア部分を非表示に）
+      duration: 4,
     }, 0.5);
   });
 

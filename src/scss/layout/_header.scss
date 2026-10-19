@@ -9,7 +9,7 @@
   left: 0;
   z-index: g.$z-index-header;
   width: 100%;
-  padding: g.rem(24) g.rem(20);
+  padding: g.rem(16) g.rem(20);
   background-color: rgba(g.$color-bg, 0.8);
   backdrop-filter: blur(2px);
   transition: background-color g.$transition-base, backdrop-filter g.$transition-base;

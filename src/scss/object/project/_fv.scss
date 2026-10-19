@@ -11,7 +11,6 @@
   width: 100vw;
   height: 100svh;
   pointer-events: none;
-  background-color: transparent;
 
   // =========================================
   // カフェ外観（SVGレイヤー）
@@ -51,7 +50,7 @@
   // =========================================
   &__text-wrap {
     position: absolute;
-    top: 14%;
+    top: 12%;
     left: 50%;
     z-index: 2;
     display: flex;
@@ -70,9 +69,13 @@
   }
 
   &__title {
-    font-size: g.rem(48);
+    font-size: g.rem(44);
     font-weight: g.$weight-bold;
     letter-spacing: 0.05em;
+
+    @include g.mq(md) {
+      font-size: g.rem(62);
+    }
 
     @include g.mq(lg) {
       font-size: g.rem(74);
@@ -83,6 +86,10 @@
     font-size: g.rem(16);
     letter-spacing: 0.1em;
     animation: blink 2s infinite ease-in-out;
+
+    @include g.mq(md) {
+      font-size: g.rem(20);
+    }
 
     @include g.mq(lg) {
       font-size: g.rem(24);
