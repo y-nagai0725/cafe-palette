@@ -11,7 +11,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 export const initFvAnimation = () => {
   const fv = document.querySelector('.js-fv');
-  const triggerSpace = document.querySelector('.js-fv-trigger'); // 透明な空間
+  const triggerSpace = document.querySelector('.js-fv-trigger');
   const exterior = document.querySelector('.js-fv-exterior');
   const text = document.querySelector('.js-fv-text');
   const doorSp = document.querySelector('.js-door-sp');
@@ -19,6 +19,7 @@ export const initFvAnimation = () => {
 
   if (!fv || !triggerSpace || !exterior || !text || !doorSp || !doorPc) return;
 
+  // FV要素を非表示にする
   const hideFv = () => {
     gsap.set(fv, {
       autoAlpha: 0,
@@ -26,6 +27,7 @@ export const initFvAnimation = () => {
     });
   };
 
+  // FV要素を表示する
   const showFv = () => {
     gsap.set(fv, {
       autoAlpha: 1,
@@ -41,12 +43,17 @@ export const initFvAnimation = () => {
   }, (context) => {
     let { isPc } = context.conditions;
 
-    // ズームの中心を入口（右のドア）にセット
+    // ズームの中心を入口（右のドア付近）にセット
     if (isPc) {
       gsap.set(exterior, { transformOrigin: "37% 70%" });
     } else {
-      gsap.set(exterior, { transformOrigin: "70% 66%" });
+      gsap.set(exterior, { transformOrigin: "80% 70%" });
     }
+
+    // ドアの右端を回転の軸にする
+    gsap.set([doorPc, doorSp], {
+      transformOrigin: "right center",
+    });
 
     const triggerConfig = {
       id: "fvTrigger",
@@ -105,10 +112,6 @@ export const initFvAnimation = () => {
       scale: isPc ? 3.5 : 2,
       duration: 4
     }, 0.5);
-
-    gsap.set([doorPc, doorSp], {
-      transformOrigin: "right center",
-    });
 
     // ドアを開く
     tl.to([doorPc, doorSp], {
