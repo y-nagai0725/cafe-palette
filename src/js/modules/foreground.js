@@ -17,6 +17,7 @@ export const initForeground = () => {
   const summerSection = document.querySelector('#summer');
   const autumnSection = document.querySelector('#autumn');
   const winterSection = document.querySelector('#winter');
+  const exitTriggerSpace = document.querySelector('.js-season-exit-trigger');
   const cushionTop = document.querySelectorAll('.js-cushion-top');
   const cushionSide = document.querySelectorAll('.js-cushion-side');
   const clockLong = document.querySelector('.js-clock-long');
@@ -31,9 +32,6 @@ export const initForeground = () => {
       duration: 1,
       ease: GSAP_EASING.UI,
     });
-
-    // ヘッダーの背景を透明にする
-    header.classList.add('is-transparent');
   };
 
   // 前景レイヤー非表示処理
@@ -43,8 +41,15 @@ export const initForeground = () => {
       duration: 1,
       ease: GSAP_EASING.UI,
     });
+  };
 
-    // ヘッダーの背景を元に戻す
+  // ヘッダーの背景を透明にする
+  const setHeaderTransparent = () => {
+    header.classList.add('is-transparent');
+  }
+
+  // ヘッダーの背景を元に戻す
+  const setHeaderDefault = () => {
     header.classList.remove('is-transparent');
   };
 
@@ -93,7 +98,7 @@ export const initForeground = () => {
   let mm = gsap.matchMedia();
 
   // =========================================
-  // 前景レイヤー表示・非表示設定と時計のアニメーション設定
+  // 前景レイヤー表示・非表示設定
   // =========================================
   mm.add({
     isPc: `(width >= ${BREAKPOINTS.LG}px)`,
@@ -101,10 +106,9 @@ export const initForeground = () => {
   }, (context) => {
     let { isPc } = context.conditions;
 
-    // PC・SP両方で共通する設定
     const triggerConfig = {
       trigger: springSection,
-      endTrigger: winterSection,
+      endTrigger: exitTriggerSpace,
       scrub: true,
       onEnter: showForeground,
       onLeave: hideForeground,
@@ -112,12 +116,43 @@ export const initForeground = () => {
       onLeaveBack: hideForeground,
     };
 
-    // 条件分岐で追加・上書きする
     if (isPc) {
       // 横スクロールTweenを取得する
       const hTween = gsap.getById("hScroll");
+      if (!hTween) return;
 
-      // もし取得できなかったら処理をストップ
+      triggerConfig.containerAnimation = hTween;
+      triggerConfig.start = "left center";
+      triggerConfig.end = "right left";
+    } else {
+      triggerConfig.start = "top center";
+      triggerConfig.end = "bottom top";
+    }
+
+    ScrollTrigger.create(triggerConfig);
+  });
+
+  // =========================================
+  // 時計のアニメーション設定
+  // =========================================
+  mm.add({
+    isPc: `(width >= ${BREAKPOINTS.LG}px)`,
+    isSp: `(width < ${BREAKPOINTS.LG}px)`
+  }, (context) => {
+    let { isPc } = context.conditions;
+
+    const triggerConfig = {
+      trigger: springSection,
+      endTrigger: winterSection,
+      scrub: true,
+      onEnter: setHeaderTransparent,
+      onLeave: setHeaderDefault,
+      onEnterBack: setHeaderTransparent,
+      onLeaveBack: setHeaderDefault,
+    };
+
+    if (isPc) {
+      const hTween = gsap.getById("hScroll");
       if (!hTween) return;
 
       triggerConfig.containerAnimation = hTween;
@@ -129,9 +164,7 @@ export const initForeground = () => {
     }
 
     const tl = gsap.timeline({
-      scrollTrigger: {
-        ...triggerConfig,
-      }
+      scrollTrigger: triggerConfig,
     });
 
     tl.to(clockShort, {
@@ -180,8 +213,8 @@ export const initForeground = () => {
   };
 
   // 季節の黒板表示・非表示
-  const toggleSeasonBoard = (seasonId, isPc, isShow) => {
-    const targetBoard = document.querySelector(`.js-board-${seasonId}-${isPc ? "pc" : "sp"}`);
+  const toggleSeasonBoard = (seasonId, device, isShow) => {
+    const targetBoard = document.querySelector(`.js-board-${seasonId}-${device}`);
 
     if (!targetBoard) return;
 
@@ -194,8 +227,8 @@ export const initForeground = () => {
   };
 
   // 黒板に文字を描く処理
-  const drawSeasonBoard = (seasonId, isPc) => {
-    const targetBoard = document.querySelector(`.js-board-${seasonId}-${isPc ? "pc" : "sp"}`);
+  const drawSeasonBoard = (seasonId, device) => {
+    const targetBoard = document.querySelector(`.js-board-${seasonId}-${device}`);
 
     if (!targetBoard) return;
 
@@ -243,6 +276,7 @@ export const initForeground = () => {
       isSp: `(width < ${BREAKPOINTS.LG}px)`
     }, (context) => {
       let { isPc } = context.conditions;
+      const device = isPc ? 'pc' : 'sp';
 
       // PC/SP 共通のトリガー設定
       const triggerCommonConfig = {
@@ -251,17 +285,17 @@ export const initForeground = () => {
         invalidateOnRefresh: true,
         onEnter: () => {
           changeCushionColor(seasonId);
-          toggleSeasonBoard(seasonId, isPc, true);
+          toggleSeasonBoard(seasonId, device, true);
         },
         onEnterBack: () => {
           changeCushionColor(seasonId);
-          toggleSeasonBoard(seasonId, isPc, true);
+          toggleSeasonBoard(seasonId, device, true);
         },
         onLeave: () => {
-          toggleSeasonBoard(seasonId, isPc, false);
+          toggleSeasonBoard(seasonId, device, false);
         },
         onLeaveBack: () => {
-          toggleSeasonBoard(seasonId, isPc, false);
+          toggleSeasonBoard(seasonId, device, false);
         },
       };
 
@@ -307,7 +341,7 @@ export const initForeground = () => {
         },
       });
 
-      tl.add(drawSeasonBoard(seasonId, isPc));
+      tl.add(drawSeasonBoard(seasonId, device));
       tl.set({}, {}, "+=0.5"); // 描画終了後に少し余韻を設ける
 
       return () => {
