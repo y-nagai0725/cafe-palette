@@ -18,18 +18,9 @@ export const initSeasonPanels = () => {
 
   // 各セクションごとにループしてアニメーションを設定していく
   sections.forEach((section) => {
-    // 冬セクションかどうか
-    const isWinter = section.id === 'winter';
-
     // 固定＆アニメーションさせるコンテンツ
     const content = section.querySelector('.js-season-content');
     if (!content) return;
-
-    // 装飾SVGの初期位置（-50%, -50%）をセット
-    const deco = section.querySelector('.p-season-panel__deco');
-    if (deco) {
-      gsap.set(deco, { xPercent: -50, yPercent: -50 });
-    }
 
     // フワッと順番に出す要素たち
     const elementsToAnimate = content.querySelectorAll('.p-season-panel__text, .p-season-panel__menu');
@@ -88,10 +79,10 @@ export const initSeasonPanels = () => {
         onEnter: () => {
           playAnimation(isReversedAnimation);
         },
-        onEnterBack: isWinter ? "" : () => {
+        onEnterBack: () => {
           playAnimation(isReversedAnimation);
         },
-        onLeave: isWinter ? "" : resetAnimation,
+        onLeave: resetAnimation,
         onLeaveBack: resetAnimation,
       };
 
