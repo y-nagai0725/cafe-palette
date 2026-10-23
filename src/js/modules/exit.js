@@ -1,26 +1,18 @@
 // =========================================================================
-// exit.js (冬セクションからのディープズーム退店アニメーション)
+// exit.js (冬セクションからのコーヒーカップへのディープズームアニメーション)
 // =========================================================================
 
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { BREAKPOINTS, COLORS, GSAP_EASING } from '../utils/constants';
-import { getReverseScrollAmount } from '../utils/scroll';
+import { BREAKPOINTS, GSAP_EASING } from '../utils/constants';
 
 gsap.registerPlugin(ScrollTrigger);
 
 export const initExitAnimation = () => {
-  const triggerSpace = document.querySelector('.js-exit-trigger');
-  const winterSection = document.querySelector('#winter');
-  const zoomTarget = document.querySelector('.js-zoom-target');
-  const content = winterSection?.querySelector('.p-season-panel__content');
-  const contentText = winterSection?.querySelector('.p-season-panel__text');
-  const contentImage = winterSection?.querySelector('.p-season-panel__image');
+  const triggerSpace = document.querySelector('.js-season-exit-trigger');
+  const foreground = document.querySelector('.js-foreground');
 
-  if (!triggerSpace || !winterSection || !zoomTarget) return;
-
-  // ズームの中心をカップの真ん中にセット
-  gsap.set(zoomTarget, { transformOrigin: "50% 50%" });
+  if (!triggerSpace || !foreground) return;
 
   let mm = gsap.matchMedia();
 
@@ -31,20 +23,18 @@ export const initExitAnimation = () => {
     let { isPc } = context.conditions;
 
     const triggerConfig = {
-      id: "exitTrigger",
       trigger: triggerSpace,
       scrub: true,
-      invalidateOnRefresh: true,
     };
 
     if (isPc) {
       const hTween = gsap.getById("hScroll");
       if (!hTween) return;
+
       triggerConfig.containerAnimation = hTween;
       triggerConfig.start = "left center";
       triggerConfig.end = "right left";
     } else {
-      triggerConfig.pin = content;
       triggerConfig.start = "top center";
       triggerConfig.end = "bottom top";
     }
@@ -53,50 +43,20 @@ export const initExitAnimation = () => {
       scrollTrigger: triggerConfig,
     });
 
-    if (isPc) {
-      // コーヒーカップを画面に留めるために逆スクロールさせる
-      tl.fromTo(content,
-        {
-          x: () => getReverseScrollAmount("sectionTrigger-winter")
-        },
-        {
-          x: () => getReverseScrollAmount("sectionTrigger-winter") + getReverseScrollAmount("exitTrigger"),
-          ease: "none",
-          duration: 4,
-          immediateRender: false,
-        },
-        0
-      );
-    }
+    // 前景レイヤーのコーヒーカップ（のコーヒー部分）を中心にする
+    gsap.set(foreground, {
+      transformOrigin: isPc ? "50% 76%" : "50% 67.4%",
+    });
 
-    // コーヒーカップ以外のコンテンツをフワッと消す
-    tl.fromTo([contentText, contentImage], {
-      autoAlpha: 1,
+    tl.fromTo(foreground, {
       scale: 1,
     }, {
-      autoAlpha: 0,
-      scale: 0.8,
-      duration: 0.5,
-      ease: GSAP_EASING.UI,
-      overwrite: "auto",
+      scale: isPc ? 150 : 300,
+      ease: "expo.in",
     }, 0);
-
-    // コーヒーカップを画面全体を覆うまで巨大化させる
-    tl.fromTo(zoomTarget, {
-      scale: 1,
-    }, {
-      scale: 80,
-      duration: 4,
-      ease: GSAP_EASING.SMOOTH,
-    }, 0);
-
-    // アニメーション完了時（4秒目）に、巨大化したSVGを非表示にする
-    tl.set(zoomTarget, {
-      autoAlpha: 0
-    }, 4);
 
     return () => {
-      gsap.set(content, { clearProps: "transform,x,y,xPercent,yPercent" });
+      // TODO クリーンアップ処理必要ならば書く
     };
   });
 };

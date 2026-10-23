@@ -6,11 +6,13 @@
 .p-message {
   position: relative;
   display: flex;
+  visibility: hidden;
   align-items: center;
   justify-content: center;
   width: 100%;
   height: 100vh;
   overflow: hidden;
+  opacity: 0;
 
   @include g.mq(lg) {
     width: 100vw;

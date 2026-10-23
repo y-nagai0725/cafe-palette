@@ -31,6 +31,15 @@ export const initForeground = () => {
       autoAlpha: 1,
       duration: 1,
       ease: GSAP_EASING.UI,
+      overwrite: "auto",
+    });
+  };
+
+  // 前景レイヤー表示（瞬時）処理
+  const showForegroundInstantly = () => {
+    gsap.set(foreground, {
+      autoAlpha: 1,
+      overwrite: "auto",
     });
   };
 
@@ -40,6 +49,15 @@ export const initForeground = () => {
       autoAlpha: 0,
       duration: 1,
       ease: GSAP_EASING.UI,
+      overwrite: "auto",
+    });
+  };
+
+  // 前景レイヤー非表示（瞬時）処理
+  const hideForegroundInstantly = () => {
+    gsap.set(foreground, {
+      autoAlpha: 0,
+      overwrite: "auto",
     });
   };
 
@@ -111,8 +129,8 @@ export const initForeground = () => {
       endTrigger: exitTriggerSpace,
       scrub: true,
       onEnter: showForeground,
-      onLeave: hideForeground,
-      onEnterBack: showForeground,
+      onLeave: hideForegroundInstantly,
+      onEnterBack: showForegroundInstantly,
       onLeaveBack: hideForeground,
     };
 

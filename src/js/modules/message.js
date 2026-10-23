@@ -21,6 +21,22 @@ export const initMessage = () => {
   gsap.set(steam, { autoAlpha: 0 });
   gsap.set(text, { autoAlpha: 0, y: 30 });
 
+  // 表示処理
+  const showMessageSectionInstantly = () => {
+    gsap.set(messageSection, {
+      autoAlpha: 1,
+      overwrite: "auto",
+    });
+  };
+
+  // 非表示処理
+  const hideMessageSectionInstantly = () => {
+    gsap.set(messageSection, {
+      autoAlpha: 0,
+      overwrite: "auto",
+    });
+  };
+
   let mm = gsap.matchMedia();
 
   mm.add({
@@ -38,6 +54,8 @@ export const initMessage = () => {
       trigger: triggerSpace,
       scrub: true,
       invalidateOnRefresh: true,
+      onEnter: showMessageSectionInstantly,
+      onLeaveBack: hideMessageSectionInstantly,
       onUpdate: (self) => {
         // 進行度
         const p = self.progress;
