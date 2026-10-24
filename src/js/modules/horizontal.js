@@ -13,8 +13,9 @@ export const initHorizontalScroll = () => {
   const track = document.querySelector('.js-horizontal-track');
   const foreground = document.querySelector('.js-foreground');
   const background = document.querySelector('.js-background');
+  const fv = document.querySelector('.js-fv');
 
-  if (!scrollContainer || !track || !foreground || !background) return;
+  if (!scrollContainer || !track || !foreground || !background || !fv) return;
 
   let mm = gsap.matchMedia();
 
@@ -40,15 +41,15 @@ export const initHorizontalScroll = () => {
       ease: "none",
     }, 0);
 
-    // [前景, 背景]レイヤーを逆方向にスクロールさせる（固定しているように見せる）
-    tl.to([foreground, background], {
+    // [前景, 背景, FV]要素を逆方向にスクロールさせる（固定しているように見せる）
+    tl.to([foreground, background, fv], {
       x: () => scrollWidth(),
       ease: "none",
     }, 0);
 
     return () => {
-      gsap.set([track, foreground], {
-        clearProps: "all",
+      gsap.set([track, foreground, background, fv], {
+        clearProps: "transform"
       });
     };
   });
