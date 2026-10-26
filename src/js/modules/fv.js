@@ -20,8 +20,9 @@ export const initFvAnimation = () => {
   const signClose = document.querySelectorAll('.js-sign-close');
   const decoSnowman = document.querySelectorAll('.js-deco-snowman');
   const decoPlant = document.querySelectorAll('.js-deco-plant');
+  const infoSection = document.querySelector('#info');
 
-  if (!fv || !triggerSpace || !reverseTriggerSpace || !exterior || !text || !doorSp || !doorPc) return;
+  if (!fv || !triggerSpace || !reverseTriggerSpace || !exterior || !text || !doorSp || !doorPc || !infoSection) return;
 
   // FV要素を非表示にする
   const hideFv = () => {
@@ -168,10 +169,10 @@ export const initFvAnimation = () => {
       if (!hTween) return;
       triggerConfig.containerAnimation = hTween;
       triggerConfig.start = "left right";
-      triggerConfig.end = "right left";
+      triggerConfig.end = "right right";
     } else {
       triggerConfig.start = "top bottom";
-      triggerConfig.end = "bottom top";
+      triggerConfig.end = "bottom bottom";
     }
 
     const tl = gsap.timeline({
@@ -185,7 +186,7 @@ export const initFvAnimation = () => {
           setCloseMode();
           showFv();
         },
-        onLeave: hideFv,
+        //onLeave: hideFv,
         onEnterBack: () => {
           setCloseMode();
           showFv();
@@ -228,5 +229,35 @@ export const initFvAnimation = () => {
         clearProps: "all"
       });
     };
+  });
+
+  // =========================================
+  // SP版：FV固定解除処理（Infoセクションへの遷移）
+  // =========================================
+  mm.add(`(width < ${BREAKPOINTS.LG}px)`, () => {
+    ScrollTrigger.create({
+      trigger: reverseTriggerSpace,
+      start: "bottom bottom",
+      onEnter: () => {
+        // 下スクロール時：fixedを解除し、その時点のスクロール位置に配置
+
+        // Infoセクションの「ドキュメント全体でのY座標」を計算
+        const infoAbsoluteY = infoSection.getBoundingClientRect().top + window.scrollY;
+
+        // FV要素の下端が画面下端（100vh）に合うように配置するため、画面の高さを引く
+        const targetTop = infoAbsoluteY - window.innerHeight;
+
+        gsap.set(fv, {
+          position: "absolute",
+          top: targetTop,
+        });
+      },
+      onLeaveBack: () => {
+        // 上スクロール時：トリガー空間に戻ってきたら再びfixed（CSSのデフォルト）に戻す
+        gsap.set(fv, {
+          clearProps: "position,top"
+        });
+      }
+    });
   });
 };
