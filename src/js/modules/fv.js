@@ -186,7 +186,6 @@ export const initFvAnimation = () => {
           setCloseMode();
           showFv();
         },
-        //onLeave: hideFv,
         onEnterBack: () => {
           setCloseMode();
           showFv();

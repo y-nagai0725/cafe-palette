@@ -62,13 +62,8 @@
     }
   }
 
-  &__menu {
-    position: relative;
-  }
-
   &__image {
-    position: relative;
-    z-index: 2;
+    display: block;
     width: g.rem(200);
     aspect-ratio: 1;
     object-fit: cover;
