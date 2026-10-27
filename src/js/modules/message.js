@@ -55,6 +55,8 @@ export const initMessage = () => {
       scrub: true,
       invalidateOnRefresh: true,
       onEnter: showMessageSectionInstantly,
+      onLeave: hideMessageSectionInstantly,
+      onEnterBack: showMessageSectionInstantly,
       onLeaveBack: hideMessageSectionInstantly,
       onUpdate: (self) => {
         // 進行度
