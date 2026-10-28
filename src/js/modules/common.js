@@ -9,17 +9,23 @@ import { GSAP_EASING, BREAKPOINTS } from '../utils/constants';
 
 gsap.registerPlugin(ScrollToPlugin, ScrollTrigger);
 
+/**
+ * トップへ戻るリンクのスムーススクロール処理
+ */
 export const initPageTop = () => {
   const pageTopLinks = document.querySelectorAll('.js-page-top');
   if (!pageTopLinks.length) return;
 
   pageTopLinks.forEach(link => {
     link.addEventListener('click', (e) => {
-      e.preventDefault(); // デフォルトのリンク移動をキャンセル
+      e.preventDefault();
 
       // 画面の一番上まで戻る
       gsap.to(window, {
-        scrollTo: 0,
+        scrollTo: {
+          y: 0,
+          autoKill: true, //ユーザーのスクロールでキャンセル可能にする
+        },
         duration: 1,
         ease: GSAP_EASING.SMOOTH
       });
@@ -31,11 +37,10 @@ export const initPageTop = () => {
  * 内部リンクのスムーススクロールの処理
  */
 export const initSectionLinks = () => {
-  const header = document.querySelector('.l-header');
+  const header = document.querySelector('.js-header');
   const sectionLinks = document.querySelectorAll('.js-section-link');
-  if (!header || !sectionLinks.length) return;
 
-  let mm = gsap.matchMedia();
+  if (!header || !sectionLinks.length) return;
 
   sectionLinks.forEach(link => {
     link.addEventListener('click', (e) => {
@@ -45,41 +50,41 @@ export const initSectionLinks = () => {
 
       if (!targetElement) return;
 
-      mm.add({
-        isPc: `(width >= ${BREAKPOINTS.LG}px)`,
-        isSp: `(width < ${BREAKPOINTS.LG}px)`
-      }, (context) => {
-        let { isPc } = context.conditions;
+      // クリックされた瞬間の画面幅で判定する
+      const isPc = window.innerWidth >= BREAKPOINTS.LG;
 
-        if (isPc) {
-          // 横スクロールのScrollTriggerを取得
-          const hScollTrigger = ScrollTrigger.getById("hScrollTrigger");
+      if (isPc) {
+        // 横スクロールのScrollTriggerを取得
+        const hScollTrigger = ScrollTrigger.getById("hScrollTrigger");
 
-          if (hScollTrigger) {
-            // 「横スクロールが開始される縦のスクロール位置」を取得
-            const startScroll = hScollTrigger.start;
+        if (hScollTrigger) {
+          // 「横スクロールが開始される縦のスクロール位置」を取得
+          const startScroll = hScollTrigger.start;
 
-            // 開始位置 + 目的のセクションの左からの距離
-            const targetScroll = startScroll + targetElement.offsetLeft;
+          // 開始位置 + 目的のセクションの左からの距離
+          const targetScroll = startScroll + targetElement.offsetLeft;
 
-            gsap.to(window, {
-              scrollTo: targetScroll,
-              duration: 1,
-              ease: GSAP_EASING.SMOOTH
-            });
-          }
-        } else {
-          const headerHeight = header.offsetHeight;
           gsap.to(window, {
             scrollTo: {
-              y: targetElement,
-              offsetY: headerHeight
+              y: targetScroll,
+              autoKill: true,
             },
             duration: 1,
             ease: GSAP_EASING.SMOOTH
           });
         }
-      });
+      } else {
+        const headerHeight = header.offsetHeight;
+        gsap.to(window, {
+          scrollTo: {
+            y: targetElement,
+            offsetY: headerHeight,
+            autoKill: true,
+          },
+          duration: 1,
+          ease: GSAP_EASING.SMOOTH
+        });
+      }
     });
   });
 };
