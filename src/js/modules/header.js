@@ -10,16 +10,16 @@ import { COLORS, BREAKPOINTS, GSAP_EASING } from '../utils/constants';
 gsap.registerPlugin(ScrollToPlugin, MorphSVGPlugin);
 
 export const initHeaderNav = () => {
-  const header = document.querySelector('.l-header');
+  const header = document.querySelector('.js-header');
+  const hamburger = document.querySelector('.js-hamburger');
   const logo = document.querySelector('.js-header-logo');
   const links = document.querySelectorAll('.js-header-nav-link');
-  const hamburger = document.querySelector('.js-hamburger');
   const nav = document.querySelector('.js-header-nav');
   const lineTop = document.querySelector('.js-line-top');
   const lineMiddle = document.querySelector('.js-line-middle');
   const lineBottom = document.querySelector('.js-line-bottom');
 
-  if (!header || !logo || !links.length || !hamburger || !nav || !lineTop || !lineMiddle || !lineBottom) return;
+  if (!header || !hamburger) return;
 
   let mm = gsap.matchMedia();
 

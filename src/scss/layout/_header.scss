@@ -30,9 +30,12 @@
     justify-content: space-between;
   }
 
-  &__logo-link {
+  &__logo {
     position: relative;
-    z-index: 100;
+    z-index: 2;
+  }
+
+  &__logo-link {
     display: block;
     font-size: g.rem(24);
     font-weight: g.$weight-bold;
@@ -48,7 +51,7 @@
   // =========================================
   &__hamburger {
     position: relative;
-    z-index: 100;
+    z-index: 2;
     display: block;
     width: g.rem(40);
     aspect-ratio: 1;
@@ -75,7 +78,7 @@
     position: fixed;
     top: 0;
     left: 0;
-    z-index: 50;
+    z-index: 1;
     display: flex;
     align-items: center;
     justify-content: center;
