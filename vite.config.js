@@ -2,6 +2,9 @@ import { defineConfig } from 'vite';
 import stylelint from 'vite-plugin-stylelint';
 
 export default defineConfig({
+  server: {
+    host: true,
+  },
   plugins: [
     stylelint({
       fix: true,
