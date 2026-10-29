@@ -8,21 +8,6 @@ import { MorphSVGPlugin } from 'gsap/MorphSVGPlugin';
 gsap.registerPlugin(MorphSVGPlugin);
 
 export const initMorphBg = () => {
-
-  // =========================================
-  // 背景レイヤー(.l-background)の波
-  // =========================================
-  const backgroundWave = document.querySelector('.js-wave');
-  if (backgroundWave) {
-    gsap.to(backgroundWave, {
-      morphSVG: "#wave-target",
-      duration: 4,
-      repeat: -1,
-      yoyo: true,
-      ease: "sine.inOut"
-    });
-  }
-
   // =========================================
   // Messageセクション:コーヒーの湯気
   // =========================================

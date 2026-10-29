@@ -4,11 +4,12 @@
 
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { MorphSVGPlugin } from 'gsap/MorphSVGPlugin';
 import { BREAKPOINTS, COLORS, GSAP_EASING } from '../utils/constants';
 import { initParticleCanvas } from './canvasEngine';
 import { Petal, Bubble, Leaf, Snow } from './particles';
 
-gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(ScrollTrigger, MorphSVGPlugin);
 
 export const initBackground = () => {
   const background = document.querySelector('.js-background');
@@ -25,24 +26,23 @@ export const initBackground = () => {
   // Canvasを初期化し、操作用のコントローラーを受け取る
   const canvasController = initParticleCanvas('.js-canvas');
 
+  // =========================================
+  // 背景の波の変形アニメーション（PC/SP共通・無限ループ）
+  // =========================================
+  gsap.to(wave, {
+    morphSVG: "#wave-target",
+    duration: 4,
+    repeat: -1,
+    yoyo: true,
+    ease: "sine.inOut"
+  });
+
   // 季節ごとのパーティクル設定をまとめたMap
   const particleConfig = {
-    spring: {
-      class: Petal,
-      count: 60
-    },
-    summer: {
-      class: Bubble,
-      count: 40
-    },
-    autumn: {
-      class: Leaf,
-      count: 40
-    },
-    winter: {
-      class: Snow,
-      count: 100
-    },
+    spring: { class: Petal, count: 60 },
+    summer: { class: Bubble, count: 40 },
+    autumn: { class: Leaf, count: 40 },
+    winter: { class: Snow, count: 100 },
   };
 
   // =========================================
@@ -89,6 +89,7 @@ export const initBackground = () => {
       ease: GSAP_EASING.UI,
       overwrite: "auto",
     });
+
     gsap.to(wave, {
       fill: waveColor,
       duration: 0.8,
@@ -117,7 +118,7 @@ export const initBackground = () => {
     let { isPc } = context.conditions;
 
     // PC時は横スクロールTweenを取得する
-    const hTween = isPc ? gsap.getById("hScroll") : null;
+    const hTween = isPc ? gsap.getById("hScroll") : undefined;
     if (isPc && !hTween) return;
 
     // -----------------------------------------
@@ -126,7 +127,7 @@ export const initBackground = () => {
     ScrollTrigger.create({
       trigger: springSection,
       endTrigger: winterSection,
-      containerAnimation: isPc ? hTween : undefined,
+      containerAnimation: hTween, // hTween または undefined が入る
       start: isPc ? "left center" : "top center",
       end: isPc ? "right center" : "bottom center",
       onEnter: showBackground,
@@ -143,7 +144,7 @@ export const initBackground = () => {
 
       ScrollTrigger.create({
         trigger: section,
-        containerAnimation: isPc ? hTween : undefined,
+        containerAnimation: hTween,
         start: isPc ? "left center" : "top center",
         end: isPc ? "right center" : "bottom center",
         invalidateOnRefresh: true,
@@ -163,7 +164,8 @@ export const initBackground = () => {
     // -----------------------------------------
     return () => {
       // 動的に実行された単発Tweenを停止＆スタイルを初期状態へリセット
-      gsap.killTweensOf([background, wave]);
+      gsap.killTweensOf(background);
+      gsap.killTweensOf(wave, "fill");
       gsap.set(background, {
         clearProps: "opacity,visibility,backgroundColor"
       });
@@ -171,7 +173,7 @@ export const initBackground = () => {
         clearProps: "fill"
       });
 
-      // パーティクルアニメーションを停止＆クリア（イベント自体は破棄しない）
+      // パーティクルアニメーションを停止＆クリア
       if (canvasController) {
         canvasController.changeParticles(null, 0);
       }
