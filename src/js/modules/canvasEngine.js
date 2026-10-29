@@ -3,7 +3,6 @@
 // =========================================================================
 
 export const initParticleCanvas = (canvasSelector) => {
-  // canvas要素を取得する
   const canvas = document.querySelector(canvasSelector);
   if (!canvas) return;
 
@@ -12,9 +11,9 @@ export const initParticleCanvas = (canvasSelector) => {
 
   let particles = [];
   let width, height;
-  let currentParticleClass = null;
-  let currentCount = 0;
   let isAnimating = false;
+  let animationFrameId = null; // アニメーションを止めるためのID
+  let lastTime = 0; // 前回描画した時間（タイムスタンプ）
 
   // =========================================
   // リサイズとデバウンス処理
@@ -54,24 +53,31 @@ export const initParticleCanvas = (canvasSelector) => {
   // =========================================
   // アニメーションループ処理
   // =========================================
-  const loop = () => {
+  const loop = (timestamp) => {
     if (!isAnimating) return;
+
+    // 初回実行時は timestamp が NaN にならないようにする
+    if (!lastTime) lastTime = timestamp;
+
+    // 前回のフレームからの経過時間（ミリ秒）を計算
+    const deltaTime = timestamp - lastTime;
+    lastTime = timestamp;
 
     ctx.clearRect(0, 0, width, height);
 
     particles.forEach(particle => {
-      particle.update(width, height);
+      // 経過時間を渡して、どのモニターでも同じ速度で動くようにする
+      particle.update(width, height, deltaTime);
       particle.draw(ctx);
     });
 
-    requestAnimationFrame(loop);
+    animationFrameId = requestAnimationFrame(loop);
   };
 
   // 外部から呼ばれる「変更メソッド」
   const changeParticles = (ParticleClass, count) => {
-    currentParticleClass = ParticleClass;
-    currentCount = count;
-    particles = []; // 今までのパーティクルをリセット
+    particles = []; // パーティクルをリセット
+    lastTime = 0; // 時間をリセット
 
     if (ParticleClass && count > 0) {
       for (let i = 0; i < count; i++) {
@@ -79,16 +85,30 @@ export const initParticleCanvas = (canvasSelector) => {
       }
       if (!isAnimating) {
         isAnimating = true;
-        loop(); // アニメーション再開
+        animationFrameId = requestAnimationFrame(loop);
       }
     } else {
-      isAnimating = false; // パーティクルが無い時はループを止める
-      ctx.clearRect(0, 0, width, height); // 画面を綺麗にする
+      isAnimating = false;
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId); // アニメーションを確実に停止
+      }
+      ctx.clearRect(0, 0, width, height);
     }
   };
 
-  // 外部からこのメソッドを使えるようにオブジェクトとして返す
+  // イベントやアニメーションを完全に破棄するメソッド
+  const destroy = () => {
+    isAnimating = false;
+    if (animationFrameId) {
+      cancelAnimationFrame(animationFrameId);
+    }
+    window.removeEventListener('resize', debouncedResize);
+    particles = [];
+    ctx.clearRect(0, 0, width, height);
+  };
+
   return {
-    changeParticles
+    changeParticles,
+    destroy
   };
 };

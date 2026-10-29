@@ -10,18 +10,22 @@ export class Petal {
     this.x = Math.random() * w;
     this.y = Math.random() * h;
     this.size = Math.random() * 5 + 5;
-    this.speedY = Math.random() * 1 + 0.5; // 下に落ちる
-    this.speedX = Math.random() * 1 - 0.5;
+
+    // 1秒間あたりの移動ピクセル数（速度）を想定
+    this.speedY = Math.random() * 50 + 30;
+    this.speedX = Math.random() * 30 - 15;
+
     this.angle = Math.random() * 360;
-    this.angleSpeed = Math.random() * 0.02 - 0.01;
+    this.angleSpeed = Math.random() * 0.002 - 0.001;
   }
 
-  update(w, h) {
-    this.y += this.speedY;
-    this.x += this.speedX;
-    this.angle += this.angleSpeed;
+  update(w, h, deltaTime) {
+    // 経過時間(ms)を考慮して移動量を計算 (deltaTime / 1000 で「秒」にする)
+    const dtSec = deltaTime / 1000;
+    this.y += this.speedY * dtSec;
+    this.x += this.speedX * dtSec;
+    this.angle += this.angleSpeed * deltaTime;
 
-    // 下まで落ちたら上に戻す
     if (this.y > h + this.size) {
       this.y = -this.size;
       this.x = Math.random() * w;
@@ -48,16 +52,16 @@ export class Bubble {
     this.x = Math.random() * w;
     this.y = Math.random() * h;
     this.size = Math.random() * 4 + 2;
-    this.speedY = Math.random() * 1 + 0.5; // 上に向かって昇るスピード
-    this.speedX = Math.random() * 0.5 - 0.25;
-    this.opacity = Math.random() * 0.5 + 0.2; // 透明度もランダムにする
+    this.speedY = Math.random() * 50 + 30;
+    this.speedX = Math.random() * 30 - 15;
+    this.opacity = Math.random() * 0.5 + 0.2;
   }
 
-  update(w, h) {
-    this.y -= this.speedY; // 上に向かって動かす
-    this.x += this.speedX;
+  update(w, h, deltaTime) {
+    const dtSec = deltaTime / 1000;
+    this.y -= this.speedY * dtSec;
+    this.x += this.speedX * dtSec;
 
-    // 上まで昇りきったら、下からまた湧き出る
     if (this.y < -this.size) {
       this.y = h + this.size;
       this.x = Math.random() * w;
@@ -67,9 +71,9 @@ export class Bubble {
   draw(ctx) {
     ctx.save();
     ctx.translate(this.x, this.y);
-    ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`; // 白の半透明
+    ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
     ctx.beginPath();
-    ctx.arc(0, 0, this.size, 0, Math.PI * 2); // 丸の泡
+    ctx.arc(0, 0, this.size, 0, Math.PI * 2);
     ctx.fill();
     ctx.restore();
   }
@@ -83,24 +87,24 @@ export class Leaf {
     this.x = Math.random() * w;
     this.y = Math.random() * h;
     this.size = Math.random() * 8 + 6;
-    this.speedY = Math.random() * 1.5 + 0.5;
-    this.speedX = Math.random() * 2 - 1;
+    this.speedY = Math.random() * 80 + 40;
+    this.speedX = Math.random() * 100 - 50;
     this.angle = Math.random() * 360;
-    this.angleSpeed = Math.random() * 0.05 - 0.025;
+    this.angleSpeed = Math.random() * 0.003 - 0.0015;
 
-    // 秋の紅葉カラーを複数用意
     const colors = [
-      'rgba(217, 138, 89, 0.8)', // ベースの秋色（オレンジ）
-      'rgba(198, 40, 40, 0.7)',  // もみじのような深い赤
-      'rgba(249, 168, 37, 0.7)'  // イチョウのような黄色
+      'rgba(217, 138, 89, 0.8)',
+      'rgba(198, 40, 40, 0.7)',
+      'rgba(249, 168, 37, 0.7)'
     ];
     this.color = colors[Math.floor(Math.random() * colors.length)];
   }
 
-  update(w, h) {
-    this.y += this.speedY;
-    this.x += this.speedX;
-    this.angle += this.angleSpeed;
+  update(w, h, deltaTime) {
+    const dtSec = deltaTime / 1000;
+    this.y += this.speedY * dtSec;
+    this.x += this.speedX * dtSec;
+    this.angle += this.angleSpeed * deltaTime;
 
     if (this.y > h + this.size) {
       this.y = -this.size;
@@ -112,7 +116,7 @@ export class Leaf {
     ctx.save();
     ctx.translate(this.x, this.y);
     ctx.rotate(this.angle);
-    ctx.fillStyle = this.color; // ランダムで決めた色を使う
+    ctx.fillStyle = this.color;
     ctx.beginPath();
     ctx.ellipse(0, 0, this.size, this.size / 3, 0, 0, Math.PI * 2);
     ctx.fill();
@@ -128,14 +132,15 @@ export class Snow {
     this.x = Math.random() * w;
     this.y = Math.random() * h;
     this.size = Math.random() * 3 + 1;
-    this.speedY = Math.random() * 0.5 + 0.2;
-    this.speedX = Math.random() * 0.5 - 0.25;
+    this.speedY = Math.random() * 30 + 10;
+    this.speedX = Math.random() * 30 - 15;
     this.opacity = Math.random() * 0.5 + 0.3;
   }
 
-  update(w, h) {
-    this.y += this.speedY;
-    this.x += this.speedX;
+  update(w, h, deltaTime) {
+    const dtSec = deltaTime / 1000;
+    this.y += this.speedY * dtSec;
+    this.x += this.speedX * dtSec;
 
     if (this.y > h + this.size) {
       this.y = -this.size;
@@ -146,9 +151,9 @@ export class Snow {
   draw(ctx) {
     ctx.save();
     ctx.translate(this.x, this.y);
-    ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`; // 白の半透明
+    ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
     ctx.beginPath();
-    ctx.arc(0, 0, this.size, 0, Math.PI * 2); // 丸の小さな雪の粒
+    ctx.arc(0, 0, this.size, 0, Math.PI * 2);
     ctx.fill();
     ctx.restore();
   }

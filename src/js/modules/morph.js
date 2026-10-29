@@ -10,7 +10,7 @@ gsap.registerPlugin(MorphSVGPlugin);
 export const initMorphBg = () => {
 
   // =========================================
-  // 背景レイヤーの波
+  // 背景レイヤー(.l-background)の波
   // =========================================
   const backgroundWave = document.querySelector('.js-wave');
   if (backgroundWave) {
