@@ -20,9 +20,13 @@ export const initFvAnimation = () => {
   const signClose = document.querySelectorAll('.js-sign-close');
   const decoSnowman = document.querySelectorAll('.js-deco-snowman');
   const decoPlant = document.querySelectorAll('.js-deco-plant');
-  const infoSection = document.querySelector('#info');
+  const infoSection = document.querySelector('.js-section-info');
 
   if (!fv || !triggerSpace || !reverseTriggerSpace || !exterior || !text || !doorSp || !doorPc || !infoSection) return;
+
+  // =========================================
+  // 共通ヘルパー関数
+  // =========================================
 
   // FV要素を非表示にする
   const hideFv = () => {
@@ -52,55 +56,51 @@ export const initFvAnimation = () => {
     gsap.set([signClose, decoSnowman], { autoAlpha: 1 });
   };
 
-  // 初期状態としてOPENモードを適用しておく
+  // =========================================
+  // 初期状態の設定（PC/SP共通）
+  // =========================================
+  // 初期状態としてOPENモードを適用
   setOpenMode();
 
+  // =========================================
+  // ScrollTrigger 連動設定 (PC / SP 振り分け)
+  // =========================================
   let mm = gsap.matchMedia();
 
-  // =========================================
-  // 入店アニメーション
-  // =========================================
   mm.add({
     isPc: `(width >= ${BREAKPOINTS.LG}px)`,
     isSp: `(width < ${BREAKPOINTS.LG}px)`
   }, (context) => {
     let { isPc } = context.conditions;
 
+    // PC時は横スクロールTweenを取得する
+    const hTween = isPc ? gsap.getById("hScroll") : undefined;
+    if (isPc && !hTween) return;
+
     // ズームの中心を入口（右のドア付近）にセット
-    if (isPc) {
-      gsap.set(exterior, { transformOrigin: "37% 70%" });
-    } else {
-      gsap.set(exterior, { transformOrigin: "80% 70%" });
-    }
+    gsap.set(exterior, {
+      transformOrigin: isPc ? "37% 70%" : "80% 70%",
+    });
 
     // ドアの右端を回転の軸にする
     gsap.set([doorPc, doorSp], {
       transformOrigin: "right center",
     });
 
-    const triggerConfig = {
-      trigger: triggerSpace,
-      scrub: true,
-      invalidateOnRefresh: true,
-    };
-
-    if (isPc) {
-      const hTween = gsap.getById("hScroll");
-      if (!hTween) return;
-      triggerConfig.containerAnimation = hTween;
-      triggerConfig.start = "left left";
-      triggerConfig.end = "right center";
-    } else {
-      triggerConfig.start = "top top";
-      triggerConfig.end = "bottom center";
-    }
-
-    const tl = gsap.timeline({
+    // -----------------------------------------
+    // 1. 入店アニメーション
+    // -----------------------------------------
+    const enterTl = gsap.timeline({
       defaults: {
         ease: GSAP_EASING.UI,
       },
       scrollTrigger: {
-        ...triggerConfig,
+        trigger: triggerSpace,
+        containerAnimation: hTween,
+        start: isPc ? "left left" : "top top",
+        end: isPc ? "right center" : "bottom center",
+        scrub: true,
+        invalidateOnRefresh: true,
         onEnter: () => {
           setOpenMode();
           showFv();
@@ -114,7 +114,7 @@ export const initFvAnimation = () => {
     });
 
     // スクロール開始と同時に、テキストがフワッと消える
-    tl.fromTo(text, {
+    enterTl.fromTo(text, {
       autoAlpha: 1,
       y: 0,
     }, {
@@ -124,7 +124,7 @@ export const initFvAnimation = () => {
     }, 0);
 
     // テキストが消え始めた直後（0.5秒）から、ドアにズームイン
-    tl.fromTo(exterior, {
+    enterTl.fromTo(exterior, {
       scale: 1,
     }, {
       scale: isPc ? 3.5 : 2,
@@ -132,7 +132,7 @@ export const initFvAnimation = () => {
     }, 0.5);
 
     // ドアを開く
-    tl.fromTo([doorPc, doorSp], {
+    enterTl.fromTo([doorPc, doorSp], {
       scaleX: 1,
       autoAlpha: 1,
     }, {
@@ -142,46 +142,21 @@ export const initFvAnimation = () => {
       ease: "power1.inOut"
     }, 1);
 
-    return () => {
-      gsap.set([exterior, doorPc, doorSp, text, fv], {
-        clearProps: "all"
-      });
-    };
-  });
-
-  // =========================================
-  // 退店アニメーション
-  // =========================================
-  mm.add({
-    isPc: `(width >= ${BREAKPOINTS.LG}px)`,
-    isSp: `(width < ${BREAKPOINTS.LG}px)`
-  }, (context) => {
-    let { isPc } = context.conditions;
-
-    const triggerConfig = {
-      trigger: reverseTriggerSpace,
-      scrub: true,
-      invalidateOnRefresh: true,
-    };
-
-    if (isPc) {
-      const hTween = gsap.getById("hScroll");
-      if (!hTween) return;
-      triggerConfig.containerAnimation = hTween;
-      triggerConfig.start = "left right";
-      triggerConfig.end = "right right";
-    } else {
-      triggerConfig.start = "top bottom";
-      triggerConfig.end = "bottom bottom";
-    }
-
-    const tl = gsap.timeline({
+    // -----------------------------------------
+    // 2. 退店アニメーション
+    // -----------------------------------------
+    const exitTl = gsap.timeline({
       defaults: {
         ease: GSAP_EASING.UI,
         immediateRender: false, // 読み込み時に退店のfrom状態で上書きされるのを防ぐ
       },
       scrollTrigger: {
-        ...triggerConfig,
+        trigger: reverseTriggerSpace,
+        containerAnimation: hTween,
+        start: isPc ? "left right" : "top bottom",
+        end: isPc ? "right right" : "bottom bottom",
+        scrub: true,
+        invalidateOnRefresh: true,
         onEnter: () => {
           setCloseMode();
           showFv();
@@ -195,7 +170,7 @@ export const initFvAnimation = () => {
     });
 
     // ズームアウト
-    tl.fromTo(exterior, {
+    exitTl.fromTo(exterior, {
       scale: isPc ? 3.5 : 2,
     }, {
       scale: 1,
@@ -203,7 +178,7 @@ export const initFvAnimation = () => {
     }, 0);
 
     // ドアを閉じる
-    tl.fromTo([doorPc, doorSp], {
+    exitTl.fromTo([doorPc, doorSp], {
       scaleX: 0,
       autoAlpha: 0,
     }, {
@@ -214,7 +189,7 @@ export const initFvAnimation = () => {
     }, 0.5);
 
     // テキストがフワッと現れる
-    tl.fromTo(text, {
+    exitTl.fromTo(text, {
       autoAlpha: 0,
       y: -30,
     }, {
@@ -223,40 +198,45 @@ export const initFvAnimation = () => {
       duration: 1
     }, 3.5);
 
-    return () => {
-      gsap.set([exterior, doorPc, doorSp, text, fv], {
-        clearProps: "all"
+    // -----------------------------------------
+    // 3. SP版のみ：FV固定解除処理（Infoセクションへの遷移）
+    // -----------------------------------------
+    if (!isPc) {
+      ScrollTrigger.create({
+        trigger: reverseTriggerSpace,
+        start: "bottom bottom",
+        onEnter: () => {
+          // 下スクロール時：fixedを解除し、Infoセクション直上に配置
+          const infoAbsoluteY = infoSection.getBoundingClientRect().top + window.scrollY;
+          const targetTop = infoAbsoluteY - window.innerHeight;
+
+          gsap.set(fv, {
+            position: "absolute",
+            top: targetTop,
+          });
+        },
+        onLeaveBack: () => {
+          // 上スクロール時：トリガー空間に戻ってきたら再びfixed（CSSのデフォルト）に戻す
+          gsap.set(fv, {
+            clearProps: "position,top"
+          });
+        }
       });
+    }
+
+    // -----------------------------------------
+    // クリーンアップ処理（ブレイクポイント切り替え時）
+    // -----------------------------------------
+    return () => {
+      // コールバック内で動的に変更されたFVのスタイル（表示状態・配置）をリセット
+      gsap.set(fv, {
+        clearProps: "opacity,visibility,position,top"
+      });
+      gsap.set([doorPc, doorSp], {
+        clearProps: "transform"
+      });
+      // 看板と装飾を初期状態（OPENモード）に戻す
+      setOpenMode();
     };
-  });
-
-  // =========================================
-  // SP版：FV固定解除処理（Infoセクションへの遷移）
-  // =========================================
-  mm.add(`(width < ${BREAKPOINTS.LG}px)`, () => {
-    ScrollTrigger.create({
-      trigger: reverseTriggerSpace,
-      start: "bottom bottom",
-      onEnter: () => {
-        // 下スクロール時：fixedを解除し、その時点のスクロール位置に配置
-
-        // Infoセクションの「ドキュメント全体でのY座標」を計算
-        const infoAbsoluteY = infoSection.getBoundingClientRect().top + window.scrollY;
-
-        // FV要素の下端が画面下端（100vh）に合うように配置するため、画面の高さを引く
-        const targetTop = infoAbsoluteY - window.innerHeight;
-
-        gsap.set(fv, {
-          position: "absolute",
-          top: targetTop,
-        });
-      },
-      onLeaveBack: () => {
-        // 上スクロール時：トリガー空間に戻ってきたら再びfixed（CSSのデフォルト）に戻す
-        gsap.set(fv, {
-          clearProps: "position,top"
-        });
-      }
-    });
   });
 };
