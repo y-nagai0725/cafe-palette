@@ -9,8 +9,10 @@
   color: g.$color-text;
   background-color: g.$color-bg;
 
-  @include g.mq(lg){
+  @include g.mq(lg) {
     width: 100vw;
+    height: 100vh;
+    padding: g.rem(120) g.rem(60);
   }
 
   &__inner {
@@ -24,6 +26,10 @@
     font-weight: g.$weight-bold;
     text-align: center;
     letter-spacing: 0.1em;
+
+    @include g.mq(lg) {
+      font-size: g.rem(36);
+    }
   }
 
   &__content {
@@ -34,7 +40,7 @@
     // PC表示時は横並びにする
     @include g.mq(lg) {
       flex-direction: row;
-      gap: g.rem(60);
+      gap: g.rem(56);
       align-items: center;
     }
   }
@@ -50,17 +56,28 @@
     display: grid;
     gap: g.rem(24);
 
-    dt {
-      padding-bottom: g.rem(4);
-      margin-bottom: g.rem(8);
-      font-size: g.rem(18);
-      font-weight: g.$weight-bold;
-      border-bottom: 1px solid rgba(g.$color-text, 0.2);
+    @include g.mq(lg) {
+      gap: g.rem(32);
     }
+  }
 
-    dd {
-      font-size: g.rem(15);
-      line-height: 1.8;
+  &__dt {
+    padding-bottom: 0.2em;
+    font-size: g.rem(20);
+    font-weight: g.$weight-bold;
+    border-bottom: 1px solid rgba(g.$color-text, 0.2);
+
+    @include g.mq(lg) {
+      font-size: g.rem(22);
+    }
+  }
+
+  &__dd {
+    font-size: g.rem(16);
+    line-height: 1.8;
+
+    @include g.mq(lg) {
+      font-size: g.rem(18);
     }
   }
 
