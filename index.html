@@ -1949,9 +1949,8 @@
 
         <!-- 背景の湯気アニメーション（MorphSVG） -->
         <div class="p-message__bg">
-          <svg viewBox="0 0 500 500" preserveAspectRatio="xMidYMid slice"
-            style="width: 100%; height: 100%; opacity: 0.1;">
-            <!-- 湯気のベースパス（ふんわりした白） -->
+          <svg class="p-message__svg js-steam" viewBox="0 0 500 500" preserveAspectRatio="xMidYMid slice">
+            <!-- 湯気のパス -->
             <path class="js-steam-wave" fill="#ffffff"
               d="M150,500 C150,400 250,300 200,150 C150,0 350,0 300,150 C250,300 350,400 350,500 Z" />
 
@@ -1965,7 +1964,7 @@
 
         <!-- テキスト -->
         <div class="p-message__content">
-          <p class="p-message__text js-fade-text">
+          <p class="p-message__text js-message-text">
             移りゆく季節の中で、<br>
             変わらない一杯の温もりを。
           </p>

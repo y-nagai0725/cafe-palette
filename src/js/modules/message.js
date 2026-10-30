@@ -4,39 +4,56 @@
 
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { BREAKPOINTS } from '../utils/constants';
+import { MorphSVGPlugin } from 'gsap/MorphSVGPlugin';
+import { BREAKPOINTS, GSAP_EASING } from '../utils/constants';
 import { getReverseScrollAmount } from '../utils/scroll';
 
-gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(ScrollTrigger, MorphSVGPlugin);
 
 export const initMessage = () => {
-  const messageSection = document.querySelector('.p-message');
+  const messageSection = document.querySelector('.js-section-message');
   const triggerSpace = document.querySelector('.js-message-trigger');
-  const text = document.querySelector('.js-fade-text');
-  const steam = messageSection?.querySelector('.p-message__bg svg');
+  const text = document.querySelector('.js-message-text');
+  const steam = document.querySelector('.js-steam');
+  const steamWave = document.querySelector('.js-steam-wave');
 
-  if (!messageSection || !triggerSpace || !text || !steam) return;
+  if (!messageSection || !triggerSpace || !text || !steam || !steamWave) return;
 
-  // 初期状態をセット
-  gsap.set(steam, { autoAlpha: 0 });
-  gsap.set(text, { autoAlpha: 0, y: 30 });
+  // =========================================
+  // 共通ヘルパー関数
+  // =========================================
 
-  // 表示処理
-  const showMessageSectionInstantly = () => {
+  // Messageセクションを表示する
+  const showMessageSection = () => {
     gsap.set(messageSection, {
       autoAlpha: 1,
       overwrite: "auto",
     });
   };
 
-  // 非表示処理
-  const hideMessageSectionInstantly = () => {
+  // Messageセクションを非表示にする
+  const hideMessageSection = () => {
     gsap.set(messageSection, {
       autoAlpha: 0,
       overwrite: "auto",
     });
   };
 
+  // =========================================
+  // 常時再生アニメーション（PC/SP共通）
+  // =========================================
+  // 背景の湯気をゆらゆら変形させ続ける
+  gsap.to(steamWave, {
+    morphSVG: "#steam-wave-target",
+    duration: 3,
+    repeat: -1,
+    yoyo: true,
+    ease: "sine.inOut"
+  });
+
+  // =========================================
+  // ScrollTrigger 連動設定 (PC / SP 振り分け)
+  // =========================================
   let mm = gsap.matchMedia();
 
   mm.add({
@@ -45,6 +62,13 @@ export const initMessage = () => {
   }, (context) => {
     const { isPc } = context.conditions;
 
+    // PC時はページ全体の横スクロールTweenを取得する
+    const hTween = isPc ? gsap.getById('hScroll') : undefined;
+    if (isPc && !hTween) return;
+
+    // 初期状態をセット
+    gsap.set(text, { y: 30 });
+
     // 表示判定フラグ
     let isSteamVisible = false;
     let isTextVisible = false;
@@ -52,14 +76,16 @@ export const initMessage = () => {
     const triggerConfig = {
       id: "messageTrigger",
       trigger: triggerSpace,
+      containerAnimation: hTween,
+      start: isPc ? "left right" : "top bottom",
+      end: isPc ? "right right" : "bottom bottom",
       scrub: true,
       invalidateOnRefresh: true,
-      onEnter: showMessageSectionInstantly,
-      onLeave: hideMessageSectionInstantly,
-      onEnterBack: showMessageSectionInstantly,
-      onLeaveBack: hideMessageSectionInstantly,
+      onEnter: showMessageSection,
+      onLeave: hideMessageSection,
+      onEnterBack: showMessageSection,
+      onLeaveBack: hideMessageSection,
       onUpdate: (self) => {
-        // 進行度
         const p = self.progress;
 
         // 湯気（steam）の表示判定 (進行度が 0.2 を超えたら発火)
@@ -67,7 +93,7 @@ export const initMessage = () => {
           gsap.to(steam, {
             autoAlpha: 0.1,
             duration: 1.6,
-            ease: "power1.inOut",
+            ease: GSAP_EASING.SMOOTH,
             overwrite: "auto"
           });
           isSteamVisible = true;
@@ -75,6 +101,7 @@ export const initMessage = () => {
           gsap.to(steam, {
             autoAlpha: 0,
             duration: 0.8,
+            ease: GSAP_EASING.SMOOTH,
             overwrite: "auto"
           });
           isSteamVisible = false;
@@ -86,7 +113,7 @@ export const initMessage = () => {
             autoAlpha: 1,
             y: 0,
             duration: 1.6,
-            ease: "power2.out",
+            ease: GSAP_EASING.UI,
             overwrite: "auto"
           });
           isTextVisible = true;
@@ -95,6 +122,7 @@ export const initMessage = () => {
             autoAlpha: 0,
             y: 30,
             duration: 0.8,
+            ease: GSAP_EASING.UI,
             overwrite: "auto"
           });
           isTextVisible = false;
@@ -103,40 +131,33 @@ export const initMessage = () => {
     };
 
     if (isPc) {
-      const hTween = gsap.getById('hScroll');
-      if (!hTween) return;
-      triggerConfig.containerAnimation = hTween;
-      triggerConfig.start = 'left right';
-      triggerConfig.end = 'right right';
+      // PC用：Messageセクションを逆スクロールさせて画面に疑似固定する
+      gsap.fromTo(messageSection, {
+        x: 0,
+      }, {
+        x: () => getReverseScrollAmount("messageTrigger"),
+        ease: "none",
+        scrollTrigger: triggerConfig,
+      });
     } else {
-      triggerConfig.pin = messageSection;
-      triggerConfig.pinSpacing = false;
-      triggerConfig.start = 'top bottom';
-      triggerConfig.end = 'bottom bottom';
+      // SP用：標準のpin機能でセクションをピン留め（固定）する
+      ScrollTrigger.create({
+        ...triggerConfig,
+        pin: messageSection,
+        pinSpacing: false,
+      });
     }
 
-    const tl = gsap.timeline({
-      scrollTrigger: triggerConfig
-    });
-
-    if (isPc) {
-      // Messageセクションを逆スクロールさせて画面に固定する
-      tl.fromTo(messageSection,
-        {
-          x: () => 0,
-        },
-        {
-          x: () => getReverseScrollAmount("messageTrigger"),
-          ease: "none",
-          immediateRender: false,
-          duration: 1,
-        },
-        0
-      );
-    }
-
+    // -----------------------------------------
+    // クリーンアップ処理（ブレイクポイント切り替え時）
+    // -----------------------------------------
     return () => {
-      gsap.set(messageSection, { clearProps: "transform,x,y" });
+      // onUpdate内で動的に生成された進行中のTweenを停止
+      gsap.killTweensOf([steam, text]);
+      // 動的に変更されたスタイルとpinのtransformをクリアし、CSSの初期状態に戻す
+      gsap.set([messageSection, steam, text], {
+        clearProps: "opacity,visibility,transform"
+      });
     };
   });
 };
