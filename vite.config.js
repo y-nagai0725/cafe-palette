@@ -1,5 +1,7 @@
 import { defineConfig } from 'vite';
 import stylelint from 'vite-plugin-stylelint';
+import handlebars from 'vite-plugin-handlebars';
+import { resolve } from 'path';
 
 export default defineConfig({
   server: {
@@ -9,6 +11,9 @@ export default defineConfig({
     stylelint({
       fix: true,
       include: ['src/**/*.scss'],
+    }),
+    handlebars({
+      partialDirectory: resolve(import.meta.dirname, 'src/svg'),
     }),
   ],
   build: {
