@@ -39,6 +39,7 @@
   }
 
   &__text {
+    visibility: hidden;
     padding: 0.5em 1em;
     font-size: g.rem(22);
     font-weight: g.$weight-bold;
@@ -47,6 +48,7 @@
     background-color: rgba(g.$color-bg, 0.7); // ほんのり透ける白
     border-radius: 20px;
     box-shadow: 0 4px 12px rgb(0 0 0 / 5%);
+    opacity: 0;
     backdrop-filter: blur(4px);
 
     @include g.mq(lg) {
@@ -64,12 +66,14 @@
 
   &__image {
     display: block;
+    visibility: hidden;
     width: g.rem(200);
     aspect-ratio: 1;
     object-fit: cover;
     border: 8px solid g.$color-bg;
     border-radius: 50%;
     box-shadow: 0 10px 24px rgb(0 0 0 / 15%);
+    opacity: 0;
 
     @include g.mq(md) {
       width: g.rem(260);
