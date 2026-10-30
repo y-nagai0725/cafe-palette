@@ -6,6 +6,7 @@ import { gsap } from 'gsap';
 import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
 import { MorphSVGPlugin } from 'gsap/MorphSVGPlugin';
 import { COLORS, BREAKPOINTS, GSAP_EASING } from '../utils/constants';
+import { debounce } from '../utils/debounce';
 
 gsap.registerPlugin(ScrollToPlugin, MorphSVGPlugin);
 
@@ -74,15 +75,11 @@ export const initHeaderNav = () => {
       nav.style.setProperty('--cy', `${centerY}px`);
     };
 
-    // リサイズ用のデバウンス処理
-    let timer;
-    const debouncedUpdate = () => {
-      clearTimeout(timer);
-      timer = setTimeout(calculateCenter, 200);
-    };
-
     // 最初に1回実行して、初期値をセット
     calculateCenter();
+
+    // デバウンス処理を加えた関数を作成
+    const debouncedUpdate = debounce(calculateCenter, 200);
 
     // 画面リサイズ時に、デバウンス処理を加えた関数を呼び出す
     window.addEventListener('resize', debouncedUpdate);

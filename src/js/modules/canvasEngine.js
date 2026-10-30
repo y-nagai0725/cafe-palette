@@ -2,6 +2,8 @@
 // canvasEngine.js (Canvasアニメーションの共通エンジンモジュール)
 // =========================================================================
 
+import { debounce } from '../utils/debounce';
+
 export const initParticleCanvas = (canvasSelector) => {
   const canvas = document.querySelector(canvasSelector);
   if (!canvas) return;
@@ -40,12 +42,8 @@ export const initParticleCanvas = (canvasSelector) => {
   // 最初に1回サイズ調整を実行
   resize();
 
-  // リサイズ用のデバウンス処理
-  let timer;
-  const debouncedResize = () => {
-    clearTimeout(timer);
-    timer = setTimeout(resize, 200);
-  };
+  // デバウンス化したリサイズ処理
+  const debouncedResize = debounce(resize, 200);
 
   // 画面がリサイズされた時、再度サイズ調整を行うようにする
   window.addEventListener('resize', debouncedResize);
