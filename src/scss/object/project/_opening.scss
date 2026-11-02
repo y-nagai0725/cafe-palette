@@ -1,0 +1,27 @@
+@use "../../global" as g;
+
+// =========================================
+// オープニングアニメーション
+// =========================================
+.p-opening {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: g.$z-index-opening; // ヘッダー等を含め、すべての要素より一番手前に配置
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100vh;
+  background-color: g.$color-coffee;
+
+  &__svg-wrap {
+    width: g.rem(300);
+    aspect-ratio: 1;
+  }
+
+  &__svg {
+    width: 100%;
+    height: 100%;
+  }
+}

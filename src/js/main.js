@@ -1,4 +1,5 @@
 import '../scss/style.scss';
+import { initOpening } from './modules/opening';
 import { initFvAnimation } from './modules/fv';
 import { initPageTop, initSectionLinks } from './modules/common';
 import { initHeaderNav } from './modules/header';
@@ -10,6 +11,7 @@ import { initExitAnimation } from './modules/exit';
 import { initMessage } from './modules/message';
 
 const init = () => {
+  initOpening();
   initHorizontalScroll();
   initPageTop();
   initSectionLinks();

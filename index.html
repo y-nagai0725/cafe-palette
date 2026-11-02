@@ -13,7 +13,14 @@
     rel="stylesheet">
 </head>
 
-<body>
+<body class="is-noscroll">
+  <!-- オープニングアニメーション -->
+  <div class="p-opening js-opening">
+    <div class="p-opening__svg-wrap">
+      {{> opening }}
+    </div>
+  </div>
+
   <!-- ヘッダー -->
   <header class="l-header js-header">
     <div class="l-header__inner">
