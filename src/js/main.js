@@ -10,7 +10,23 @@ import { initSeasonPanels } from './modules/season';
 import { initExitAnimation } from './modules/exit';
 import { initMessage } from './modules/message';
 
+// =========================================
+// ブラウザのスクロール制御（リロード・戻る/進む対策）
+// =========================================
+const setupScrollRestoration = () => {
+  // ブラウザの標準機能（自動で元の位置に戻す機能）をオフにする
+  if ('scrollRestoration' in history) {
+    history.scrollRestoration = 'manual';
+  }
+
+  // ページリロード時に確実に一番上へ戻す
+  window.addEventListener('beforeunload', () => {
+    window.scrollTo(0, 0);
+  });
+};
+
 const init = () => {
+  setupScrollRestoration();
   initOpening();
   initHorizontalScroll();
   initPageTop();

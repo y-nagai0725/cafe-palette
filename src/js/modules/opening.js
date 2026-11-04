@@ -28,10 +28,6 @@ export const initOpening = async () => {
   // morphSVGによる変形先のpath要素(「Cafe Palette」の文字)
   const titlePaths = document.querySelectorAll('.js-opening-title-path');
 
-  // 確実にスクロール禁止にしておく＆リロード時に一番上へ戻しておく
-  document.body.classList.add('is-noscroll');
-  window.scrollTo(0, 0);
-
   // 初期設定
   gsap.set(circleWraps, {
     transformOrigin: '50% 50%',

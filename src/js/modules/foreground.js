@@ -32,7 +32,7 @@ export const initForeground = () => {
   // 共通ヘルパー関数
   // =========================================
 
-  // 前景レイヤー表示・非表示処理
+  // 前景レイヤー表示
   const showForeground = () => {
     gsap.to(foreground, {
       autoAlpha: 1,
@@ -42,6 +42,7 @@ export const initForeground = () => {
     });
   };
 
+  // 前景レイヤー表示(瞬時)
   const showForegroundInstantly = () => {
     gsap.set(foreground, {
       autoAlpha: 1,
@@ -49,9 +50,12 @@ export const initForeground = () => {
     });
   };
 
-  const hideForegroundInstantly = () => {
-    gsap.set(foreground, {
+  // 前景レイヤー非表示
+  const hideForeground = () => {
+    gsap.to(foreground, {
       autoAlpha: 0,
+      duration: 1,
+      ease: GSAP_EASING.UI,
       overwrite: "auto",
     });
   };
@@ -211,9 +215,9 @@ export const initForeground = () => {
       end: isPc ? "right left" : "bottom top",
       scrub: true,
       onEnter: showForeground,
-      onLeave: hideForegroundInstantly,
+      onLeave: hideForeground,
       onEnterBack: showForegroundInstantly,
-      onLeaveBack: hideForegroundInstantly,
+      onLeaveBack: hideForeground,
     });
 
     // -----------------------------------------
