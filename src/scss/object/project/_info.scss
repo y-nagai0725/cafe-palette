@@ -4,10 +4,11 @@
 // Infoセクション
 // =========================================
 .p-info {
+  position: relative;
+  z-index: calc(g.$z-index-background + 10);
   width: 100%;
   padding: g.rem(80) g.rem(20);
-  color: g.$color-text;
-  background-color: g.$color-bg;
+  color: g.$color-bg;
 
   @include g.mq(lg) {
     width: 100vw;
@@ -65,7 +66,7 @@
     padding-bottom: 0.2em;
     font-size: g.rem(20);
     font-weight: g.$weight-bold;
-    border-bottom: 1px solid rgba(g.$color-text, 0.2);
+    border-bottom: 1px solid rgba(g.$color-bg, 0.2);
 
     @include g.mq(lg) {
       font-size: g.rem(22);

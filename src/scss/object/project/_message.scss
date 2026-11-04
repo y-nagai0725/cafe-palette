@@ -5,6 +5,7 @@
 // =========================================
 .p-message {
   position: relative;
+  z-index: calc(g.$z-index-background + 10);
   display: flex;
   visibility: hidden;
   align-items: center;

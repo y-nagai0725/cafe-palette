@@ -158,3 +158,56 @@ export class Snow {
     ctx.restore();
   }
 }
+
+/**
+ * 夜空の星（Star）クラス
+ */
+export class Star {
+  constructor(w, h) {
+    this.x = Math.random() * w;
+    this.y = Math.random() * h;
+
+    // 星の基本サイズ（1px 〜 3px）
+    this.baseSize = Math.random() * 2 + 1;
+    this.size = this.baseSize;
+
+    // 瞬きの周期（初期角度をバラバラにして、一斉に光らないようにする）
+    this.angle = Math.random() * Math.PI * 2;
+    this.blinkSpeed = Math.random() * 0.003 + 0.001;
+
+    // 星のベース色相（45〜65のゴールド系、または200〜220の青白い星をランダムに配置）
+    this.baseHue = Math.random() < 0.7
+      ? Math.random() * 20 + 45
+      : Math.random() * 20 + 200;
+
+    this.color = '';
+  }
+
+  update(w, h, deltaTime) {
+    // 時間経過で角度を進める（位置は動かさない）
+    this.angle += this.blinkSpeed * deltaTime;
+
+    // Math.sinの結果（-1 〜 1）を 0.0 〜 1.0 の輝き度合い（twinkle）に変換
+    const twinkle = (Math.sin(this.angle) + 1) / 2;
+
+    // 輝きに合わせてサイズを変化させる（基本サイズの 0.5倍 〜 1.4倍）
+    this.size = this.baseSize * (0.5 + twinkle * 0.9);
+
+    // 輝きに合わせて色と透明度を変化させる（最大に輝く時は100%に近い純白になり、減光時は色味が乗る）
+    const hue = this.baseHue + Math.sin(this.angle * 0.5) * 15;
+    const lightness = 70 + twinkle * 30;
+    const opacity = 0.2 + twinkle * 0.8;
+
+    this.color = `hsla(${hue}, 90%, ${lightness}%, ${opacity})`;
+  }
+
+  draw(ctx) {
+    ctx.save();
+    ctx.translate(this.x, this.y);
+    ctx.fillStyle = this.color;
+    ctx.beginPath();
+    ctx.arc(0, 0, this.size, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
+}

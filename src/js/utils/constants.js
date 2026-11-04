@@ -27,6 +27,7 @@ export const COLORS = {
   WINTER: "#e8f0f2",
   WINTER_SIDE: "#c9e2e9",
   WINTER_WAVE: "#cee5eb",
+  NIGHT: "#1a233a",
   BOARD_CHALK: "#d9d9d9",
 };
 
