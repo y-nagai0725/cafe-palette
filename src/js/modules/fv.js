@@ -16,11 +16,16 @@ export const initFvAnimation = () => {
   const text = document.querySelector('.js-fv-text');
   const doorSp = document.querySelector('.js-door-sp');
   const doorPc = document.querySelector('.js-door-pc');
+  const infoSection = document.querySelector('.js-section-info');
   const signOpen = document.querySelectorAll('.js-sign-open');
   const signClose = document.querySelectorAll('.js-sign-close');
+  const cat = document.querySelector('.js-cat');
   const decoSnowman = document.querySelectorAll('.js-deco-snowman');
   const decoPlant = document.querySelectorAll('.js-deco-plant');
-  const infoSection = document.querySelector('.js-section-info');
+  const roadMain = document.querySelectorAll('.js-road-main');
+  const windowGlass = document.querySelectorAll('.js-window-glass');
+  const windowReflectedLight = document.querySelectorAll('.js-window-reflected-light');
+  const insideCafe = document.querySelectorAll('.js-inside-cafe');
 
   if (!fv || !triggerSpace || !reverseTriggerSpace || !exterior || !text || !doorSp || !doorPc || !infoSection) return;
 
@@ -44,16 +49,33 @@ export const initFvAnimation = () => {
     });
   };
 
-  // 入店時（OPEN看板・観葉植物）の表示
+  // 入店時（昼・通常モード）
   const setOpenMode = () => {
-    gsap.set([signOpen, decoPlant], { autoAlpha: 1 });
+    // 表示：OPEN看板、観葉植物、猫
+    gsap.set([signOpen, decoPlant, cat], { autoAlpha: 1 });
+
+    // 非表示：CLOSE看板、雪だるま
     gsap.set([signClose, decoSnowman], { autoAlpha: 0 });
+
+    // 色変化初期化
+    gsap.set([windowGlass, windowReflectedLight, insideCafe, roadMain], { clearProps: "fill" });
   };
 
-  // 退店時（CLOSE看板・雪だるま）の表示
+  // 退店時（夜・冬モード）
   const setCloseMode = () => {
-    gsap.set([signOpen, decoPlant], { autoAlpha: 0 });
+    // 非表示：OPEN看板、観葉植物、猫
+    gsap.set([signOpen, decoPlant, cat], { autoAlpha: 0 });
+
+    // 表示：CLOSE看板、雪だるま
     gsap.set([signClose, decoSnowman], { autoAlpha: 1 });
+
+    // 窓ガラス、反射光、店内を照明色にする
+    gsap.set(windowGlass, { fill: "#FFE0B2" });
+    gsap.set(windowReflectedLight, { fill: "#fceacf" });
+    gsap.set(insideCafe, { fill: "#FFE0B2" });
+
+    // 道路を雪道にする
+    gsap.set(roadMain, { fill: "#E8F0F2" });
   };
 
   // =========================================

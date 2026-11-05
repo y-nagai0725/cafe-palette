@@ -30,20 +30,7 @@
 
       <!-- ハンバーガーボタン (SPのみ表示) -->
       <button class="l-header__hamburger js-hamburger" aria-label="メニューを開く">
-        <svg class="l-header__hamburger-svg" viewBox="0 0 50 50">
-          <!-- 現在表示されている線 -->
-          <path class="js-line-top" d="M 10 15 L 40 15" stroke="currentColor" stroke-width="3" stroke-linecap="round" />
-          <path class="js-line-middle" d="M 10 25 L 40 25" stroke="currentColor" stroke-width="3"
-            stroke-linecap="round" />
-          <path class="js-line-bottom" d="M 10 35 L 40 35" stroke="currentColor" stroke-width="3"
-            stroke-linecap="round" />
-
-          <!-- 変形先のパス ※画面には表示しない -->
-          <defs>
-            <path id="cross-top" d="M 15 15 L 35 35" />
-            <path id="cross-bottom" d="M 15 35 L 35 15" />
-          </defs>
-        </svg>
+        {{> header-hamburger }}
       </button>
 
       <!-- ナビゲーションメニュー -->
