@@ -11,12 +11,16 @@
   color: g.$color-bg;
 
   @include g.mq(lg) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     width: 100vw;
     height: 100vh;
-    padding: g.rem(120) g.rem(60);
+    padding: 0;
   }
 
   &__inner {
+    width: 100%;
     max-width: g.rem(1000);
     margin: 0 auto;
   }
