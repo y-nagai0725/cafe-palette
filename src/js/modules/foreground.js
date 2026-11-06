@@ -246,7 +246,7 @@ export const initForeground = () => {
     const device = isPc ? 'pc' : 'sp';
 
     // PC表示時は横スクロール用のTweenを取得し、各Triggerの containerAnimation に設定する
-    const hTween = isPc ? gsap.getById("hScroll") : null;
+    const hTween = isPc ? gsap.getById("hScroll") : undefined;
     if (isPc && !hTween) return;
 
     // -----------------------------------------
@@ -255,7 +255,7 @@ export const initForeground = () => {
     ScrollTrigger.create({
       trigger: springSection,
       endTrigger: exitTriggerSpace,
-      containerAnimation: isPc ? hTween : undefined,
+      containerAnimation: hTween,
       start: isPc ? "left center" : "top center",
       end: isPc ? "right left" : "bottom top",
       scrub: true,
@@ -273,7 +273,7 @@ export const initForeground = () => {
       scrollTrigger: {
         trigger: springSection,
         endTrigger: winterSection,
-        containerAnimation: isPc ? hTween : undefined,
+        containerAnimation: hTween,
         start: isPc ? "left center" : "top center",
         end: isPc ? "right center" : "bottom center",
         scrub: true, // スクロール量に応じて針を動かす
@@ -301,7 +301,7 @@ export const initForeground = () => {
       const boardTl = gsap.timeline({
         scrollTrigger: {
           trigger: section,
-          containerAnimation: isPc ? hTween : undefined,
+          containerAnimation: hTween,
           start: isPc ? "left center" : "top center",
           end: isPc ? "right center" : "bottom center",
           scrub: true, // 描画アニメーションをスクロールと連動させる
