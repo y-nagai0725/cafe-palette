@@ -35,14 +35,14 @@ export const COLORS = {
  * GSAPのease
  */
 export const GSAP_EASING = {
-  // UIの開閉など、ユーザーの操作に対するサクッとしたレスポンス用
+  // UIの開閉・要素の表示・非表示など、ユーザーの操作に対するサクッとしたレスポンス用
   UI: "power2.out",
 
-  // スムーススクロールや、景色がゆっくり変わるようなエモい演出用
-  SMOOTH: "power3.inOut",
+  // スムーススクロール用
+  SCROLL: "power3.inOut",
 
-  // ちょっとリッチで強めの余韻を残したい時用
-  EXPO: "expo.out"
+  // ふわふわとした無限ループアニメーション用（湯気、波、コンテンツ上下など）
+  FLOAT: "sine.inOut",
 };
 
 /**
