@@ -1,6 +1,9 @@
 // =========================================================================
 // header.js (ヘッダー機能モジュール)
 // =========================================================================
+// 役割：SP時のハンバーガーメニューの開閉アニメーション、および
+// それに伴うスクロール禁止制御（is-noscroll）を一括管理する。
+// =========================================================================
 
 import { gsap } from 'gsap';
 import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
@@ -11,6 +14,7 @@ import { debounce } from '../utils/debounce';
 gsap.registerPlugin(ScrollToPlugin, MorphSVGPlugin);
 
 export const initHeaderNav = () => {
+  // DOM要素の取得
   const header = document.querySelector('.js-header');
   const hamburger = document.querySelector('.js-hamburger');
   const logo = document.querySelector('.js-header-logo');
@@ -25,11 +29,11 @@ export const initHeaderNav = () => {
   let mm = gsap.matchMedia();
 
   // =========================================
-  // ハンバーガーメニューの開閉処理 (SPのみ)
+  // ハンバーガーメニューの開閉処理 (SP幅のみ有効)
   // =========================================
   mm.add(`(width < ${BREAKPOINTS.LG}px)`, () => {
 
-    // タイムラインを作成（初期状態は一時停止＆逆再生状態にしておく）
+    // メニュー開閉のタイムラインを作成（初期状態は一時停止＆逆再生状態にしておく）
     const tl = gsap.timeline({
       paused: true,
       reversed: true,
@@ -38,9 +42,9 @@ export const initHeaderNav = () => {
       }
     });
 
-    // =========================================
+    // -----------------------------------------
     // ボタンの変形 & 真ん中の線をフワッと消す
-    // =========================================
+    // -----------------------------------------
     tl.to(lineTop, {
       morphSVG: "#cross-top",
       duration: 0.3,
@@ -52,25 +56,29 @@ export const initHeaderNav = () => {
       duration: 0.3,
     }, 0);
 
-    // =========================================
-    // サイトロゴとボタンの色変化
-    // =========================================
+    // -----------------------------------------
+    // サイトロゴとボタンの色変化（背景と同化しないように白へ）
+    // -----------------------------------------
     tl.to([logo, hamburger], {
       color: COLORS.BG,
       duration: 0.3,
     }, 0);
 
-    // =========================================
-    // メニュー背景のclip-pathアニメーション
-    // =========================================
-    // 動的にボタンの中心座標を計算する関数
+    // -----------------------------------------
+    // メニュー背景の円形展開（clip-path）アニメーション
+    // -----------------------------------------
+
+    /**
+     * ハンバーガーボタンの中心座標を計算し、CSS変数としてnav要素にセットする関数
+     * ※デバイスの回転やリサイズ時に、円の広がる起点がズレないようにするため
+     */
     const calculateCenter = () => {
-      // ボタンの中心座標を計算する
+      // ボタンの中心座標を計算
       const rect = hamburger.getBoundingClientRect();
       const centerX = rect.left + (rect.width / 2);
       const centerY = rect.top + (rect.height / 2);
 
-      // nav要素のstyle属性として、CSS変数をセットする
+      // nav要素のstyle属性として、CSS変数をセット
       nav.style.setProperty('--cx', `${centerX}px`);
       nav.style.setProperty('--cy', `${centerY}px`);
     };
@@ -78,13 +86,11 @@ export const initHeaderNav = () => {
     // 最初に1回実行して、初期値をセット
     calculateCenter();
 
-    // デバウンス処理を加えた関数を作成
+    // デバウンス処理を加えた関数を作成し、リサイズ時にのみ再計算を行う
     const debouncedUpdate = debounce(calculateCenter, 200);
-
-    // 画面リサイズ時に、デバウンス処理を加えた関数を呼び出す
     window.addEventListener('resize', debouncedUpdate);
 
-    // メニューの展開
+    // メニュー背景の展開アニメーション
     tl.fromTo(nav, {
       clipPath: "circle(0px at var(--cx) var(--cy))"
     }, {
@@ -92,67 +98,68 @@ export const initHeaderNav = () => {
       duration: 0.5,
     }, 0);
 
-    // =========================================
-    // ナビゲーションリンクの表示
-    // =========================================
-    tl.fromTo(links,
-      {
-        autoAlpha: 0,
-        y: 20
-      },
-      {
-        autoAlpha: 1,
-        y: 0,
-        stagger: 0.1,
-        duration: 0.4,
-      },
-      "-=0.3"
-    );
+    // -----------------------------------------
+    // ナビゲーションリンクの表示（staggerで時差をつけてフワッと出す）
+    // -----------------------------------------
+    tl.fromTo(links, {
+      autoAlpha: 0,
+      y: 20
+    }, {
+      autoAlpha: 1,
+      y: 0,
+      stagger: 0.1,
+      duration: 0.4,
+    }, "-=0.3");
 
     // =========================================
-    // メニュー開閉処理
+    // イベント制御関数群
     // =========================================
-    const toggleMenu = () => {
-      // 逆再生状態なら再生、再生状態なら逆再生する
+
+    /**
+     * ハンバーガーボタンのクリックで、メニューの開閉をする関数
+     */
+    const toggleMenu = async () => {
       if (tl.reversed()) {
+        // メニューを開く：即座に背景スクロールを禁止し、アニメーションを再生
         document.body.classList.add('is-noscroll');
         tl.play();
       } else {
-        tl.reverse();
+        // メニューを閉じる：アニメーションの逆再生完了を待ち、完全に閉じてからスクロールを許可する
+        await tl.reverse();
         document.body.classList.remove('is-noscroll');
       }
     };
 
-    // ボタンクリック時のイベント
-    hamburger.addEventListener('click', toggleMenu);
-
-    // =========================================
-    // リンクやロゴをクリックした時にメニューを自動で閉じる処理
-    // =========================================
-    const closeMenu = () => {
+    /**
+     * リンクやロゴをクリックした時にメニューを自動で閉じる関数
+     */
+    const closeMenu = async () => {
       if (!tl.reversed()) {
-        tl.reverse();
+        await tl.reverse();
         document.body.classList.remove('is-noscroll');
       }
     };
 
+    // イベントリスナーの登録
+    hamburger.addEventListener('click', toggleMenu);
+    logo.addEventListener('click', closeMenu);
     links.forEach(link => {
       link.addEventListener('click', closeMenu);
     });
 
-    logo.addEventListener('click', closeMenu);
-
-    // クリーンアップ処理
+    // -----------------------------------------
+    // クリーンアップ処理（PC幅に切り替わった時用）
+    // -----------------------------------------
     return () => {
-      // PCサイズになったらイベントを解除する
+      // 登録したイベントリスナーをすべて解除する
       hamburger.removeEventListener('click', toggleMenu);
       window.removeEventListener('resize', debouncedUpdate);
+      logo.removeEventListener('click', closeMenu);
       links.forEach(link => {
         link.removeEventListener('click', closeMenu);
       });
-      logo.removeEventListener('click', closeMenu);
 
-      // スクロール禁止設定を解除する
+      // PC幅になった瞬間に、もしスクロール禁止状態のままなら解除する
       if (document.body.classList.contains('is-noscroll')) {
         document.body.classList.remove('is-noscroll');
       }
