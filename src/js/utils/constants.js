@@ -49,6 +49,9 @@ export const GSAP_EASING = {
 
   // ふわふわとした無限ループアニメーション用（湯気、波、コンテンツ上下など）
   FLOAT: "sine.inOut",
+
+  // カフェのドア開閉アニメーション用（入店・退店共通）
+  DOOR: "power1.inOut",
 };
 
 /**

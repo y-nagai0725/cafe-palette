@@ -1,5 +1,9 @@
 // =========================================================================
-// fv.js (ファーストビューのスクロール連動アニメーション)
+// fv.js (ファーストビューのスクロール連動アニメーションモジュール)
+// =========================================================================
+// 役割：カフェ外観（FV）における入店アニメーション（昼・通常モード）と、
+// 全季節を巡った後の退店アニメーション（夜・冬モード）、および
+// SP表示時のFV固定解除（Infoセクションへの接続）を一括管理する。
 // =========================================================================
 
 import { gsap } from 'gsap';
@@ -8,7 +12,11 @@ import { BREAKPOINTS, GSAP_EASING } from '../utils/constants';
 
 gsap.registerPlugin(ScrollTrigger);
 
+/**
+ * ファーストビュー（入店・退店）アニメーションの初期化関数
+ */
 export const initFvAnimation = () => {
+  // DOM要素の取得
   const fv = document.querySelector('.js-fv');
   const triggerSpace = document.querySelector('.js-fv-trigger');
   const reverseTriggerSpace = document.querySelector('.js-fv-reverse-trigger');
@@ -33,7 +41,10 @@ export const initFvAnimation = () => {
   // 共通ヘルパー関数
   // =========================================
 
-  // FV要素を非表示にする
+  /**
+   * FV要素全体を非表示にする
+   * ※入店完了後〜退店開始前の間、店内の前景・背景レイヤーを見せるために使用
+   */
   const hideFv = () => {
     gsap.set(fv, {
       autoAlpha: 0,
@@ -41,7 +52,9 @@ export const initFvAnimation = () => {
     });
   };
 
-  // FV要素を表示する
+  /**
+   * FV要素全体を表示する
+   */
   const showFv = () => {
     gsap.set(fv, {
       autoAlpha: 1,
@@ -49,7 +62,10 @@ export const initFvAnimation = () => {
     });
   };
 
-  // 入店時（昼・通常モード）
+  /**
+   * カフェ外観を入店時（昼・通常モード）の見た目に切り替える
+   * OPEN看板・観葉植物・猫を表示し、窓や道路の色をSVG本来の初期色へリセットする。
+   */
   const setOpenMode = () => {
     // 表示：OPEN看板、観葉植物、猫
     gsap.set([signOpen, decoPlant, cat], { autoAlpha: 1 });
@@ -57,11 +73,14 @@ export const initFvAnimation = () => {
     // 非表示：CLOSE看板、雪だるま
     gsap.set([signClose, decoSnowman], { autoAlpha: 0 });
 
-    // 色変化初期化
+    // 色変化を初期化（インラインのfillを消去してSVG本来の色に戻す）
     gsap.set([windowGlass, windowReflectedLight, insideCafe, roadMain], { clearProps: "fill" });
   };
 
-  // 退店時（夜・冬モード）
+  /**
+   * カフェ外観を退店時（夜・冬モード）の見た目に切り替える
+   * CLOSE看板・雪だるまを表示し、猫を非表示、窓・店内を暖かい照明色に、道路を雪道カラーに変更する。
+   */
   const setCloseMode = () => {
     // 非表示：OPEN看板、観葉植物、猫
     gsap.set([signOpen, decoPlant, cat], { autoAlpha: 0 });
@@ -69,19 +88,19 @@ export const initFvAnimation = () => {
     // 表示：CLOSE看板、雪だるま
     gsap.set([signClose, decoSnowman], { autoAlpha: 1 });
 
-    // 窓ガラス、反射光、店内を照明色にする
+    // 窓ガラス、反射光、店内を夜の照明色にする
     gsap.set(windowGlass, { fill: "#FFE0B2" });
     gsap.set(windowReflectedLight, { fill: "#fceacf" });
     gsap.set(insideCafe, { fill: "#FFE0B2" });
 
-    // 道路を雪道にする
+    // 道路を雪道カラーにする
     gsap.set(roadMain, { fill: "#E8F0F2" });
   };
 
   // =========================================
   // 初期状態の設定（PC/SP共通）
   // =========================================
-  // 初期状態としてOPENモードを適用
+  // 初期状態としてOPENモードを適用しておく
   setOpenMode();
 
   // =========================================
@@ -95,22 +114,22 @@ export const initFvAnimation = () => {
   }, (context) => {
     let { isPc } = context.conditions;
 
-    // PC時は横スクロールTweenを取得する
+    // PC表示時は横スクロール用のTweenを取得し、各Triggerの containerAnimation に設定する
     const hTween = isPc ? gsap.getById("hScroll") : undefined;
     if (isPc && !hTween) return;
 
-    // ズームの中心を入口（右のドア付近）にセット
+    // ズームの中心を入口（右側のドア付近）にセット
     gsap.set(exterior, {
       transformOrigin: isPc ? "37% 70%" : "80% 70%",
     });
 
-    // ドアの右端を回転の軸にする
+    // ドアの右端を回転（開閉）の軸にする
     gsap.set([doorPc, doorSp], {
       transformOrigin: "right center",
     });
 
     // -----------------------------------------
-    // 1. 入店アニメーション
+    // 入店アニメーション（タイトル消去 ➔ ドアを開きながらズームイン）
     // -----------------------------------------
     const enterTl = gsap.timeline({
       defaults: {
@@ -135,7 +154,7 @@ export const initFvAnimation = () => {
       }
     });
 
-    // スクロール開始と同時に、テキストがフワッと消える
+    // スクロール開始と同時に、タイトルテキストが上へフワッと消える
     enterTl.fromTo(text, {
       autoAlpha: 1,
       y: 0,
@@ -145,7 +164,7 @@ export const initFvAnimation = () => {
       duration: 1
     }, 0);
 
-    // テキストが消え始めた直後（0.5秒）から、ドアにズームイン
+    // テキストが消え始めた直後（0.5秒の位置）から、入口ドアへ向かってズームイン
     enterTl.fromTo(exterior, {
       scale: 1,
     }, {
@@ -153,7 +172,7 @@ export const initFvAnimation = () => {
       duration: 4
     }, 0.5);
 
-    // ドアを開く
+    // ドアを奥へ開く（scaleXを縮小させつつフェードアウト）
     enterTl.fromTo([doorPc, doorSp], {
       scaleX: 1,
       autoAlpha: 1,
@@ -161,16 +180,16 @@ export const initFvAnimation = () => {
       scaleX: 0,
       autoAlpha: 0,
       duration: 3,
-      ease: "power1.inOut"
+      ease: GSAP_EASING.DOOR,
     }, 1);
 
     // -----------------------------------------
-    // 2. 退店アニメーション
+    // 退店アニメーション（ドアを閉じながらズームアウト ➔ タイトル再表示）
     // -----------------------------------------
     const exitTl = gsap.timeline({
       defaults: {
         ease: GSAP_EASING.UI,
-        immediateRender: false, // 読み込み時に退店のfrom状態で上書きされるのを防ぐ
+        immediateRender: false, // ページ読み込み時に入店前の状態が退店のfrom状態で上書きされるのを防ぐ
       },
       scrollTrigger: {
         trigger: reverseTriggerSpace,
@@ -191,7 +210,7 @@ export const initFvAnimation = () => {
       }
     });
 
-    // ズームアウト
+    // カフェ外観全体が見えるようにズームアウト
     exitTl.fromTo(exterior, {
       scale: isPc ? 3.5 : 2,
     }, {
@@ -199,7 +218,7 @@ export const initFvAnimation = () => {
       duration: 4
     }, 0);
 
-    // ドアを閉じる
+    // 開いていたドアを閉じる
     exitTl.fromTo([doorPc, doorSp], {
       scaleX: 0,
       autoAlpha: 0,
@@ -207,10 +226,10 @@ export const initFvAnimation = () => {
       scaleX: 1,
       autoAlpha: 1,
       duration: 3,
-      ease: "power1.inOut"
+      ease: GSAP_EASING.DOOR,
     }, 0.5);
 
-    // テキストがフワッと現れる
+    // 退店完了間際にタイトルテキストが再びフワッと現れる
     exitTl.fromTo(text, {
       autoAlpha: 0,
       y: -30,
@@ -221,14 +240,14 @@ export const initFvAnimation = () => {
     }, 3.5);
 
     // -----------------------------------------
-    // 3. SP版のみ：FV固定解除処理（Infoセクションへの遷移）
+    // SP版のみ：FV固定解除処理（Infoセクションへの自然なスクロール遷移）
     // -----------------------------------------
     if (!isPc) {
       ScrollTrigger.create({
         trigger: reverseTriggerSpace,
         start: "bottom bottom",
         onEnter: () => {
-          // 下スクロール時：fixedを解除し、Infoセクション直上に配置
+          // 下スクロール時：退店アニメーション完了地点でfixedを解除し、Infoセクション直上に絶対配置する
           const infoAbsoluteY = infoSection.getBoundingClientRect().top + window.scrollY;
           const targetTop = infoAbsoluteY - window.innerHeight;
 
@@ -238,7 +257,7 @@ export const initFvAnimation = () => {
           });
         },
         onLeaveBack: () => {
-          // 上スクロール時：トリガー空間に戻ってきたら再びfixed（CSSのデフォルト）に戻す
+          // 上スクロール時：退店トリガー空間に戻ってきたら再びfixed（CSSのデフォルト）に戻す
           gsap.set(fv, {
             clearProps: "position,top"
           });
@@ -257,7 +276,7 @@ export const initFvAnimation = () => {
       gsap.set([doorPc, doorSp], {
         clearProps: "transform"
       });
-      // 看板と装飾を初期状態（OPENモード）に戻す
+      // 外観の看板・装飾・色を初期状態（OPENモード）に戻す
       setOpenMode();
     };
   });
