@@ -1,6 +1,10 @@
 // =========================================================================
 // background.js (背景レイヤーの表示制御モジュール)
 // =========================================================================
+// 役割：背景レイヤー全体の表示/非表示、背景の波（SVG）の無限変形ループ、
+// およびスクロール位置に応じた背景色・波の色・Canvasパーティクル（四季＆夜空）の
+// 切り替え処理を一括管理する。
+// =========================================================================
 
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -11,7 +15,12 @@ import { Petal, Bubble, Leaf, Snow, Star } from './particles';
 
 gsap.registerPlugin(ScrollTrigger, MorphSVGPlugin);
 
+/**
+ * 背景レイヤーの初期化・アニメーション設定関数
+ * @returns {Function|undefined} モジュール全体を破棄するためのクリーンアップ関数
+ */
 export const initBackground = () => {
+  // DOM要素の取得
   const background = document.querySelector('.js-background');
   const wave = document.querySelector('.js-wave');
   const springSection = document.querySelector('.js-section-spring');
@@ -35,10 +44,13 @@ export const initBackground = () => {
     duration: 4,
     repeat: -1,
     yoyo: true,
-    ease: "sine.inOut"
+    ease: GSAP_EASING.FLOAT,
   });
 
-  // 季節＆夜空のパーティクル設定をまとめたMap
+  /**
+   * 季節＆夜空のパーティクル設定マップ
+   * @type {Object}
+   */
   const particleConfig = {
     spring: { class: Petal, count: 60 },
     summer: { class: Bubble, count: 40 },
@@ -51,7 +63,9 @@ export const initBackground = () => {
   // 共通ヘルパー関数
   // =========================================
 
-  // 背景レイヤー表示処理
+  /**
+   * 背景レイヤーをフェードイン表示する
+   */
   const showBackground = () => {
     gsap.to(background, {
       autoAlpha: 1,
@@ -61,7 +75,10 @@ export const initBackground = () => {
     });
   };
 
-  // 背景レイヤー非表示処理（同時にパーティクルの描画ループも停止して負荷を下げる）
+  /**
+   * 背景レイヤーをフェードアウト非表示にする
+   * ※完全に非表示になったタイミングでパーティクルの描画ループも停止し、負荷を下げる
+   */
   const hideBackground = () => {
     gsap.to(background, {
       autoAlpha: 0,
@@ -69,7 +86,6 @@ export const initBackground = () => {
       ease: GSAP_EASING.UI,
       overwrite: "auto",
       onComplete: () => {
-        // 完全に非表示になったらCanvasのループを止める
         if (canvasController) {
           canvasController.changeParticles(null, 0);
         }
@@ -77,7 +93,10 @@ export const initBackground = () => {
     });
   };
 
-  // 背景色と波の色（および波の表示・非表示）を変更する
+  /**
+   * 背景色と波の色（および波の表示・非表示）をテーマに合わせて変更する
+   * @param {string} themeId - テーマのID ('spring', 'summer', 'autumn', 'winter', 'night')
+   */
   const changeColor = (themeId) => {
     const upperCaseId = themeId.toUpperCase();
     const bgColor = COLORS[upperCaseId];
@@ -85,6 +104,7 @@ export const initBackground = () => {
 
     if (!bgColor) return;
 
+    // 背景色の切り替え
     gsap.to(background, {
       backgroundColor: bgColor,
       duration: 0.8,
@@ -92,8 +112,9 @@ export const initBackground = () => {
       overwrite: "auto",
     });
 
+    // 波の色と表示状態の切り替え
     if (waveColor) {
-      // 季節セクション：波の色を変えつつ、元の透明度（0.5）で表示する
+      // 季節セクション：波の色を変えつつ、透明度（0.5）で表示する
       gsap.to(wave, {
         fill: waveColor,
         autoAlpha: 0.5,
@@ -112,7 +133,10 @@ export const initBackground = () => {
     }
   };
 
-  // canvasのパーティクルアニメーションを変更する処理
+  /**
+   * Canvasのパーティクルアニメーションをテーマに合わせて変更する
+   * @param {string} themeId - テーマのID ('spring', 'summer', 'autumn', 'winter', 'night')
+   */
   const changeCanvasAnimation = (themeId) => {
     if (canvasController && particleConfig[themeId]) {
       const config = particleConfig[themeId];
@@ -131,18 +155,19 @@ export const initBackground = () => {
   }, (context) => {
     let { isPc } = context.conditions;
 
-    // PC時は横スクロールTweenを取得する
+    // PC表示時は横スクロール用のTweenを取得し、各Triggerの containerAnimation に設定する
     const hTween = isPc ? gsap.getById("hScroll") : undefined;
     if (isPc && !hTween) return;
 
     // -----------------------------------------
-    // 背景レイヤー全体の表示・非表示制御
+    // 背景レイヤー全体の表示・非表示制御（春セクション以降ずっと表示）
     // -----------------------------------------
     ScrollTrigger.create({
       trigger: springSection,
       containerAnimation: hTween,
       start: isPc ? "left center" : "top center",
       invalidateOnRefresh: true,
+      // 春セクションに入ったら表示し、春より前（FV側）へ戻ったら非表示にする
       onEnter: showBackground,
       onLeaveBack: hideBackground,
     });
@@ -178,6 +203,7 @@ export const initBackground = () => {
       containerAnimation: hTween,
       start: isPc ? "left right" : "top bottom",
       invalidateOnRefresh: true,
+      // 退店エリアに入ったら夜空へ切り替え、手前（Messageセクション側）へ戻ったら冬の背景に戻す
       onEnter: () => {
         changeColor('night');
         changeCanvasAnimation('night');
