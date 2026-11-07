@@ -1,6 +1,10 @@
 // =========================================================================
 // opening.js (オープニングアニメーション制御モジュール)
 // =========================================================================
+// 役割：ページ読み込み完了（load）と最低表示時間（1.5秒）の両方を待機し、
+// ローディング演出からタイトル変形・幕開け演出へのスムーズな遷移と、
+// 完了後のスクロールロック解除・ScrollTriggerの再計算を行う。
+// =========================================================================
 
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -9,6 +13,9 @@ import { GSAP_EASING } from '../utils/constants';
 
 gsap.registerPlugin(ScrollTrigger, MorphSVGPlugin);
 
+/**
+ * オープニングアニメーションの初期化・実行関数
+ */
 export const initOpening = async () => {
   const opening = document.querySelector('.js-opening');
 
@@ -18,17 +25,17 @@ export const initOpening = async () => {
     return;
   }
 
-  // OP用のcircle要素のみをMorphSVGで操作可能にするためpathへ変換
+  // OP用のcircle要素のみをMorphSVGで操作可能にするためpath要素へ変換
   MorphSVGPlugin.convertToPath('.js-opening-circle');
 
-  // アニメーション対象要素取得
+  // アニメーション対象要素の取得（※必ずconvertToPathの後に取得する）
   const circleWraps = document.querySelectorAll('.js-opening-circle-wrap');
   const circleElements = document.querySelectorAll('.js-opening-circle');
 
-  // morphSVGによる変形先のpath要素(「Cafe Palette」の文字)
+  // MorphSVGによる変形先のpath要素（「Cafe Palette」の11文字）
   const titlePaths = document.querySelectorAll('.js-opening-title-path');
 
-  // 初期設定
+  // 初期設定：回転の中心をSVG全体の中心（50% 50%）にセット
   gsap.set(circleWraps, {
     transformOrigin: '50% 50%',
   });
@@ -40,6 +47,7 @@ export const initOpening = async () => {
     repeat: -1,
   });
 
+  // 外枠（g要素）を時差（stagger）で回転させつつ、内側の円を拡縮・明滅させる
   loadingTl.fromTo(circleWraps, {
     rotation: 0
   }, {
@@ -64,22 +72,34 @@ export const initOpening = async () => {
   // 読み込み完了 ＆ 最低待機時間（1.5秒） ＆ ループの区切りを待つ
   // =========================================
 
-  // ページのloadイベント完了を待つPromise
-  const waitLoad = new Promise((resolve) => {
-    if (document.readyState === 'complete') {
-      resolve();
-    } else {
-      window.addEventListener('load', resolve, { once: true });
-    }
-  });
+  /**
+   * ページの読み込み（loadイベント）完了を待つ関数
+   * @returns {Promise<void>} 読み込み完了時に解決されるPromise
+   */
+  const waitLoad = () => {
+    return new Promise((resolve) => {
+      // すでに読み込みが完了している場合（キャッシュ等）は即座にresolveする
+      if (document.readyState === 'complete') {
+        resolve();
+      } else {
+        window.addEventListener('load', resolve, { once: true });
+      }
+    });
+  };
 
-  // 最低限表示させる時間（1.5秒）を待つPromise
-  const waitMinTime = new Promise((resolve) => {
-    setTimeout(resolve, 1500);
-  });
+  /**
+   * 指定した時間（ミリ秒）だけ待機する関数
+   * @param {number} ms - 待機する時間（ミリ秒）
+   * @returns {Promise<void>} 指定時間経過後に解決されるPromise
+   */
+  const waitTime = (ms) => {
+    return new Promise((resolve) => {
+      setTimeout(resolve, ms);
+    });
+  };
 
-  // ページ読み込み完了と最低表示時間の両方が終わるまで待機
-  await Promise.all([waitLoad, waitMinTime]);
+  // ページ読み込み完了と最低表示時間（1.5秒）の両方が終わるまで待機
+  await Promise.all([waitLoad(), waitTime(1500)]);
 
   // 現在再生中のローディングアニメーションが1周の区切り（onRepeat）に来るまで待って停止
   await new Promise((resolve) => {
@@ -94,6 +114,7 @@ export const initOpening = async () => {
   // =========================================
   const displayTitleTl = gsap.timeline();
 
+  // 11個の円を対応する文字パスへ順番に変形させ、0.4秒の余韻の後に円形クリップで幕を閉じる
   await displayTitleTl.to(circleElements, {
     morphSVG: (index) => titlePaths[index],
     duration: 0.3,
