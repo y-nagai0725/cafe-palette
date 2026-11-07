@@ -1,9 +1,17 @@
 // =========================================================================
 // canvasEngine.js (Canvasアニメーションの共通エンジンモジュール)
 // =========================================================================
+// 役割：Canvasの初期化、高解像度（Retina）対応のリサイズ処理、
+// requestAnimationFrameを用いた描画ループ、およびパーティクルの切り替え・破棄を行う。
+// =========================================================================
 
 import { debounce } from '../utils/debounce';
 
+/**
+ * パーティクル描画用のCanvasを初期化し、操作用のコントローラーを返す関数
+ * @param {string} canvasSelector - 対象となるCanvas要素のCSSセレクタ
+ * @returns {Object|undefined} パーティクル変更・破棄メソッドを持つコントローラーオブジェクト
+ */
 export const initParticleCanvas = (canvasSelector) => {
   const canvas = document.querySelector(canvasSelector);
   if (!canvas) return;
@@ -20,6 +28,10 @@ export const initParticleCanvas = (canvasSelector) => {
   // =========================================
   // リサイズとデバウンス処理
   // =========================================
+
+  /**
+   * 画面サイズに合わせてCanvasの描画サイズと解像度（デバイスピクセル比）を調整する
+   */
   const resize = () => {
     width = window.innerWidth;
     height = window.innerHeight;
@@ -42,15 +54,18 @@ export const initParticleCanvas = (canvasSelector) => {
   // 最初に1回サイズ調整を実行
   resize();
 
-  // デバウンス化したリサイズ処理
+  // デバウンス化したリサイズ処理をイベント登録
   const debouncedResize = debounce(resize, 200);
-
-  // 画面がリサイズされた時、再度サイズ調整を行うようにする
   window.addEventListener('resize', debouncedResize);
 
   // =========================================
   // アニメーションループ処理
   // =========================================
+
+  /**
+   * 毎フレーム実行されるアニメーションループ関数
+   * @param {number} timestamp - requestAnimationFrameから渡される現在時刻（ミリ秒）
+   */
   const loop = (timestamp) => {
     if (!isAnimating) return;
 
@@ -64,7 +79,7 @@ export const initParticleCanvas = (canvasSelector) => {
     ctx.clearRect(0, 0, width, height);
 
     particles.forEach(particle => {
-      // 経過時間を渡して、どのモニターでも同じ速度で動くようにする
+      // 経過時間を渡して、どのモニター（リフレッシュレート）でも同じ速度で動くようにする
       particle.update(width, height, deltaTime);
       particle.draw(ctx);
     });
@@ -72,7 +87,15 @@ export const initParticleCanvas = (canvasSelector) => {
     animationFrameId = requestAnimationFrame(loop);
   };
 
-  // 外部から呼ばれる「変更メソッド」
+  // =========================================
+  // 外部公開用コントロールメソッド
+  // =========================================
+
+  /**
+   * 描画するパーティクルの種類と数を変更する（nullまたは0を渡すとループを停止してクリアする）
+   * @param {Class|null} ParticleClass - 生成するパーティクルのクラス（Petal, Bubbleなど）
+   * @param {number} count - 生成するパーティクルの個数
+   */
   const changeParticles = (ParticleClass, count) => {
     particles = []; // パーティクルをリセット
     lastTime = 0; // 時間をリセット
@@ -94,7 +117,9 @@ export const initParticleCanvas = (canvasSelector) => {
     }
   };
 
-  // イベントやアニメーションを完全に破棄するメソッド
+  /**
+   * イベントリスナーやアニメーションループを完全に破棄する
+   */
   const destroy = () => {
     isAnimating = false;
     if (animationFrameId) {

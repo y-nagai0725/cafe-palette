@@ -1,17 +1,25 @@
 // =========================================================================
 // particles.js (パーティクルの設計図モジュール)
 // =========================================================================
+// 役割：背景のCanvasに描画する四季（桜・泡・落ち葉・粉雪）および夜空（星）の
+// 各パーティクルの座標・動き（update）・描画方法（draw）をクラスとして定義する。
+// =========================================================================
 
 /**
  * 春の桜（Petal）クラス
+ * 回転しながら斜め下へゆったりと舞い落ちる楕円形のパーティクル
  */
 export class Petal {
+  /**
+   * @param {number} w - Canvasの描画幅
+   * @param {number} h - Canvasの描画高さ
+   */
   constructor(w, h) {
     this.x = Math.random() * w;
     this.y = Math.random() * h;
     this.size = Math.random() * 5 + 5;
 
-    // 1秒間あたりの移動ピクセル数（速度）を想定
+    // 1秒間あたりの移動ピクセル数（速度）
     this.speedY = Math.random() * 50 + 30;
     this.speedX = Math.random() * 30 - 15;
 
@@ -19,19 +27,30 @@ export class Petal {
     this.angleSpeed = Math.random() * 0.002 - 0.001;
   }
 
+  /**
+   * 経過時間に応じて座標と回転角度を更新する
+   * @param {number} w - Canvasの描画幅
+   * @param {number} h - Canvasの描画高さ
+   * @param {number} deltaTime - 前フレームからの経過時間（ミリ秒）
+   */
   update(w, h, deltaTime) {
-    // 経過時間(ms)を考慮して移動量を計算 (deltaTime / 1000 で「秒」にする)
+    // 経過時間(ms)を「秒」に変換して移動量を計算
     const dtSec = deltaTime / 1000;
     this.y += this.speedY * dtSec;
     this.x += this.speedX * dtSec;
     this.angle += this.angleSpeed * deltaTime;
 
+    // 画面下端を出たら上端へ戻す
     if (this.y > h + this.size) {
       this.y = -this.size;
       this.x = Math.random() * w;
     }
   }
 
+  /**
+   * Canvasに桜の花びらを描画する
+   * @param {CanvasRenderingContext2D} ctx - Canvas 2Dコンテキスト
+   */
   draw(ctx) {
     ctx.save();
     ctx.translate(this.x, this.y);
@@ -46,8 +65,13 @@ export class Petal {
 
 /**
  * 夏の泡（Bubble）クラス
+ * 画面下から上へ向かって浮かび上がる半透明の円形パーティクル
  */
 export class Bubble {
+  /**
+   * @param {number} w - Canvasの描画幅
+   * @param {number} h - Canvasの描画高さ
+   */
   constructor(w, h) {
     this.x = Math.random() * w;
     this.y = Math.random() * h;
@@ -57,17 +81,28 @@ export class Bubble {
     this.opacity = Math.random() * 0.5 + 0.2;
   }
 
+  /**
+   * 経過時間に応じて座標を更新する
+   * @param {number} w - Canvasの描画幅
+   * @param {number} h - Canvasの描画高さ
+   * @param {number} deltaTime - 前フレームからの経過時間（ミリ秒）
+   */
   update(w, h, deltaTime) {
     const dtSec = deltaTime / 1000;
     this.y -= this.speedY * dtSec;
     this.x += this.speedX * dtSec;
 
+    // 画面上端を出たら下端へ戻す
     if (this.y < -this.size) {
       this.y = h + this.size;
       this.x = Math.random() * w;
     }
   }
 
+  /**
+   * Canvasに泡を描画する
+   * @param {CanvasRenderingContext2D} ctx - Canvas 2Dコンテキスト
+   */
   draw(ctx) {
     ctx.save();
     ctx.translate(this.x, this.y);
@@ -81,8 +116,13 @@ export class Bubble {
 
 /**
  * 秋の落ち葉（Leaf）クラス
+ * 3色の紅葉カラーからランダムに生成され、回転しながら舞い落ちるパーティクル
  */
 export class Leaf {
+  /**
+   * @param {number} w - Canvasの描画幅
+   * @param {number} h - Canvasの描画高さ
+   */
   constructor(w, h) {
     this.x = Math.random() * w;
     this.y = Math.random() * h;
@@ -100,18 +140,29 @@ export class Leaf {
     this.color = colors[Math.floor(Math.random() * colors.length)];
   }
 
+  /**
+   * 経過時間に応じて座標と回転角度を更新する
+   * @param {number} w - Canvasの描画幅
+   * @param {number} h - Canvasの描画高さ
+   * @param {number} deltaTime - 前フレームからの経過時間（ミリ秒）
+   */
   update(w, h, deltaTime) {
     const dtSec = deltaTime / 1000;
     this.y += this.speedY * dtSec;
     this.x += this.speedX * dtSec;
     this.angle += this.angleSpeed * deltaTime;
 
+    // 画面下端を出たら上端へ戻す
     if (this.y > h + this.size) {
       this.y = -this.size;
       this.x = Math.random() * w;
     }
   }
 
+  /**
+   * Canvasに落ち葉を描画する
+   * @param {CanvasRenderingContext2D} ctx - Canvas 2Dコンテキスト
+   */
   draw(ctx) {
     ctx.save();
     ctx.translate(this.x, this.y);
@@ -126,8 +177,13 @@ export class Leaf {
 
 /**
  * 冬の粉雪（Snow）クラス
+ * 画面上から下へ静かに降り積もる白い円形パーティクル
  */
 export class Snow {
+  /**
+   * @param {number} w - Canvasの描画幅
+   * @param {number} h - Canvasの描画高さ
+   */
   constructor(w, h) {
     this.x = Math.random() * w;
     this.y = Math.random() * h;
@@ -137,17 +193,28 @@ export class Snow {
     this.opacity = Math.random() * 0.5 + 0.3;
   }
 
+  /**
+   * 経過時間に応じて座標を更新する
+   * @param {number} w - Canvasの描画幅
+   * @param {number} h - Canvasの描画高さ
+   * @param {number} deltaTime - 前フレームからの経過時間（ミリ秒）
+   */
   update(w, h, deltaTime) {
     const dtSec = deltaTime / 1000;
     this.y += this.speedY * dtSec;
     this.x += this.speedX * dtSec;
 
+    // 画面下端を出たら上端へ戻す
     if (this.y > h + this.size) {
       this.y = -this.size;
       this.x = Math.random() * w;
     }
   }
 
+  /**
+   * Canvasに粉雪を描画する
+   * @param {CanvasRenderingContext2D} ctx - Canvas 2Dコンテキスト
+   */
   draw(ctx) {
     ctx.save();
     ctx.translate(this.x, this.y);
@@ -161,8 +228,13 @@ export class Snow {
 
 /**
  * 夜空の星（Star）クラス
+ * 位置を固定したまま、正弦波（Math.sin）を用いてサイズ・明度・透明度が変化し瞬くパーティクル
  */
 export class Star {
+  /**
+   * @param {number} w - Canvasの描画幅
+   * @param {number} h - Canvasの描画高さ
+   */
   constructor(w, h) {
     this.x = Math.random() * w;
     this.y = Math.random() * h;
@@ -183,6 +255,12 @@ export class Star {
     this.color = '';
   }
 
+  /**
+   * 経過時間に応じて星の輝き（サイズ・色・透明度）を更新する
+   * @param {number} w - Canvasの描画幅
+   * @param {number} h - Canvasの描画高さ
+   * @param {number} deltaTime - 前フレームからの経過時間（ミリ秒）
+   */
   update(w, h, deltaTime) {
     // 時間経過で角度を進める（位置は動かさない）
     this.angle += this.blinkSpeed * deltaTime;
@@ -201,6 +279,10 @@ export class Star {
     this.color = `hsla(${hue}, 90%, ${lightness}%, ${opacity})`;
   }
 
+  /**
+   * Canvasに星を描画する
+   * @param {CanvasRenderingContext2D} ctx - Canvas 2Dコンテキスト
+   */
   draw(ctx) {
     ctx.save();
     ctx.translate(this.x, this.y);
