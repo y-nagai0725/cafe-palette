@@ -1,8 +1,13 @@
-// =========================================
-// モダンカスタムリセット (Josh W. Comeau式ベース)
-// =========================================
+// =========================================================================
+// _reset.scss (モダンカスタムリセットCSS)
+// =========================================================================
+// 役割：Josh W. Comeau式をベースに、ブラウザ間のデフォルトスタイルの差異をなくし、
+// レイアウト構築を直感的に行うための初期リセットを行う。
+// =========================================================================
 
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
@@ -13,24 +18,40 @@
 
 body {
   line-height: 1.5;
-  -webkit-font-smoothing: antialiased; // Macできれいに文字を表示する
+  -webkit-font-smoothing: antialiased; // Mac環境等で文字の輪郭を滑らかに表示する
 }
 
-img, picture, video, canvas, svg {
+// 画像やSVG、Canvasの下部に生じる余計な隙間をなくし、親要素からはみ出さないようにする
+img,
+picture,
+video,
+canvas,
+svg {
   display: block;
   max-width: 100%;
 }
 
-input, button, textarea, select {
+// フォーム系要素のフォント設定を親要素から継承させる
+input,
+button,
+textarea,
+select {
   font: inherit;
 }
 
-// URLなどの長い文字列が画面外にはみ出さないようにする
-p, h1, h2, h3, h4, h5, h6 {
+// URLなどの長い文字列が画面外にはみ出さないように自動で折り返す
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   overflow-wrap: break-word;
 }
 
-ul, ol {
+ul,
+ol {
   list-style: none;
 }
 
