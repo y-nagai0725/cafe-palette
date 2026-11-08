@@ -1,3 +1,10 @@
+// =========================================================================
+// _header.scss (ヘッダーのレイアウト定義)
+// =========================================================================
+// 役割：画面上部に常時固定されるヘッダーとナビゲーションのスタイルを管理する。
+// SP時は全画面展開するハンバーガーメニュー、PC時は横並びのナビゲーションに切り替える。
+// =========================================================================
+
 @use "../global" as g;
 
 // =========================================
@@ -12,15 +19,17 @@
   padding: g.rem(16) g.rem(20);
   background-color: rgba(g.$color-bg, 0.8);
   backdrop-filter: blur(2px);
-  transition: background-color g.$transition-base, backdrop-filter g.$transition-base;
+  transition:
+    background-color g.$transition-base,
+    backdrop-filter g.$transition-base;
 
-  // 前景レイヤー表示時に付与するクラス
+  // 店内の前景レイヤー表示時（春〜冬セクション）にJSで付与し、ヘッダー背景を透明にするクラス
   &.is-transparent {
     background-color: transparent;
     backdrop-filter: none;
   }
 
-  @include g.mq(lg){
+  @include g.mq(lg) {
     padding: g.rem(24) g.rem(40);
   }
 
@@ -30,6 +39,7 @@
     justify-content: space-between;
   }
 
+  // メニュー展開時にもロゴが背面に隠れないようz-indexを指定
   &__logo {
     position: relative;
     z-index: 2;
@@ -74,7 +84,7 @@
   // ナビゲーション
   // =========================================
   &__nav {
-    // 【SP時のスタイル】画面全体を覆うメニュー
+    // 【SP時のスタイル】画面全体を覆うフルスクリーンメニュー（GSAPのclip-pathで円形に開閉）
     position: fixed;
     top: 0;
     left: 0;
@@ -83,11 +93,13 @@
     align-items: center;
     justify-content: center;
     width: 100%;
+
+    // アドレスバー縮小時に画面下部に隙間ができないよう100vhを指定
     height: 100vh;
     background-color: rgba(g.$color-text, 0.95); // 少し透けさせる
 
     @include g.mq(lg) {
-      // 【PC時のスタイル】通常のヘッダー配置に戻す
+      // 【PC時のスタイル】通常のヘッダー内配置に戻し、clip-pathを解除
       position: static;
       display: block;
       width: auto;
