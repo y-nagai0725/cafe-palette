@@ -4,8 +4,33 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cafe Palette</title>
 
+  <!-- タイトルと説明文 -->
+  <title>Cafe Palette | 季節限定メニュー特設サイト</title>
+  <meta name="description"
+    content="移りゆく季節の中で、変わらない一杯の温もりを。「Cafe Palette（カフェ パレット）」の季節限定メニュー特設サイトです。春夏秋冬を彩る特別なドリンク＆スイーツと、店舗情報をご紹介します。">
+
+  <!-- OGP (SNSシェア時の設定) -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Cafe Palette | 季節限定メニュー特設サイト">
+  <meta property="og:description"
+    content="移りゆく季節の中で、変わらない一杯の温もりを。「Cafe Palette（カフェ パレット）」の季節限定メニュー特設サイトです。春夏秋冬を彩る特別なドリンク＆スイーツと、店舗情報をご紹介します。">
+  <meta property="og:url" content="https://cafe-palette.mikanbako.jp/">
+  <meta property="og:site_name" content="Cafe Palette">
+  <meta property="og:image" content="https://cafe-palette.mikanbako.jp/og-image.png">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Cafe Palette | 季節限定メニュー特設サイト">
+  <meta name="twitter:description"
+    content="移りゆく季節の中で、変わらない一杯の温もりを。「Cafe Palette（カフェ パレット）」の季節限定メニュー特設サイトです。春夏秋冬を彩る特別なドリンク＆スイーツと、店舗情報をご紹介します。">
+  <meta name="twitter:image" content="https://cafe-palette.mikanbako.jp/og-image.png">
+
+  <!-- Favicon / Touch Icon -->
+  <link rel="icon" href="/favicon.ico" sizes="32x32">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -14,16 +39,21 @@
 </head>
 
 <body class="is-noscroll">
-  <!-- オープニングアニメーション -->
+  <!-- =========================================
+    オープニングアニメーション
+  ========================================== -->
   <div class="p-opening js-opening">
     <div class="p-opening__svg-wrap">
       {{> opening }}
     </div>
   </div>
 
-  <!-- ヘッダー -->
+  <!-- =========================================
+    ヘッダー
+  ========================================== -->
   <header class="l-header js-header">
     <div class="l-header__inner">
+      <!-- サイトロゴ -->
       <h1 class="l-header__logo">
         <a href="/" class="l-header__logo-link js-header-logo js-page-top">Cafe Palette</a>
       </h1>
@@ -46,14 +76,17 @@
     </div>
   </header>
 
-  <!-- 固定用の外箱（ScrollTriggerでこれをpin留めする） -->
+  <!-- =========================================
+    メインコンテンツ（PC時は横スクロール用にpin留めされる外箱）
+  ========================================== -->
   <div class="l-scroll-container js-scroll-container">
     <main class="l-main js-horizontal-track">
 
-      <!-- FV -->
+      <!-- 入店アニメーション用トリガー空間 -->
       <div class="c-spacer js-fv-trigger"></div>
-      <section class="p-fv js-fv">
 
+      <!-- FV（カフェ外観：入店・退店共通レイヤー） -->
+      <section class="p-fv js-fv">
         <!-- カフェ外観のSVGレイヤー -->
         <div class="p-fv__exterior js-fv-exterior">
           <!-- PC用カフェ外観SVG -->
@@ -63,15 +96,14 @@
           {{> fv-exterior-sp }}
         </div>
 
-        <!-- タイトルとメッセージ -->
+        <!-- タイトルとスクロール誘導メッセージ -->
         <div class="p-fv__text-wrap js-fv-text">
           <h2 class="p-fv__title">Cafe Palette</h2>
           <p class="p-fv__subtitle">Scroll to enter...</p>
         </div>
-
       </section>
 
-      <!-- 背景レイヤー -->
+      <!-- 背景レイヤー（背景色・波SVG・パーティクルCanvas） -->
       <div class="l-background js-background">
         <!-- SVG（波の形） -->
         {{> background-wave }}
@@ -80,19 +112,18 @@
         <canvas class="l-background__canvas js-canvas"></canvas>
       </div>
 
-      <!-- 前景レイヤー（カフェ内装飾） -->
+      <!-- 前景レイヤー（カフェ店内装飾・時計） -->
       <div class="l-foreground js-foreground">
-
         <!-- PC用前景レイヤーSVG -->
         {{> foreground-pc }}
 
         <!-- SP用前景レイヤーSVG -->
         {{> foreground-sp }}
 
-        <!-- 時計 -->
+        <!-- 壁掛け時計 -->
         <div class="l-foreground__clock p-clock">
           <div class="p-clock__face">
-            <!-- 数字 -->
+            <!-- 文字盤の数字（CSS変数 --i で角度を計算） -->
             <div class="p-clock__numbers">
               <span class="p-clock__number" style="--i:1">1</span>
               <span class="p-clock__number" style="--i:2">2</span>
@@ -119,7 +150,6 @@
 
       <!-- 春セクション -->
       <section id="spring" class="p-season-panel js-season-panel js-section-spring">
-        <!-- メインコンテンツ -->
         <div class="p-season-panel__content js-season-content">
           <h2 class="p-season-panel__title u-visually-hidden">Spring</h2>
           <p class="p-season-panel__text js-season-text">桜舞う、<br class="p-season-panel__br">春の限定抹茶ラテ</p>
@@ -130,7 +160,6 @@
 
       <!-- 夏セクション -->
       <section id="summer" class="p-season-panel js-season-panel js-section-summer">
-        <!-- メインコンテンツ -->
         <div class="p-season-panel__content js-season-content">
           <h2 class="p-season-panel__title u-visually-hidden">Summer</h2>
           <p class="p-season-panel__text js-season-text">ひまわり咲く、<br class="p-season-panel__br">夏のレモネード</p>
@@ -141,7 +170,6 @@
 
       <!-- 秋セクション -->
       <section id="autumn" class="p-season-panel js-season-panel js-section-autumn">
-        <!-- メインコンテンツ -->
         <div class="p-season-panel__content js-season-content">
           <h2 class="p-season-panel__title u-visually-hidden">Autumn</h2>
           <p class="p-season-panel__text js-season-text">紅葉の夕暮れ、<br class="p-season-panel__br">秋のモンブランと紅茶</p>
@@ -152,7 +180,6 @@
 
       <!-- 冬セクション -->
       <section id="winter" class="p-season-panel js-season-panel js-section-winter">
-        <!-- メインコンテンツ -->
         <div class="p-season-panel__content js-season-content">
           <h2 class="p-season-panel__title u-visually-hidden">Winter</h2>
           <p class="p-season-panel__text js-season-text">雪景色、<br class="p-season-panel__br">フォンダンショコラとココア</p>
@@ -161,32 +188,29 @@
         </div>
       </section>
 
-      <!-- 季節セクション終了アニメーション用のトリガー空間 -->
+      <!-- 季節セクション終了（コーヒーカップへのディープズーム）用トリガー空間 -->
       <div class="c-spacer--small js-season-exit-trigger"></div>
 
       <!-- Messageセクション -->
       <section id="message" class="p-message js-section-message">
-
         <!-- 背景の湯気アニメーション -->
         <div class="p-message__bg">
-          <!-- 湯気のSVG -->
           {{> message-steam }}
         </div>
 
-        <!-- テキスト -->
+        <!-- コンセプトメッセージ -->
         <div class="p-message__content">
           <p class="p-message__text js-message-text">
             移りゆく季節の中で、<br>
             変わらない一杯の温もりを。
           </p>
         </div>
-
       </section>
 
-      <!-- Messageセクション用の小さめトリガー空間 -->
+      <!-- Messageセクション進行用トリガー空間 -->
       <div class="c-spacer--small js-message-trigger"></div>
 
-      <!-- 退店アニメーション（FVの逆再生）用トリガー空間 -->
+      <!-- 退店アニメーション（FVの逆再生・夜モード）用トリガー空間 -->
       <div class="c-spacer js-fv-reverse-trigger"></div>
 
       <!-- Infoセクション -->
@@ -211,7 +235,7 @@
 
             <!-- 右側：Google Map -->
             <div class="p-info__map">
-              <iframe
+              <iframe title="Cafe Palette 店舗周辺のGoogleマップ"
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2914.9221235122853!2d141.35075671548174!3d43.06209587914619!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x5f0b2974d0840b5d%3A0x6e22ddb7df283bc4!2z5pyt5bmM5biC5pmC6KiI5Y-w!5e0!3m2!1sja!2sjp!4v1700000000000!5m2!1sja!2sjp"
                 width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"
                 referrerpolicy="no-referrer-when-downgrade">
