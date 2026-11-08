@@ -1,9 +1,18 @@
+// =========================================================================
+// _clock.scss (壁掛け時計コンポーネントのスタイル定義)
+// =========================================================================
+// 役割：前景レイヤー（カフェ店内）の壁面に配置されるアナログ時計。
+// CSS変数と三角関数的な回転配置で1〜12の文字盤を円形に並べ、
+// 長針・短針をGSAPから回転制御できるようにする。
+// =========================================================================
+
 @use "../../global" as g;
 
 // =========================================
 // 時計パーツ (p-clock)
 // =========================================
 .p-clock {
+  // 時計全体のサイズ兼、文字盤の半径計算に用いるCSS変数
   --clock-width: #{g.rem(100)};
 
   position: absolute;
@@ -25,6 +34,7 @@
     right: 8%;
   }
 
+  // 時計の盤面（外枠と背景）
   &__face {
     position: relative;
     width: 100%;
@@ -32,7 +42,7 @@
     background-color: g.$color-bg; // 盤面の色
     border: 4px solid g.$color-coffee; // 時計の枠線
     border-radius: 50%;
-    box-shadow: 2px 4px 8px rgb(0 0 0 / 10%); // ほんのり立体感
+    box-shadow: 2px 4px 8px rgb(0 0 0 / 10%); // ほんのり立体感をつける
 
     @include g.mq(md) {
       border-width: 5px;
@@ -51,6 +61,7 @@
     height: 100%;
   }
 
+  // 文字盤の数字（1〜12）
   &__number {
     position: absolute;
     top: 50%;
@@ -60,10 +71,13 @@
     line-height: 1;
     color: g.$color-coffee;
 
-    // 計算式：
-    // 中央から角度(30度×番号)だけ回転させる
-    // translateYで外側へ移動させる (半径分)
-    // 移動先で逆方向に回転させて、数字を真っ直ぐ立たせる
+    // 【文字盤の円形配置ロジック】※HTML側のインラインstyleで定義した変数 var(--i) (1〜12) を参照
+    // 1. translate(-50%, -50%) : 数字の中心を時計盤面の真ん中に合わせる
+    // 2. rotate(calc(30deg * var(--i))) : 1時間あたり30度（360度÷12）の角度で、移動方向の軸を回転させる
+    // 3. translateY(calc(-1 * var(--clock-width) / 2 + 110%)) :
+    //    盤面の半径分（-clock-width / 2）だけ外側（上方向）へ移動させつつ、
+    //    枠線と重ならないよう「数字自身の高さの110%分」だけ内側へ引き戻して配置を調整する
+    // 4. rotate(calc(-30deg * var(--i))) : 傾いた数字を逆回転させ、文字の向きを真っ直ぐ垂直に戻す
     transform: translate(-50%, -50%) rotate(calc(30deg * var(--i))) translateY(calc(-1 * var(--clock-width) / 2 + 110%))
       rotate(calc(-30deg * var(--i)));
 
@@ -76,6 +90,7 @@
     }
   }
 
+  // 時計の針（長針・短針共通）
   &__hand {
     position: absolute;
     bottom: 50%;
@@ -83,10 +98,10 @@
     background-color: g.$color-coffee;
     border-radius: 3px;
 
-    // 針の根元を中心に回転させる
+    // 針の下端（盤面の中心）を軸にして回転させる（※横方向のセンタリングxPercent: -50はJS側で設定）
     transform-origin: bottom center;
 
-    // 長針
+    // 長針（分針）
     &--long {
       width: g.rem(3);
       height: 40%; // 盤面の半径より少し短め
@@ -96,7 +111,7 @@
       }
     }
 
-    // 短針
+    // 短針（時針）
     &--short {
       width: g.rem(5);
       height: 25%; // 長針より短くて太め
@@ -107,6 +122,7 @@
     }
   }
 
+  // 針の根元を隠す時計中心の丸パーツ
   &__center {
     position: absolute;
     top: 50%;

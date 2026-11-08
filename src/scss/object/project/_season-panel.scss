@@ -1,3 +1,10 @@
+// =========================================================================
+// _season-panel.scss (四季セクションのスタイル定義)
+// =========================================================================
+// 役割：春・夏・秋・冬の各セクションのスクロール領域（幅・高さ）を確保し、
+// 前景レイヤー（店内）よりも手前に季節限定メニューの画像とテキストを表示する。
+// =========================================================================
+
 @use "../../global" as g;
 
 // =========================================
@@ -10,6 +17,8 @@
   align-items: center;
   justify-content: flex-start;
   width: 100%;
+
+  // SP時は縦の高さ（150vh）、PC時は横の幅（150vw）が各季節の滞在・描画スクロール量になる
   height: 150vh;
 
   @include g.mq(lg) {
@@ -20,24 +29,26 @@
   }
 
   // =========================================
-  // コンテンツ（一番手前）
+  // コンテンツ（一番手前：前景レイヤーの上に重ねる）
   // =========================================
+  // ※この外枠はJS側で画面中央への固定制御（SP: pin / PC: 逆スクロール）に使用する
   &__content {
     position: relative;
-    z-index: calc(g.$z-index-foreground + 10); // 前景レイヤーより手前にする
+    z-index: calc(g.$z-index-foreground + 10); // 前景レイヤー（店内装飾）より手前に配置
     display: flex;
-    flex-direction: column-reverse;
+    flex-direction: column-reverse; // SP時は「画像（上）➔ テキスト（下）」の順にする
     gap: g.rem(16);
     align-items: center;
     color: g.$color-text;
     text-align: center;
 
     @include g.mq(lg) {
-      flex-direction: column;
+      flex-direction: column; // PC時は「テキスト（上）➔ 画像（下）」の順にする
       gap: g.rem(32);
     }
   }
 
+  // キャッチコピー（初期状態は非表示、JSでポップアップ＆上下ループ）
   &__text {
     visibility: hidden;
     padding: 0.5em 1em;
@@ -45,7 +56,7 @@
     font-weight: g.$weight-bold;
     line-height: 1.6;
     text-align: center;
-    background-color: rgba(g.$color-bg, 0.7); // ほんのり透ける白
+    background-color: rgba(g.$color-bg, 0.7); // ほんのり透ける白背景で可読性を確保
     border-radius: 20px;
     box-shadow: 0 4px 12px rgb(0 0 0 / 5%);
     opacity: 0;
@@ -56,6 +67,7 @@
     }
   }
 
+  // SP時のみ改行を有効にする
   &__br {
     display: block;
 
@@ -64,6 +76,7 @@
     }
   }
 
+  // メニュー画像（初期状態は非表示、JSでポップアップ＆上下ループ）
   &__image {
     display: block;
     visibility: hidden;
