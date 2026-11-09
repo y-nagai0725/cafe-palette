@@ -123,7 +123,7 @@
         <!-- 壁掛け時計 -->
         <div class="l-foreground__clock p-clock">
           <div class="p-clock__face">
-            <!-- 文字盤の数字（CSS変数 --i で角度を計算） -->
+            <!-- 文字盤の数字（CSS変数で角度を計算） -->
             <div class="p-clock__numbers">
               <span class="p-clock__number" style="--i:1">1</span>
               <span class="p-clock__number" style="--i:2">2</span>
@@ -200,6 +200,7 @@
 
         <!-- コンセプトメッセージ -->
         <div class="p-message__content">
+          <h2 class="p-message__title u-visually-hidden">Message</h2>
           <p class="p-message__text js-message-text">
             移りゆく季節の中で、<br>
             変わらない一杯の温もりを。
@@ -262,9 +263,12 @@
             </ul>
           </nav>
 
-          <!-- コピーライト -->
+          <!-- コピーライト・注記 -->
           <p class="l-footer__copyright">
-            <small class="l-footer__copyright-text">&copy; 2026 Cafe Palette. All Rights Reserved.</small>
+            <small class="l-footer__copyright-text">
+              ※季節限定メニューの画像は<br class="l-footer__br">生成AI（Gemini）で作成しています。<br>
+              &copy; 2026 Cafe Palette. All Rights Reserved.
+            </small>
           </p>
         </div>
       </footer>

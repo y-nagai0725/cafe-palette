@@ -96,11 +96,20 @@
   // =========================================
   &__copyright-text {
     font-size: g.rem(12);
+    line-height: 1.8;
     letter-spacing: 0.05em;
     opacity: 0.6;
 
     @include g.mq(lg) {
       font-size: g.rem(14);
+    }
+  }
+
+  &__br {
+    display: block;
+
+    @include g.mq(lg){
+      display: none;
     }
   }
 }
