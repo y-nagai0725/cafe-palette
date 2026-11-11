@@ -1,5 +1,5 @@
 # Cafe Palette<!-- omit in toc -->
-![サイト画像]()
+![サイト画像](docs/cafe-palette.jpg)
 
 ## 目次<!-- omit in toc -->
 - [概要](#概要)
