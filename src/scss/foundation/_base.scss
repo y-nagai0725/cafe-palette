@@ -12,19 +12,16 @@ html {
 }
 
 body {
+  // 横スクロール用のトラック（.l-main）や100vw要素による水平スクロールバーの出現を防止する
+  overflow-x: hidden;
   font-family: g.$font-base;
   font-size: g.rem(16);
   font-weight: g.$weight-normal;
   color: g.$color-text;
   background-color: g.$color-bg;
 
-  // オープニング再生中やSPメニュー展開時に背面のスクロールを禁止する
+  // オープニング再生中やモーダル・SPメニュー展開時に背面のスクロールを禁止する
   &.is-noscroll {
     overflow: hidden;
-  }
-
-  // PC（横スクロール）表示時に、横に並べたトラックによる水平スクロールバーを非表示にする
-  @include g.mq(lg) {
-    overflow-x: hidden;
   }
 }

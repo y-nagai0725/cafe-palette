@@ -10,6 +10,7 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { MorphSVGPlugin } from 'gsap/MorphSVGPlugin';
 import { GSAP_EASING } from '../utils/constants';
+import { lockScroll, unlockScroll } from '../utils/scrollbar';
 
 gsap.registerPlugin(ScrollTrigger, MorphSVGPlugin);
 
@@ -21,9 +22,12 @@ export const initOpening = async () => {
 
   // もし要素がなければ、念のためスクロール禁止だけ解除して終了
   if (!opening) {
-    document.body.classList.remove('is-noscroll');
+    unlockScroll();
     return;
   }
+
+  // オープニング再生中はスクロールバー消失分の余白（--scrollbar-width）をセットしてガタつきを防ぐ
+  lockScroll();
 
   // OP用のcircle要素のみをMorphSVGで操作可能にするためpath要素へ変換
   MorphSVGPlugin.convertToPath('.js-opening-circle');
@@ -133,8 +137,8 @@ export const initOpening = async () => {
   // =========================================
   gsap.set(opening, { display: 'none' });
 
-  // スクロール禁止を解除
-  document.body.classList.remove('is-noscroll');
+  // スクロール禁止と余白補正を解除
+  unlockScroll();
 
   // スクロールバーの表示等でレイアウトが変わる可能性があるため、ScrollTriggerを再計算
   ScrollTrigger.refresh();

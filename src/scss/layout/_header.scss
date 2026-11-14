@@ -16,7 +16,9 @@
   left: 0;
   z-index: g.$z-index-header;
   width: 100%;
-  padding: g.rem(16) g.rem(20);
+
+  // スクロールバー有り/無しでのガタつき防止のための余白
+  padding-right: var(--scrollbar-width, 0);
   background-color: rgba(g.$color-bg, 0.8);
   backdrop-filter: blur(2px);
   transition:
@@ -29,14 +31,15 @@
     backdrop-filter: none;
   }
 
-  @include g.mq(lg) {
-    padding: g.rem(24) g.rem(40);
-  }
-
   &__inner {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    padding: g.rem(16) g.rem(20);
+
+    @include g.mq(lg) {
+      padding: g.rem(24) g.rem(40);
+    }
   }
 
   // メニュー展開時にもロゴが背面に隠れないようz-indexを指定

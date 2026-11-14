@@ -10,6 +10,7 @@ import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
 import { MorphSVGPlugin } from 'gsap/MorphSVGPlugin';
 import { COLORS, BREAKPOINTS, GSAP_EASING } from '../utils/constants';
 import { debounce } from '../utils/debounce';
+import { lockScroll, unlockScroll } from '../utils/scrollbar';
 
 gsap.registerPlugin(ScrollToPlugin, MorphSVGPlugin);
 
@@ -121,12 +122,12 @@ export const initHeaderNav = () => {
     const toggleMenu = async () => {
       if (tl.reversed()) {
         // メニューを開く：即座に背景スクロールを禁止し、アニメーションを再生
-        document.body.classList.add('is-noscroll');
+        lockScroll();
         tl.play();
       } else {
         // メニューを閉じる：アニメーションの逆再生完了を待ち、完全に閉じてからスクロールを許可する
         await tl.reverse();
-        document.body.classList.remove('is-noscroll');
+        unlockScroll();
       }
     };
 
@@ -136,7 +137,7 @@ export const initHeaderNav = () => {
     const closeMenu = async () => {
       if (!tl.reversed()) {
         await tl.reverse();
-        document.body.classList.remove('is-noscroll');
+        unlockScroll();
       }
     };
 
@@ -161,7 +162,7 @@ export const initHeaderNav = () => {
 
       // PC幅になった瞬間に、もしスクロール禁止状態のままなら解除する
       if (document.body.classList.contains('is-noscroll')) {
-        document.body.classList.remove('is-noscroll');
+        unlockScroll();
       }
     };
   });
