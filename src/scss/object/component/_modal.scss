@@ -1,0 +1,156 @@
+// =========================================================================
+// _modal.scss ()
+// =========================================================================
+// 役割：
+// =========================================================================
+
+@use "../../global" as g;
+
+// =========================================
+//
+// =========================================
+.c-modal {
+  width: 90%;
+  max-width: g.rem(500);
+  margin: auto;
+  background-color: g.$color-bg;
+  border: none;
+  border-radius: 12px;
+  opacity: 0;
+  transform: translateY(0);
+  transition:
+    opacity g.$transition-base,
+    transform g.$transition-base,
+    display g.$transition-base allow-discrete,
+    overlay g.$transition-base allow-discrete;
+
+  &::backdrop {
+    background: rgb(0 0 0 / 60%);
+    opacity: 0;
+    backdrop-filter: blur(2px);
+    transition:
+      opacity g.$transition-base,
+      display g.$transition-base allow-discrete,
+      overlay g.$transition-base allow-discrete;
+  }
+
+  &[open] {
+    opacity: 1;
+    transform: translateY(0);
+
+    @starting-style {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    &::backdrop {
+      opacity: 1;
+
+      @starting-style {
+        opacity: 0;
+      }
+    }
+  }
+
+  &__inner {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: g.rem(16);
+    border-bottom: 1px solid rgba(g.$color-text, 0.2);
+
+    @include g.mq(lg) {
+      padding: g.rem(20);
+    }
+  }
+
+  &__header-title {
+    font-size: g.rem(14);
+
+    @include g.mq(lg) {
+      font-size: g.rem(16);
+    }
+  }
+
+  &__close-icon {
+    position: relative;
+    width: g.rem(40);
+    aspect-ratio: 1;
+    cursor: pointer;
+    background-color: transparent;
+    border: none;
+    transition: opacity g.$transition-base;
+
+    @include g.mq(lg) {
+      width: g.rem(50);
+    }
+
+    &::before,
+    &::after {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 50%;
+      height: 2px;
+      content: "";
+      background-color: g.$color-text;
+    }
+
+    &::before {
+      transform: translate(-50%, -50%) rotate(45deg);
+    }
+
+    &::after {
+      transform: translate(-50%, -50%) rotate(-45deg);
+    }
+
+    @include g.hover {
+      opacity: g.$hovered-opacity;
+    }
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    gap: g.rem(16);
+    padding: g.rem(16);
+
+    @include g.mq(lg) {
+      padding: g.rem(20);
+    }
+  }
+
+  &__image-wrap {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+  }
+
+  &__image {
+
+  }
+
+  &__title {
+    font-size: g.rem(14);
+    font-weight: g.$weight-bold;
+
+    @include g.mq(lg) {
+      font-size: g.rem(16);
+    }
+  }
+
+  &__text {
+    max-height: g.rem(120);
+    overflow-y: scroll;
+    font-size: g.rem(13);
+    line-height: 1.6;
+
+    @include g.mq(lg) {
+      font-size: g.rem(15);
+    }
+  }
+}

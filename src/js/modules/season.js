@@ -10,6 +10,7 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { BREAKPOINTS, GSAP_EASING } from '../utils/constants';
 import { getReverseScrollAmount } from '../utils/scroll';
+import { lockScroll, unlockScroll } from '../utils/scrollbar';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -20,6 +21,10 @@ export const initSeasonPanels = () => {
   // すべての四季セクションとコンテンツ枠を取得する
   const sections = document.querySelectorAll('.js-season-panel');
   const sectionContents = document.querySelectorAll('.js-season-content');
+  const moreButtons = document.querySelectorAll('.js-more-button');
+  const modal = document.querySelector('.js-modal');
+  const modalCloseButton = document.querySelector('.js-modal-close');
+
   if (!sections.length || !sectionContents.length) return;
 
   // =========================================
@@ -146,5 +151,24 @@ export const initSeasonPanels = () => {
       // pin機能や逆スクロールで付与されたtransform設定をリセット
       gsap.set(sectionContents, { clearProps: "transform" });
     };
+  });
+
+  moreButtons.forEach(button => {
+    button.addEventListener("click", () => {
+      lockScroll();
+      modal.showModal();
+    });
+  });
+
+  modalCloseButton.addEventListener("click", () => {
+    modal.close();
+    unlockScroll();
+  });
+
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) {
+      modal.close();
+      unlockScroll();
+    }
   });
 };
