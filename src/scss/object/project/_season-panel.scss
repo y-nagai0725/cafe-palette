@@ -20,6 +20,7 @@
 
   // SP時は縦の高さ（150vh）、PC時は横の幅（150vw）が各季節の滞在・描画スクロール量になる
   height: 150vh;
+  pointer-events: none;
 
   @include g.mq(lg) {
     align-items: flex-start;
@@ -127,6 +128,7 @@
     font-weight: g.$weight-bold;
     color: g.$color-bg;
     letter-spacing: 0.03em;
+    pointer-events: auto;
     cursor: pointer;
     background-color: g.$color-coffee;
     border: none;
@@ -149,5 +151,10 @@
       color: g.$color-coffee;
       background-color: g.$color-bg;
     }
+  }
+
+  // モーダルウィンドウへ表示する情報（非表示にしておく）
+  &__menu-detail {
+    display: none;
   }
 }

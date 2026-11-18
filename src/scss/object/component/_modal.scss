@@ -11,16 +11,15 @@
 // =========================================
 .c-modal {
   width: 90%;
-  max-width: g.rem(500);
+  max-width: g.rem(480);
   margin: auto;
+  color: g.$color-text;
   background-color: g.$color-bg;
   border: none;
   border-radius: 12px;
   opacity: 0;
-  transform: translateY(0);
   transition:
     opacity g.$transition-base,
-    transform g.$transition-base,
     display g.$transition-base allow-discrete,
     overlay g.$transition-base allow-discrete;
 
@@ -36,11 +35,9 @@
 
   &[open] {
     opacity: 1;
-    transform: translateY(0);
 
     @starting-style {
       opacity: 0;
-      transform: translateY(20px);
     }
 
     &::backdrop {
@@ -61,19 +58,20 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: g.rem(16);
+    padding: g.rem(10) g.rem(20);
     border-bottom: 1px solid rgba(g.$color-text, 0.2);
 
     @include g.mq(lg) {
-      padding: g.rem(20);
+      padding: g.rem(16) g.rem(24);
     }
   }
 
   &__header-title {
-    font-size: g.rem(14);
+    font-size: g.rem(13);
+    font-weight: g.$weight-bold;
 
     @include g.mq(lg) {
-      font-size: g.rem(16);
+      font-size: g.rem(14);
     }
   }
 
@@ -86,8 +84,8 @@
     border: none;
     transition: opacity g.$transition-base;
 
-    @include g.mq(lg) {
-      width: g.rem(50);
+    @include g.hover {
+      opacity: g.$hovered-opacity;
     }
 
     &::before,
@@ -108,30 +106,124 @@
     &::after {
       transform: translate(-50%, -50%) rotate(-45deg);
     }
-
-    @include g.hover {
-      opacity: g.$hovered-opacity;
-    }
   }
 
   &__body {
+    position: relative;
+    min-height: 55vh;
+    padding: g.rem(20);
+
+    @include g.mq(lg) {
+      padding: g.rem(24);
+    }
+  }
+
+  &__loader {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    visibility: hidden;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    background-color: g.$color-bg;
+    opacity: 0;
+    filter: brightness(95%);
+    transition:
+      opacity g.$transition-base,
+      visibility g.$transition-base;
+
+    &.is-loading {
+      visibility: visible;
+      opacity: 1;
+    }
+  }
+
+  &__dots {
+    display: flex;
+    gap: g.rem(8);
+  }
+
+  &__dots-item {
+    width: g.rem(12);
+    aspect-ratio: 1;
+    background-color: g.$color-coffee;
+    border-radius: 50%;
+    animation: bounce 0.6s ease-in-out infinite alternate;
+
+    &:nth-of-type(2) {
+      animation-delay: 0.2s;
+    }
+
+    &:nth-of-type(3) {
+      animation-delay: 0.4s;
+    }
+  }
+
+  @keyframes bounce {
+    0% {
+      transform: translateY(0);
+    }
+
+    100% {
+      transform: translateY(-95%);
+    }
+  }
+
+  &__error {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    visibility: hidden;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    font-size: g.rem(14);
+    font-weight: g.$weight-bold;
+    color: rgba(g.$color-text, 0.7);
+    opacity: 0;
+    transition:
+      opacity g.$transition-base,
+      visibility g.$transition-base;
+
+    @include g.mq(lg) {
+      font-size: g.rem(16);
+    }
+
+    &.is-show {
+      visibility: visible;
+      opacity: 1;
+    }
+  }
+
+  &__contents {
     display: flex;
     flex-direction: column;
     gap: g.rem(16);
-    padding: g.rem(16);
+    opacity: 0;
+    transition: opacity g.$transition-base;
 
-    @include g.mq(lg) {
-      padding: g.rem(20);
+    &.is-show {
+      opacity: 1;
     }
   }
 
   &__image-wrap {
     width: 100%;
-    aspect-ratio: 16 / 9;
+    min-height: 0;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    border-radius: 8px;
   }
 
   &__image {
-
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
 
   &__title {
@@ -145,7 +237,7 @@
 
   &__text {
     max-height: g.rem(120);
-    overflow-y: scroll;
+    overflow-y: auto;
     font-size: g.rem(13);
     line-height: 1.6;
 
