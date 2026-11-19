@@ -11,6 +11,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { MorphSVGPlugin } from 'gsap/MorphSVGPlugin';
 import { GSAP_EASING } from '../utils/constants';
 import { lockScroll, unlockScroll } from '../utils/scrollbar';
+import { waitTime } from '../utils/async';
 
 gsap.registerPlugin(ScrollTrigger, MorphSVGPlugin);
 
@@ -88,17 +89,6 @@ export const initOpening = async () => {
       } else {
         window.addEventListener('load', resolve, { once: true });
       }
-    });
-  };
-
-  /**
-   * 指定した時間（ミリ秒）だけ待機する関数
-   * @param {number} ms - 待機する時間（ミリ秒）
-   * @returns {Promise<void>} 指定時間経過後に解決されるPromise
-   */
-  const waitTime = (ms) => {
-    return new Promise((resolve) => {
-      setTimeout(resolve, ms);
     });
   };
 

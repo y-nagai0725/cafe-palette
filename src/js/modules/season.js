@@ -10,7 +10,6 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { BREAKPOINTS, GSAP_EASING } from '../utils/constants';
 import { getReverseScrollAmount } from '../utils/scroll';
-import { lockScroll, unlockScroll } from '../utils/scrollbar';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -21,15 +20,6 @@ export const initSeasonPanels = () => {
   // すべての四季セクションとコンテンツ枠を取得する
   const sections = document.querySelectorAll('.js-season-panel');
   const sectionContents = document.querySelectorAll('.js-season-content');
-  const moreButtons = document.querySelectorAll('.js-more-button');
-  const modal = document.querySelector('.js-modal');
-  const modalCloseButton = document.querySelector('.js-modal-close');
-  const modalLoader = document.querySelector('.js-modal-loader');
-  const modalError = document.querySelector('.js-modal-error');
-  const modalContents = document.querySelector('.js-modal-contents');
-  const modalImage = document.querySelector('.js-modal-image');
-  const modalTitle = document.querySelector('.js-modal-title');
-  const modalText = document.querySelector('.js-modal-text');
 
   if (!sections.length || !sectionContents.length) return;
 
@@ -69,7 +59,7 @@ export const initSeasonPanels = () => {
       });
 
       animationTl
-        // メニュー画像：少し傾いた状態から回転しつつポップアップ
+        // メニュー画像ラッパー（画像＋MOREボタン）：少し傾いた状態から回転しつつポップアップ
         .fromTo(contentImage,
           { scale: 0, rotation: -25, y: 40, autoAlpha: 0 },
           { scale: 1, rotation: 0, y: 0, autoAlpha: 1, duration: 1 }
@@ -80,7 +70,7 @@ export const initSeasonPanels = () => {
           { scale: 1, y: 0, autoAlpha: 1, duration: 0.8 },
           "-=0.6"
         )
-        // 登場完了後、そのまま画像とテキストを上下にふわふわ揺らす無限ループへ移行
+        // 登場完了後、そのまま画像ラッパーとテキストを上下にふわふわ揺らす無限ループへ移行
         .to([contentImage, contentText], {
           y: -8,
           duration: 1.6,
@@ -158,98 +148,4 @@ export const initSeasonPanels = () => {
       gsap.set(sectionContents, { clearProps: "transform" });
     };
   });
-
-  const waitTime = (ms) => {
-    return new Promise((resolve) => {
-      setTimeout(resolve, ms);
-    });
-  };
-
-  /**
-   *
-   * @param {*} seasonId
-   */
-  const openModal = async (seasonId) => {
-    // モーダルの初期設定
-    modalLoader.classList.add('is-loading');
-    modalError.textContent = "";
-    modalError.classList.remove('is-show');
-    modalContents.classList.remove('is-show');
-
-    // 背面スクロール禁止設定
-    lockScroll();
-
-    // モーダルを開く
-    modal.showModal();
-
-    try {
-      // モーダルへ詳細情報をセットする処理と最低表示時間（0.6秒）の両方が終わるまで待機
-      await Promise.all([setSeasonMenuDetail(seasonId), waitTime(600)]);
-
-      // モーダルの詳細情報を表示
-      modalContents.classList.add('is-show');
-    } catch (error) {
-      // モーダルのエラーメッセージ表示
-      modalError.textContent = error.message;
-      modalError.classList.add('is-show');
-    } finally {
-      // モーダルのloader非表示
-      modalLoader.classList.remove('is-loading');
-    }
-  };
-
-  /**
-   *
-   * @param {*} seasonId
-   * @returns
-   */
-  const setSeasonMenuDetail = (seasonId) => {
-    return new Promise(async (resolve, reject) => {
-      // DOM要素取得
-      const titleElement = document.querySelector(`.js-${seasonId}-menu-title`);
-      const textElement = document.querySelector(`.js-${seasonId}-menu-text`);
-      const imageElement = document.querySelector(`.js-${seasonId}-menu-image`);
-
-      if (!titleElement || !textElement || !imageElement) {
-        reject(new Error("詳細情報が見つかりませんでした。"));
-        return;
-      }
-
-      // タイトルをセットする
-      modalTitle.textContent = titleElement.textContent;
-
-      // 説明文をセットする
-      modalText.textContent = textElement.textContent;
-
-      // メニュー画像をセットする
-      modalImage.src = imageElement.src;
-      modalImage.alt = imageElement.alt;
-      await modalImage.decode(); // 画像読み込み完了を待機
-      resolve();
-    });
-  };
-
-  // MOREボタンクリック時にモーダルを開く処理
-  moreButtons.forEach(button => {
-    button.addEventListener('click', () => {
-      openModal(button.dataset.seasonId);
-    });
-  });
-
-  // モーダルの閉じるボタンでの処理
-  modalCloseButton.addEventListener('click', () => {
-    modal.close();
-  });
-
-  // モーダルのオーバーレイ部分クリックで閉じる処理
-  modal.addEventListener('click', (e) => {
-    if (e.target === modal) {
-      modal.close();
-    }
-  });
-
-  // モーダルを閉じたとき（閉じるボタン・オーバーレイクリック・ESCキー等）にスクロール禁止解除
-  modal.addEventListener('close', () => {
-    unlockScroll();
-  })
 };

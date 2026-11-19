@@ -1,13 +1,15 @@
 // =========================================================================
-// _modal.scss ()
+// _modal.scss (モーダルウィンドウコンポーネントのスタイル定義)
 // =========================================================================
-// 役割：
+// 役割：HTML標準のdialog要素を用いたモーダルウィンドウのレイアウト、
+// @starting-styleとallow-discreteによる開閉フェードアニメーション、
+// および内部のローディング・エラー・詳細コンテンツの表示状態を管理する。
 // =========================================================================
 
 @use "../../global" as g;
 
 // =========================================
-//
+// モーダルウィンドウ本体 (c-modal)
 // =========================================
 .c-modal {
   width: 90%;
@@ -18,11 +20,14 @@
   border: none;
   border-radius: 12px;
   opacity: 0;
+
+  // display: none からの切り替え時にもトランジションを有効化する（allow-discrete）
   transition:
     opacity g.$transition-base,
     display g.$transition-base allow-discrete,
     overlay g.$transition-base allow-discrete;
 
+  // 背面のオーバーレイ（背景幕）
   &::backdrop {
     background: rgb(0 0 0 / 60%);
     opacity: 0;
@@ -33,6 +38,7 @@
       overlay g.$transition-base allow-discrete;
   }
 
+  // モーダル展開時（open属性付与時）のフェードイン制御
   &[open] {
     opacity: 1;
 
@@ -49,11 +55,15 @@
     }
   }
 
+  // ※オーバーレイ（.c-modal自身）のクリック判定を正確に行うため、内側の要素を__innerで包む
   &__inner {
     display: flex;
     flex-direction: column;
   }
 
+  // =========================================
+  // モーダルヘッダー・閉じるボタン
+  // =========================================
   &__header {
     display: flex;
     align-items: center;
@@ -75,6 +85,7 @@
     }
   }
 
+  // 閉じる（×）ボタン（疑似要素でバツ印を描画）
   &__close-icon {
     position: relative;
     width: g.rem(40);
@@ -108,6 +119,9 @@
     }
   }
 
+  // =========================================
+  // モーダルボディ（ローダー・エラー・コンテンツ格納領域）
+  // =========================================
   &__body {
     position: relative;
     min-height: 55vh;
@@ -118,6 +132,9 @@
     }
   }
 
+  // -----------------------------------------
+  // ローディングアニメーション（3点ドットバウンス）
+  // -----------------------------------------
   &__loader {
     position: absolute;
     top: 0;
@@ -172,6 +189,9 @@
     }
   }
 
+  // -----------------------------------------
+  // エラーメッセージ表示
+  // -----------------------------------------
   &__error {
     position: absolute;
     top: 0;
@@ -200,6 +220,9 @@
     }
   }
 
+  // -----------------------------------------
+  // 詳細コンテンツ（画像・タイトル・説明文）
+  // -----------------------------------------
   &__contents {
     display: flex;
     flex-direction: column;
@@ -236,13 +259,14 @@
   }
 
   &__text {
-    max-height: g.rem(120);
+    max-height: g.rem(160);
     overflow-y: auto;
-    font-size: g.rem(13);
-    line-height: 1.6;
+    font-size: g.rem(14);
+    line-height: 1.8;
 
     @include g.mq(lg) {
-      font-size: g.rem(15);
+      max-height: g.rem(150);
+      font-size: g.rem(16);
     }
   }
 }

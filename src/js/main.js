@@ -10,6 +10,7 @@ import { initOpening } from './modules/opening';
 import { initHorizontalScroll } from './modules/horizontal';
 import { initPageTop, initSectionLinks } from './modules/common';
 import { initHeaderNav } from './modules/header';
+import { initModal } from './modules/modal';
 import { initBackground } from './modules/background';
 import { initForeground } from './modules/foreground';
 import { initFvAnimation } from './modules/fv';
@@ -51,13 +52,13 @@ const init = () => {
   initOpening();
 
   // ページ全体の横スクロール（id: "hScroll"）の生成
-  // ※後続のモジュールが containerAnimation として "hScroll" を参照するため、必ず先に初期化する
   initHorizontalScroll();
 
-  // 共通UI（スムーススクロール・ヘッダーナビ）の初期化
+  // 共通UI（スムーススクロール・ヘッダーナビ・モーダル）の初期化
   initPageTop();
   initSectionLinks();
   initHeaderNav();
+  initModal();
 
   // 背景・前景レイヤーおよび各セクションのスクロール連動アニメーション初期化
   initBackground();
