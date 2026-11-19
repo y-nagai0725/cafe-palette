@@ -11,6 +11,7 @@
 - [デザインカンプ](#デザインカンプ)
 - [各画面・機能紹介](#各画面機能紹介)
   - [リロード時のスクロール位置リセットと初期化制御](#リロード時のスクロール位置リセットと初期化制御)
+  - [スクロールロック時のガタつき防止制御](#スクロールロック時のガタつき防止制御)
   - [OPアニメーション](#opアニメーション)
     - [Promiseを用いた同期処理](#promiseを用いた同期処理)
   - [全体横スクロール](#全体横スクロール)
@@ -28,7 +29,7 @@
     - [デバイスピクセル比対応とデルタタイムによる描画エンジン](#デバイスピクセル比対応とデルタタイムによる描画エンジン)
   - [季節セクション（春・夏・秋・冬）](#季節セクション春夏秋冬)
     - [ポップアップ登場と浮遊ループのシームレスな連携](#ポップアップ登場と浮遊ループのシームレスな連携)
-    - [スクロール固定とアニメーションのtransform競合回避](#スクロール固定とアニメーションのtransform競合回避)
+    - [dialog要素と非同期デコードを用いたメニュー詳細モーダル](#dialog要素と非同期デコードを用いたメニュー詳細モーダル)
   - [退店時ズームアニメーション](#退店時ズームアニメーション)
   - [Messageセクション](#messageセクション)
     - [スクロール進行度（progress）監視による時間差フェードイン](#スクロール進行度progress監視による時間差フェードイン)
@@ -61,11 +62,11 @@
 
 * **保守性・拡張性を意識したモジュール設計（ES Modules / FLOCSS / Handlebars）**
 
-  JavaScriptは機能・セクション単位でモジュール分割し、カラーコードやイージング、ブレイクポイントなどを定数ファイル（[`constants.js`](src/js/utils/constants.js)）で一元管理しています。また、肥大化しやすいインラインSVGはHandlebarsを用いて外部ファイル化し、HTMLの可読性とメンテナンス性を高めました。
+  JavaScriptは機能・セクション単位でモジュール分割し、カラーコードやイージングなどの定数（[`constants.js`](src/js/utils/constants.js)）や、スクロールロック制御（[`scrollbar.js`](src/js/utils/scrollbar.js)）、非同期の待機処理（[`async.js`](src/js/utils/async.js)）といった共通ロジックをユーティリティとして一元管理しています。また、肥大化しやすいインラインSVGはHandlebarsを用いて外部ファイル化し、HTMLの可読性とメンテナンス性を高めました。
 
 * **パフォーマンスとユーザー体験（UX）への徹底した配慮**
 
-  非表示レイヤーにおけるCanvas描画ループの自動停止や、リサイズイベントのデバウンス処理、モニターのリフレッシュレートに依存しないデルタタイム計算など、ブラウザの負荷を抑えつつどの環境でも快適に動作する工夫を取り入れています。
+  非表示レイヤーにおけるCanvas描画ループの自動停止、リサイズイベントのデバウンス処理、リフレッシュレート非依存のデルタタイム計算に加え、スクロールバーの有無によるレイアウトシフト（ガタつき）の防止や、画像デコード完了を待機するモーダル表示など、細部まで快適な操作性を追求しています。
 
 ## こだわったポイント
 * **入店から退店まで「時間の流れと四季の移ろい」を体験できるストーリー演出**
@@ -80,13 +81,17 @@
 
   背景で舞う桜・泡・落ち葉・粉雪・夜空の星は、オブジェクト指向（クラス設計）で実装したCanvasエンジンで描画しています。`window.devicePixelRatio` に合わせたスケーリングでスマホ等の高解像度画面でもボヤけない描画を保ちつつ、フレーム間の経過時間（`deltaTime`）を基に移動量や瞬きを計算することで、60Hz・120Hzなど異なるリフレッシュレートのモニター間でも同じ速度でアニメーションが再生されるよう制御しています。
 
+* **モダンな `<dialog>` モーダルとスクロールロック時のガタつき防止設計**
+
+  季節限定メニューの詳細表示にはHTML標準の `<dialog>` 要素を採用し、最新CSSの `@starting-style` と `transition-behavior: allow-discrete` による滑らかな開閉アニメーションや、`HTMLImageElement.decode()` と `Promise.all` を組み合わせたローディング同期を実装しました。また、OP演出・SPメニュー・モーダル開閉に伴うスクロール禁止／解除時には、一時要素を用いてOS固有のスクロールバー幅を正確に計測しCSS変数で固定ヘッダーの余白を補正することで、Windows環境等での画面のガタつきを完全に防いでいます。
+
 * **`gsap.matchMedia()` のクリーンアップ関数による堅牢な状態管理**
 
   PCとSPを跨ぐ画面リサイズが発生した際に、スクロール連動のコールバック内で動的に付与されたインラインスタイルや進行中の単発Tweenが残って表示崩れを引き起こさないよう、各モジュールのクリーンアップ関数で `gsap.killTweensOf()` や `clearProps` を適切に実行し、初期状態へ安全にリセットする設計を徹底しました。
 
 * **HandlebarsによるSVGの分割管理と、CSS変数を活用したスマートなUI構築**
 
-  アニメーション制御のために多数のクラスやパスを持つインラインSVGを `src/svg/` 配下に分割し、ビルド時に `vite-plugin-handlebars` で結合する構成としました。また、壁掛け時計の文字盤配置やSPメニューの円形展開（`clip-path`）にはCSSカスタムプロパティ（CSS変数）を活用し、JavaScriptとCSSの役割分担を明確にしています。
+  アニメーション制御のために多数のクラスやパスを持つインラインSVGを `src/svg/` 配下に分割し、ビルド時に `vite-plugin-handlebars` で結合する構成としました。また、壁掛け時計の文字盤配置やSPメニューの円形展開（`clip-path`）、スクロールバー幅の余白補正にはCSSカスタムプロパティ（CSS変数）を活用し、JavaScriptとCSSの役割分担を明確にしています。
 
 ## 使用技術
 **フロントエンド**
@@ -129,6 +134,16 @@
 > 📂 **関連ファイル**
 > * JS: [main.js](src/js/main.js)
 
+### スクロールロック時のガタつき防止制御
+オープニングアニメーション再生中やSPメニュー・詳細モーダル展開時には、背面のスクロールを禁止するため `body` に `.is-noscroll`（`overflow: hidden`）を付与しています。しかし、Windows環境など常時スクロールバーが表示される環境では、スクロールバーの消失・出現に伴って固定ヘッダー（`.l-header`）の表示幅が変化し、画面が左右にガタつく問題が発生します。
+
+これを解決するため、共通ユーティリティ [`scrollbar.js`](src/js/utils/scrollbar.js) に `lockScroll()` / `unlockScroll()` を実装しました。初期読み込み時点で既に `overflow: hidden` が付与されているオープニング時でも正確にスクロールバー幅を取得できるよう、画面外に一時的な `overflow: scroll` のダミー要素を生成して `offsetWidth - clientWidth` から幅を計測し、ルート要素のCSS変数（`--scrollbar-width`）へセットすることで、固定ヘッダーの `padding-right` を動的に補正しています。
+
+> 📂 **関連ファイル**
+> * JS: [scrollbar.js](src/js/utils/scrollbar.js)
+> * SCSS: [_header.scss](src/scss/layout/_header.scss)
+> * SCSS: [_base.scss](src/scss/foundation/_base.scss)
+
 ### OPアニメーション
 ![OPアニメーションwebp動画](docs/opening/opening.webp)
 
@@ -146,6 +161,8 @@
 
 > 📂 **関連ファイル**
 > * JS: [opening.js](src/js/modules/opening.js)
+> * JS: [async.js](src/js/utils/async.js)
+> * JS: [scrollbar.js](src/js/utils/scrollbar.js)
 > * SCSS: [_opening.scss](src/scss/object/project/_opening.scss)
 > * SVG: [opening.html](src/svg/opening.html)
 
@@ -174,12 +191,13 @@ PC表示時（画面幅1024px以上）において、縦スクロール操作を
 SP時のハンバーガーメニュー開閉では、ボタンの中心座標を `getBoundingClientRect()` で動的に取得してCSS変数（`--cx`, `--cy`）にセットし、その座標を起点として `clip-path: circle()` でメニュー背景が円形に広がるアニメーションを実装しました。画面リサイズ時にはデバウンス処理（[`debounce.js`](src/js/utils/debounce.js)）を介して座標を再計算し、常にボタンの中心から展開されるよう制御しています。また、ボタンの三本線は `MorphSVGPlugin` でバツ印へと滑らかに変形します。
 
 #### 非同期処理（async/await）によるスクロールロック制御（SP）
-SPメニュー展開中は `body` に `.is-noscroll` クラスを付与して背面のスクロールを禁止しています。メニューを閉じる際には、`await tl.reverse()` によってタイムラインの逆再生完了を待機してから `.is-noscroll` クラスを解除することで、「メニューが完全に閉じ切る前に背面がスクロールできてしまう」という操作上の違和感を防いでいます。
+SPメニュー展開中は共通ユーティリティの [`lockScroll()`](src/js/utils/scrollbar.js) によって背面のスクロール禁止と余白補正を行っています。メニューを閉じる際には、`await tl.reverse()` によってタイムラインの逆再生完了を待機してから [`unlockScroll()`](src/js/utils/scrollbar.js) でスクロール禁止を解除することで、「メニューが完全に閉じ切る前に背面がスクロールできてしまう」という操作上の違和感を防いでいます。
 
 > 📂 **関連ファイル**
 > * JS: [header.js](src/js/modules/header.js)
 > * JS: [common.js](src/js/modules/common.js)
 > * JS: [debounce.js](src/js/utils/debounce.js)
+> * JS: [scrollbar.js](src/js/utils/scrollbar.js)
 > * SCSS: [_header.scss](src/scss/layout/_header.scss)
 > * SCSS: [_base.scss](src/scss/foundation/_base.scss)
 > * SVG: [header-hamburger.html](src/svg/header-hamburger.html)
@@ -269,20 +287,38 @@ Canvasの描画管理を行う [`canvasEngine.js`](src/js/modules/canvasEngine.j
 ### 季節セクション（春・夏・秋・冬）
 ![季節セクションの画像](docs/season/season.PNG)
 
-カフェの窓辺（前景レイヤー）と季節の景色（背景レイヤー）に挟まれながら、春夏秋冬それぞれの季節限定メニュー（生成AIのGeminiで作成したメニュー画像とキャッチコピー）を紹介するメインセクションです。
+カフェの窓辺（前景レイヤー）と季節の景色（背景レイヤー）に挟まれながら、春夏秋冬それぞれの季節限定メニュー（生成AIのGeminiで作成したメニュー画像とキャッチコピー）を紹介するメインセクションです。各メニュー画像の右下には詳細モーダルを開く「MORE」ボタンを配置しています。
 
 #### ポップアップ登場と浮遊ループのシームレスな連携
 ![季節セクションのポップアップwebp動画](docs/season/season-popup.webp)
 
-各季節のエリアに進入すると、`elastic.out` イージングによってメニュー画像とキャッチコピーが弾むようにポップアップ登場します。さらに同じタイムラインの末尾に `GSAP_EASING.FLOAT`（`sine.inOut`）を用いた上下移動（`yoyo: true, repeat: -1`）を繋げることで、ポップアップ完了後にそのまま切れ目なくふわふわと漂う無限ループアニメーションへと移行させています。
+各季節のエリアに進入すると、`elastic.out` イージングによってメニュー画像（「MORE」ボタンを含むラッパー要素）とキャッチコピーが弾むようにポップアップ登場します。さらに同じタイムラインの末尾に `sine.inOut` イージングを用いた上下移動（`yoyo: true, repeat: -1`）を繋げることで、ポップアップ完了後にそのまま切れ目なくふわふわと漂う無限ループアニメーションへと移行させています。
 
-#### スクロール固定とアニメーションのtransform競合回避
-セクション通過中にメニューコンテンツを画面中央に固定する際、SP時はScrollTriggerの `pin` 機能、PC時は逆スクロール移動（`x` 座標の移動）によって外枠（`.js-season-content`）の `transform` が操作されます。そこで、固定制御は外枠の要素に専念させ、ポップアップや浮遊ループのアニメーションは内側の画像（`.js-season-image`）とテキスト（`.js-season-text`）に対して直接適用することで、GSAPにおける `transform` プロパティの競合（位置ズレや上書き）を回避しました。
+#### dialog要素と非同期デコードを用いたメニュー詳細モーダル
+![メニュー詳細モーダル開閉のwebp動画](docs/season/season-modal.webp)
+
+各季節メニューの「MORE」ボタンをクリックすると、HTML標準の `<dialog>` 要素で構築した詳細モーダルが開きます。ボタンの `data-season-id` 属性から対象セクションの詳細情報（画像・タイトル・説明文）を動的に取得して表示する仕組みとし、以下のUX・アクセシビリティ対応を組み込んでいます。
+
+* **最新CSSによるスムーズな開閉アニメーション**
+
+  `transition-behavior: allow-discrete` と `@starting-style` を組み合わせ、`display: none` からの表示切り替え時および背面オーバーレイ（`::backdrop`）にも滑らかなフェードトランジションを適用しました。
+
+* **非同期デコードとローディング演出の同期**
+
+  [`modal.js`](src/js/modules/modal.js) 内で `Promise.all` を用い、`modalImage.decode()` による画像の描画準備完了と最低ローディング表示時間（0.6秒）の両方を待機してからコンテンツをフェードインさせています。万が一データ取得や読み込みに失敗した場合のエラーメッセージ表示（`try / catch / finally`）にも対応しています。
+
+* **快適な操作性と状態リセット**
+
+  モーダル展開時には `modalText.scrollTop = 0` でテキスト領域のスクロール位置を毎回先頭へリセットし、閉じるボタン・オーバーレイクリック・ESCキーのいずれで閉じた場合も `close` イベントで確実に [`unlockScroll()`](src/js/utils/scrollbar.js) を実行して背面のスクロールロックと余白補正を解除します。
 
 > 📂 **関連ファイル**
 > * JS: [season.js](src/js/modules/season.js)
+> * JS: [modal.js](src/js/modules/modal.js)
 > * JS: [scroll.js](src/js/utils/scroll.js)
+> * JS: [async.js](src/js/utils/async.js)
+> * JS: [scrollbar.js](src/js/utils/scrollbar.js)
 > * SCSS: [_season-panel.scss](src/scss/object/project/_season-panel.scss)
+> * SCSS: [_modal.scss](src/scss/object/component/_modal.scss)
 
 ### 退店時ズームアニメーション
 ![退店時ズームアニメーションwebp動画](docs/exit/exit-zoom.webp)
